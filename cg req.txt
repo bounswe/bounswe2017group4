@@ -1,0 +1,35 @@
+Conversation Graph(CG) Editor Requirements
+	Graph		
+		CG shall have nodes	
+			User shall be able to add new nodes
+			CG shall start from START NODE					
+			User shall be able to add labels to nodes			
+			There has to be exactly one ACTIVE NODE at anytime 	
+			Nodes shall be able to connected to more than one node with edges
+		CG shall have edges
+			Edges shall make connection between nodes			
+			Edges shall be unidirectional
+			Edges shall have two parts, named "in" and "out"				
+				"In" part shall represent the template it expects to match with the user input
+					Admin shall be able to define templates  
+						Templates shall be able to have variables
+				An edge shall be able to have more than one "in" part that represents the other possible ways of saying the same statement
+				"In" part shall be able to empty
+				"Out" part shall represent the respond to the user
+		CG shall be able to cyclic
+	Usage
+		Program shall be used by admin only
+			Admin shall be able to add and edit nodes, edges, "in" and "out" parts
+	Variable	
+		Program shall be able to extract values from input
+			Program shall create variables
+				Program shall create variables with different names
+				Variables shall save extracted values
+			Program shall be able to assign values to variables from input
+				Any "Out" part shall be able to use saved variables to respond
+	API Call
+		Program shall be able to formulate API calls
+			Program shall be able to send variables to an API
+			Program shall be able to retrieve information from API
+			Program shall be able to use retrieved information to generate output
+			
