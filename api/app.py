@@ -1,6 +1,6 @@
 #!flask/bin/python
 from flask import Flask, jsonify, abort, make_response, request
-from flask.ext.httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPBasicAuth
 
 app = Flask(__name__)
 
@@ -9,19 +9,7 @@ books = [
         'id': 1,
         'name': u'Brave New World',
         'author': u'Aldous Huxley',
-        'price': 13.5,
-        'comments': [
-            {
-                'id': 1,
-                'username': u'berkerol',
-                'text': u'Such an enlightening book'
-            },
-            {
-                'id': 2,
-                'username': u'caglarhizli',
-                'text': u'Great book. Similar to 1984, only more realistic.'
-            }
-        ]
+        'price': 13.5
     },
     {
         'id': 2,
@@ -31,8 +19,26 @@ books = [
     }
 ]
 
-
-
+comments = [
+    {
+        'id': 1,
+        'book': 1,
+        'owner': u'berkerol',
+        'content': u'Such an enlightening book.'
+    },
+    {
+        'id': 2,
+        'book': 1,
+        'owner': u'caglarhizli',
+        'content': u'Great book. Similar to 1984, only more realistic.'
+    },
+    {
+        'id': 3,
+        'book': 2,
+        'owner': u'berkerol',
+        'content': u'Very interesting.'
+    }
+]
 
 auth = HTTPBasicAuth()
 
@@ -41,6 +47,19 @@ auth = HTTPBasicAuth()
 def get_books():
     return jsonify({'books': books})
 
+@app.route('/api/comments', methods=['GET'])
+@auth.login_required
+def get_comments():
+    return jsonify({'comments': comments})
+
+@app.route('/api/comments/book/<int:book_id>', methods=['GET'])
+@auth.login_required
+def get_comments_of_book(book_id):
+    comment = [comment for comment in comments if comment['book'] == book_id]
+    if len(comment) == 0:
+        abort(404)
+    return jsonify({'comments': comment})
+
 @app.route('/api/books/<int:book_id>', methods=['GET'])
 @auth.login_required
 def get_book(book_id):
@@ -48,6 +67,14 @@ def get_book(book_id):
     if len(book) == 0:
         abort(404)
     return jsonify({'book': book[0]})
+
+@app.route('/api/comments/<int:comment_id>', methods=['GET'])
+@auth.login_required
+def get_comment(comment_id):
+    comment = [comment for comment in comments if comment['id'] == comment_id]
+    if len(comment) == 0:
+        abort(404)
+    return jsonify({'comment': comment[0]})
 
 @app.route('/api/books', methods=['POST'])
 @auth.login_required
@@ -62,6 +89,20 @@ def create_book():
     }
     books.append(book)
     return jsonify({'book': book}), 201
+
+@app.route('/api/comments', methods=['POST'])
+@auth.login_required
+def create_comment():
+    if not request.json or not 'book' in request.json or not 'owner' in request.json or not 'content' in request.json:
+        abort(400)
+    comment = {
+        'id': comments[-1]['id'] + 1,
+        'book': request.json['book'],
+        'owner': request.json['owner'],
+        'content': request.json['content'],
+    }
+    comments.append(comment)
+    return jsonify({'comment': comment}), 201
 
 @app.route('/api/books/<int:book_id>', methods=['PUT'])
 @auth.login_required
@@ -90,51 +131,6 @@ def delete_book(book_id):
         abort(404)
     books.remove(book[0])
     return jsonify({'result': True})
-
-
-@app.route('/api/books/<int:book_id>/comments', methods=['GET'])
-@auth.login_required
-def get_book_comments(book_id):
-    book = [book for book in books if book['id'] == book_id]
-    if len(book) == 0:
-        abort(500)
-    comments = book[0].get('comments', [])
-    return jsonify({'comments': comments})
-
-@app.route('/api/books/<int:book_id>/comments', methods=['POST'])
-@auth.login_required
-def add_comment(book_id):
-    if not request.json or not 'username' in request.json or not 'text' in request.json:
-        abort(400)
-    book = [book for book in books if book['id'] == book_id]
-    if len(book) == 0:
-        abort(500)
-    comments = book[0].get('comments', [])
-    startId = 0
-    if not len(comments) == 0:
-        startId = comments[-1]['id'];
-
-    comment = {
-        'id': startId + 1,
-        'username': request.json['username'],
-        'text': request.json['text']
-    }
-    comments.append(comment)
-    book[0]['comments'] = comments
-
-
-    return jsonify({'comments': comments})
-
-
-def create_book():
-
-
-    books.append(book)
-    return jsonify({'book': book}), 201
-
-@app.errorhandler(500)
-def not_found(error):
-    return make_response(jsonify({'error': 'Internal Server Error'}), 500)
 
 @app.errorhandler(404)
 def not_found(error):
