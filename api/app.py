@@ -9,7 +9,19 @@ books = [
         'id': 1,
         'name': u'Brave New World',
         'author': u'Aldous Huxley',
-        'price': 13.5
+        'price': 13.5,
+        'comments': [
+            {
+                'id': 1,
+                'username': u'berkerol',
+                'text': u'Such an enlightening book'
+            },
+            {
+                'id': 2,
+                'username': u'caglarhizli',
+                'text': u'Great book. Similar to 1984, only more realistic.'
+            }
+        ]
     },
     {
         'id': 2,
@@ -18,6 +30,9 @@ books = [
         'price': 8.5
     }
 ]
+
+
+
 
 auth = HTTPBasicAuth()
 
@@ -75,6 +90,51 @@ def delete_book(book_id):
         abort(404)
     books.remove(book[0])
     return jsonify({'result': True})
+
+
+@app.route('/api/books/<int:book_id>/comments', methods=['GET'])
+@auth.login_required
+def get_book_comments(book_id):
+    book = [book for book in books if book['id'] == book_id]
+    if len(book) == 0:
+        abort(500)
+    comments = book[0].get('comments', [])
+    return jsonify({'comments': comments})
+
+@app.route('/api/books/<int:book_id>/comments', methods=['POST'])
+@auth.login_required
+def add_comment(book_id):
+    if not request.json or not 'username' in request.json or not 'text' in request.json:
+        abort(400)
+    book = [book for book in books if book['id'] == book_id]
+    if len(book) == 0:
+        abort(500)
+    comments = book[0].get('comments', [])
+    startId = 0
+    if not len(comments) == 0:
+        startId = comments[-1]['id'];
+
+    comment = {
+        'id': startId + 1,
+        'username': request.json['username'],
+        'text': request.json['text']
+    }
+    comments.append(comment)
+    book[0]['comments'] = comments
+
+
+    return jsonify({'comments': comments})
+
+
+def create_book():
+
+
+    books.append(book)
+    return jsonify({'book': book}), 201
+
+@app.errorhandler(500)
+def not_found(error):
+    return make_response(jsonify({'error': 'Internal Server Error'}), 500)
 
 @app.errorhandler(404)
 def not_found(error):
