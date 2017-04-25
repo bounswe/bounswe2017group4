@@ -4,6 +4,8 @@ from flask_httpauth import HTTPBasicAuth
 
 app = Flask(__name__)
 
+auth = HTTPBasicAuth()
+
 books = [
     {
         'id': 1,
@@ -23,24 +25,33 @@ comments = [
     {
         'id': 1,
         'book': 1,
-        'owner': u'berkerol',
+        'owner': 1,
         'content': u'Such an enlightening book.'
     },
     {
         'id': 2,
         'book': 1,
-        'owner': u'caglarhizli',
+        'owner': 2,
         'content': u'Great book. Similar to 1984, only more realistic.'
     },
     {
         'id': 3,
         'book': 2,
-        'owner': u'berkerol',
+        'owner':1,
         'content': u'Very interesting.'
     }
 ]
 
-auth = HTTPBasicAuth()
+users = [
+    {
+        'id': 1,
+        'name': u'berkerol'
+    },
+    {
+        'id': 2,
+        'name': u'caglarhizli'
+    }
+]
 
 @app.route('/api/books', methods=['GET'])
 @auth.login_required
@@ -52,10 +63,23 @@ def get_books():
 def get_comments():
     return jsonify({'comments': comments})
 
+@app.route('/api/users', methods=['GET'])
+@auth.login_required
+def get_users():
+    return jsonify({'users': users})
+
 @app.route('/api/comments/book/<int:book_id>', methods=['GET'])
 @auth.login_required
 def get_comments_of_book(book_id):
     comment = [comment for comment in comments if comment['book'] == book_id]
+    if len(comment) == 0:
+        abort(404)
+    return jsonify({'comments': comment})
+
+@app.route('/api/comments/user/<int:user_id>', methods=['GET'])
+@auth.login_required
+def get_comments_of_user(user_id):
+    comment = [comment for comment in comments if comment['owner'] == user_id]
     if len(comment) == 0:
         abort(404)
     return jsonify({'comments': comment})
@@ -75,6 +99,14 @@ def get_comment(comment_id):
     if len(comment) == 0:
         abort(404)
     return jsonify({'comment': comment[0]})
+
+@app.route('/api/users/<int:user_id>', methods=['GET'])
+@auth.login_required
+def get_user(user_id):
+    user = [user for user in users if user['id'] == user_id]
+    if len(user) == 0:
+        abort(404)
+    return jsonify({'user': user[0]})
 
 @app.route('/api/books', methods=['POST'])
 @auth.login_required
@@ -103,6 +135,18 @@ def create_comment():
     }
     comments.append(comment)
     return jsonify({'comment': comment}), 201
+
+@app.route('/api/users', methods=['POST'])
+@auth.login_required
+def create_user():
+    if not request.json or not 'name' in request.json:
+        abort(400)
+    user = {
+        'id': users[-1]['id'] + 1,
+        'name': request.json['name'],
+    }
+    users.append(user)
+    return jsonify({'user': user}), 201
 
 @app.route('/api/books/<int:book_id>', methods=['PUT'])
 @auth.login_required
