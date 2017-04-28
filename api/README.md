@@ -16,17 +16,49 @@ $ ./app.py
 ```
 6. Open a NEW console window (do not close the one where app.py is running).
   * These processes require authentication with username=berkerol and password=group4
-  * GET: Retrive a list of books
+  * GET: Retrive all books
     ```
     $ curl -u berkerol:group4 -i http://localhost:5000/api/books
+    ```
+  * GET: Retrive all comments
+    ```
+    $ curl -u berkerol:group4 -i http://localhost:5000/api/comments
+    ```
+  * GET: Retrive all users
+    ```
+    $ curl -u berkerol:group4 -i http://localhost:5000/api/users
+    ```
+  * GET: Retrive all comments of a book
+    ```
+    $ curl -u berkerol:group4 -i http://localhost:5000/api/comments/book/1
+    ```
+  * GET: Retrive all comments of a user
+    ```
+    $ curl -u berkerol:group4 -i http://localhost:5000/api/comments/user/1
     ```
   * GET: Retrieve a book
     ```
     $ curl -u berkerol:group4 -i http://localhost:5000/api/books/2
     ```
+  * GET: Retrieve a comment
+    ```
+    $ curl -u berkerol:group4 -i http://localhost:5000/api/comments/2
+    ```
+  * GET: Retrieve a user
+    ```
+    $ curl -u berkerol:group4 -i http://localhost:5000/api/users/2
+    ```
   * POST: Create a book
     ```
     $ curl -u berkerol:group4 -i -H "Content-Type: application/json" -X POST -d '{"name":"1984", "author":"George Orwell", "price":11.0}' http://localhost:5000/api/books
+    ```
+  * POST: Create a comment
+    ```
+    $ curl -u berkerol:group4 -i -H "Content-Type: application/json" -X POST -d '{"book":2, "owner":2, "content":"Wow"}' http://localhost:5000/api/comments
+    ```
+  * POST: Create a user
+    ```
+    $ curl -u berkerol:group4 -i -H "Content-Type: application/json" -X POST -d '{"name":"amerty"}' http://localhost:5000/api/users
     ```
   * PUT: Update a book
     ```
