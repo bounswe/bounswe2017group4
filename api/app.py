@@ -1,4 +1,5 @@
 #!flask/bin/python
+import hashlib
 from flask import Flask, jsonify, abort, make_response, request
 from flask_httpauth import HTTPBasicAuth
 
@@ -45,13 +46,18 @@ comments = [
 users = [
     {
         'id': 1,
-        'name': u'berkerol'
+        'name': u'nicholasramsey'
     },
     {
         'id': 2,
-        'name': u'caglarhizli'
+        'name': u'richardterry'
     }
 ]
+
+admins = {
+    "group4": "33275a8aa48ea918bd53a9181aa975f15ab0d0645398f5918a006d08675c1cb27d5c645dbd084eee56e675e25ba4019f2ecea37ca9e2995b49fcb12c096a032e",
+    "berkerol": "ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413"
+}
 
 @app.route('/api/books', methods=['GET'])
 @auth.login_required
@@ -178,21 +184,24 @@ def delete_book(book_id):
 
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
+    return make_response(jsonify({'error': 'Not Found'}), 404)
 
 @app.errorhandler(400)
-def not_found(error):
+def bad_request(error):
     return make_response(jsonify({'error': 'Bad Request'}), 400)
 
 @auth.get_password
 def get_password(username):
-    if username == 'berkerol':
-        return 'group4'
-    return None
+    if username in admins:
+        return admins[username]
+
+@auth.hash_password
+def hash_password(password):
+    return hashlib.sha512(password.encode()).hexdigest()
 
 @auth.error_handler
 def unauthorized():
-    return make_response(jsonify({'error': 'Unauthorized access'}), 401)
+    return make_response(jsonify({'error': 'Unauthorized Access'}), 401)
 
 if __name__ == '__main__':
     app.run(debug=True, threaded=True)
