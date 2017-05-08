@@ -1,5 +1,5 @@
 #!flask/bin/python
-import os, sys, subprocess, unittest
+import os, sys, subprocess, unittest, json
 from app import get_books, get_comments, get_users, get_comments_of_book, get_comments_of_user
 
 class TestApp(unittest.TestCase):
@@ -22,6 +22,13 @@ class TestApp(unittest.TestCase):
   ]
 }
 """)
+	def test_post_book(self):
+		output = subprocess.check_output(['curl','-u','group4:1111','-i','-H','Content-Type: application/json','-X','POST',
+										  '-d','{"name":"1984", "author":"George Orwell", "price":11.0}',
+										  'http://localhost:5000/api/books']).partition("{")[2]
+		book = json.loads("{"+output).get('book')
+		id = book.get('id')
+		self.assertTrue(id > 0)
 
 	def test_get_comments(self):
 		output = subprocess.check_output(['curl','-u','group4:1111','-i','http://localhost:5000/api/comments']).partition("{")[2]
