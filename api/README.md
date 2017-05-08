@@ -27,6 +27,10 @@ $ ./app.py
     ```
     $ curl -u username:password -i http://localhost:5000/api/users
     ```
+  * GET: Retrive all templates
+    ```
+    $ curl -u username:password -i http://localhost:5000/api/templates
+    ```
   * GET: Retrive all comments of a book
     ```
     $ curl -u username:password -i http://localhost:5000/api/comments/book/1
@@ -47,6 +51,10 @@ $ ./app.py
     ```
     $ curl -u username:password -i http://localhost:5000/api/users/2
     ```
+  * GET: Retrieve a template
+    ```
+    $ curl -u username:password -i http://localhost:5000/api/templates/2
+    ```
   * POST: Create a book
     ```
     $ curl -u username:password -i -H "Content-Type: application/json" -X POST -d '{"name":"1984", "author":"George Orwell", "price":11.0}' http://localhost:5000/api/books
@@ -59,11 +67,23 @@ $ ./app.py
     ```
     $ curl -u username:password -i -H "Content-Type: application/json" -X POST -d '{"name":"amerty"}' http://localhost:5000/api/users
     ```
+  * POST: Create a template
+    ```
+    $ curl -u username:password -i -H "Content-Type: application/json" -X POST -d '{"name":"Asking name", "in":["My name is $UserName", "I am $UserName"], "out":["Hello $UserName.", "Nice to meet you $UserName!"]}' http://localhost:5000/api/templates
+    ```
   * PUT: Update a book
     ```
     $ curl -u username:password -i -H "Content-Type: application/json" -X PUT -d '{"price":12.0}' http://localhost:5000/api/books/3
     ```
+  * PUT: Update a template
+    ```
+    $ curl -u username:password -i -H "Content-Type: application/json" -X PUT -d '{"out":["Hi $UserName.", "Nice to meet you $UserName!"]}' http://localhost:5000/api/templates/3
+    ```
   * DELETE: Delete a book
     ```
     $ curl -u username:password -X DELETE http://localhost:5000/api/books/3
+    ```
+  * DELETE: Delete a template
+    ```
+    $ curl -u username:password -X DELETE http://localhost:5000/api/templates/3
     ```

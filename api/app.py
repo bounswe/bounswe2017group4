@@ -134,6 +134,14 @@ def get_user(user_id):
         abort(404)
     return jsonify({'user': user[0]})
 
+@app.route('/api/templates/<int:template_id>', methods=['GET'])
+@auth.login_required
+def get_template(template_id):
+    template = [template for template in templates if template['id'] == template_id]
+    if len(template) == 0:
+        abort(404)
+    return jsonify({'template': template[0]})
+
 @app.route('/api/books', methods=['POST'])
 @auth.login_required
 def create_book():
@@ -174,6 +182,20 @@ def create_user():
     users.append(user)
     return jsonify({'user': user}), 201
 
+@app.route('/api/templates', methods=['POST'])
+@auth.login_required
+def create_template():
+    if not request.json or not 'name' in request.json or not 'in' in request.json or not 'out' in request.json:
+        abort(400)
+    template = {
+        'id': templates[-1]['id'] + 1,
+        'name': request.json['name'],
+        'in': request.json['in'],
+        'out': request.json['out'],
+    }
+    templates.append(template)
+    return jsonify({'template': template}), 201
+
 @app.route('/api/books/<int:book_id>', methods=['PUT'])
 @auth.login_required
 def update_book(book_id):
@@ -193,6 +215,25 @@ def update_book(book_id):
     book[0]['price'] = request.json.get('price', book[0]['price'])
     return jsonify({'book': book[0]})
 
+@app.route('/api/templates/<int:template_id>', methods=['PUT'])
+@auth.login_required
+def update_template(template_id):
+    template = [template for template in templates if template['id'] == template_id]
+    if len(template) == 0:
+        abort(404)
+    if not request.json:
+        abort(400)
+    if 'name' in request.json and type(request.json['name']) is not unicode:
+        abort(400)
+    if 'in' in request.json and type(request.json['in']) is not list:
+        abort(400)
+    if 'out' in request.json and type(request.json['out']) is not list:
+        abort(400)
+    template[0]['name'] = request.json.get('name', template[0]['name'])
+    template[0]['in'] = request.json.get('in', template[0]['in'])
+    template[0]['out'] = request.json.get('out', template[0]['out'])
+    return jsonify({'template': template[0]})
+
 @app.route('/api/books/<int:book_id>', methods=['DELETE'])
 @auth.login_required
 def delete_book(book_id):
@@ -202,28 +243,14 @@ def delete_book(book_id):
     books.remove(book[0])
     return jsonify({'result': True})
 
-
-@app.route('/api/templates/<int:template_id>', methods=['GET'])
+@app.route('/api/templates/<int:template_id>', methods=['DELETE'])
 @auth.login_required
-def get_template(template_id):
+def delete_template(template_id):
     template = [template for template in templates if template['id'] == template_id]
     if len(template) == 0:
         abort(404)
-    return jsonify({'template': template[0]})
-
-@app.route('/api/templates', methods=['POST'])
-@auth.login_required
-def create_template():
-    if not request.json or not 'name' in request.json or not 'in' in request.json or not 'out' in request.json:
-        abort(400)
-    template = {
-        'id': templates[-1]['id'] + 1,
-        'name': request.json['name'],
-        'in': request.json['in'],
-        'out': request.json['out'],
-    }
-    templates.append(template)
-    return jsonify({'template': template}), 201
+    templates.remove(template[0])
+    return jsonify({'result': True})
 
 @app.errorhandler(404)
 def not_found(error):
