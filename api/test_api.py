@@ -48,5 +48,20 @@ class TestApp(unittest.TestCase):
 	]
 }
 """)
+	def test_get_users(self):
+		output = subprocess.check_output(['curl','-u','group4:1111','-i','http://localhost:5000/api/users']).partition("{")[2]		
+		self.assertEqual(output,"""
+	"users" = [
+    {
+        "id": 1,
+        "name": u"nicholasramsey"
+    },
+    {
+        "id": 2,
+        "name": u"richardterry"
+    }
+]
+}
+""")
 if __name__=='__main__':
 	unittest.main(exit=False)
