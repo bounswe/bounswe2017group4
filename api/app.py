@@ -225,6 +225,30 @@ def create_template():
     templates.append(template)
     return jsonify({'template': template}), 201
 
+@app.route('/api/templates/<int:template_id>', methods=['DELETE'])
+@auth.login_required
+def delete_template(template_id):
+    template = [template for template in templates if template['id'] == template_id]
+    if len(template) == 0:
+        abort(404)
+    templates.remove(template[0])
+    return jsonify({'result': True})
+
+@app.route('/api/templates/<int:template_id>', methods=['PUT'])
+@auth.login_required
+def update_template(template_id):
+    template = [template for template in templates if template['id'] == template_id]
+    if len(template) == 0:
+        abort(404)
+    if not request.json:
+        abort(400)
+    if 'name' in request.json and type(request.json['name']) is not unicode:
+        abort(400)
+    template[0]['name'] = request.json.get('name', template[0]['name'])
+    template[0]['in'] = request.json.get('in', template[0]['in'])
+    template[0]['out'] = request.json.get('out', template[0]['out'])
+    return jsonify({'template': template[0]})
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not Found'}), 404)
