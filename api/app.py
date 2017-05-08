@@ -54,6 +54,21 @@ users = [
     }
 ]
 
+templates = [
+    {
+        'id': 1,
+        'name': u'Asking name',
+        'in': [u'My name is $UserName', u'I am $UserName'],
+        'out': [u'Hello $UserName.', u'Nice to meet you $UserName!']
+    },
+    {
+        'id': 2,
+        'name': u'Asking book',
+        'in': [u'I want to search books about $Genre', u'Can you show me the books about $Genre'],
+        'out': [u'Here are some books about $Genre. Do you want to keep searching?']
+    }
+]
+
 admins = {
     "group4": "33275a8aa48ea918bd53a9181aa975f15ab0d0645398f5918a006d08675c1cb27d5c645dbd084eee56e675e25ba4019f2ecea37ca9e2995b49fcb12c096a032e",
     "berkerol": "ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413"
@@ -73,6 +88,11 @@ def get_comments():
 @auth.login_required
 def get_users():
     return jsonify({'users': users})
+
+@app.route('/api/templates', methods=['GET'])
+@auth.login_required
+def get_templates():
+    return jsonify({'templates': templates})
 
 @app.route('/api/comments/book/<int:book_id>', methods=['GET'])
 @auth.login_required
@@ -181,6 +201,29 @@ def delete_book(book_id):
         abort(404)
     books.remove(book[0])
     return jsonify({'result': True})
+
+
+@app.route('/api/templates/<int:template_id>', methods=['GET'])
+@auth.login_required
+def get_template(template_id):
+    template = [template for template in templates if template['id'] == template_id]
+    if len(template) == 0:
+        abort(404)
+    return jsonify({'template': template[0]})
+
+@app.route('/api/templates', methods=['POST'])
+@auth.login_required
+def create_template():
+    if not request.json or not 'name' in request.json or not 'in' in request.json or not 'out' in request.json:
+        abort(400)
+    template = {
+        'id': templates[-1]['id'] + 1,
+        'name': request.json['name'],
+        'in': request.json['in'],
+        'out': request.json['out'],
+    }
+    templates.append(template)
+    return jsonify({'template': template}), 201
 
 @app.errorhandler(404)
 def not_found(error):
