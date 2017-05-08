@@ -22,9 +22,14 @@ class TestApp(unittest.TestCase):
   ]
 }
 """)
+<<<<<<< HEAD
 
 	def test_get_comments(self):
 		output = subprocess.check_output(['curl','-u','group4:1111','-i','http://localhost:5000/api/comments']).partition("{")[2]		
+=======
+	def test_get_comments(self):
+		output = subprocess.check_output(['curl','-u','group4:1111','-i','http://localhost:5000/api/comments']).replace("\r\n", "\n").partition("{")[2]		
+>>>>>>> refs/remotes/origin/master
 		self.assertEqual(output,"""
 	"comments" : [
     {
@@ -45,6 +50,7 @@ class TestApp(unittest.TestCase):
         "owner":1,
         "content": u"Very interesting."
     }
+<<<<<<< HEAD
 	]
 }
 """)
@@ -62,6 +68,9 @@ class TestApp(unittest.TestCase):
     }
 ]
 }
+=======
+]
+>>>>>>> refs/remotes/origin/master
 """)
 if __name__=='__main__':
 	unittest.main(exit=False)
