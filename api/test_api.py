@@ -4,7 +4,7 @@ from app import get_books, get_comments
 
 class TestApp(unittest.TestCase):	
 	def test_get_books(self):
-		output = subprocess.check_output(['curl','-u','berkerol:group4','-i','http://localhost:5000/api/books']).replace("\r\n", "\n").partition("{")[2]		
+		output = subprocess.check_output(['curl','-u','group4:1111','-i','http://localhost:5000/api/books']).replace("\r\n", "\n").partition("{")[2]		
 		self.assertEqual(output,"""
   "books": [
     {
