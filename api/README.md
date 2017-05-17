@@ -316,7 +316,81 @@ Code: 201, CREATED
   }
 }
 ```
+### Create new Template [POST]
 
+**Parameters:**
+
+* name (required)
+* in (required)
+* out (required)
+* id (auto-increment)
+
+**Request:**
+
+$ curl -u username:password -i -H "Content-Type: application/json" -X POST -d '{"name":"Asking name", "in":["My name is $UserName", "I am $UserName"], "out":["Hello $UserName.", "Nice to meet you $UserName!"]}' http://localhost:5000/api/templates
+
+**Response:**
+
+Code: 201, CREATED
+
+```
+{
+    "template": {
+        "name": "Asking name",
+        "id": 3,
+        "in": ["My name is $UserName", "I am $UserName"],
+        "out": ["Hello $UserName.", "Nice to meet you $UserName!"]
+    }
+}
+```
+
+### Update a Template [PUT]
+
+**Parameters:**
+
+* id (required)
+* name (optional)
+* in (optional)
+* out (optional)
+
+**Request:**
+
+$ curl -u username:password -i -H "Content-Type: application/json" -X PUT -d '{"out":["Hi $UserName.", "Nice to meet you $UserName!"]}' http://localhost:5000/api/templates/3
+
+**Response:**
+
+Code 200, OK
+
+```
+{
+  "template": {
+        "name": "Asking name",
+        "id": 1,
+        "in": ["My name is $UserName", "I am $UserName"],
+        "out": ["Hi $UserName.", "Nice to meet you $UserName!"]
+    }
+}
+```
+
+### Delete a Template [DELETE]
+
+**Parameters:**
+
+* id (required)
+
+**Request:**
+
+`http -a username:password --json DELETE http://localhost:5000/api/templates/3`
+
+**Response:**
+
+Code: 200, OK
+
+```
+{
+    "result": true
+}
+```
 
 
 # Examples
