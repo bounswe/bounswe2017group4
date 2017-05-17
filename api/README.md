@@ -159,6 +159,166 @@ Code: 200, OK
 }
 ```
 
+### Get all comments [GET]
+
+**Parameters:**
+
+None
+
+**Request:**
+
+`curl -u username:password -i http://localhost:5000/api/comments`
+
+**Response:**
+
+Code: 200, OK
+
+```
+{
+  "comments": [
+    {
+      "book": 1,
+      "content": "Such an enlightening book.",
+      "id": 1,
+      "owner": 1
+    },
+    {
+      "book": 1,
+      "content": "Great book. Similar to 1984, only more realistic.",
+      "id": 2,
+      "owner": 2
+    },
+    {
+      "book": 2,
+      "content": "Very interesting.",
+      "id": 3,
+      "owner": 1
+    }
+  ]
+}
+```
+
+### Get all comments of a book [GET]
+
+**Parameters:**
+
+* id (required)
+
+**Request:**
+
+`curl -u username:password -i http://localhost:5000/api/comments/book/1`
+
+**Response:**
+
+Code: 200, OK
+
+```
+{
+  "comments": [
+    {
+      "book": 1,
+      "content": "Such an enlightening book.",
+      "id": 1,
+      "owner": 1
+    },
+    {
+      "book": 1,
+      "content": "Great book. Similar to 1984, only more realistic.",
+      "id": 2,
+      "owner": 2
+    }
+  ]
+}
+```
+
+### Get all comments of a user [GET]
+
+**Parameters:**
+
+* id (required)
+
+**Request:**
+
+`curl -u username:password -i http://localhost:5000/api/comments/user/1`
+
+**Response:**
+
+Code: 200, OK
+
+```
+{
+  "comments": [
+    {
+      "book": 1,
+      "content": "Such an enlightening book.",
+      "id": 1,
+      "owner": 1
+    },
+    {
+      "book": 2,
+      "content": "Very interesting.",
+      "id": 3,
+      "owner": 1
+    }
+  ]
+}
+```
+
+### Get comment by id [GET]
+
+**Parameters:**
+
+* id (required)
+
+**Request:**
+
+`curl -u username:password -i http://localhost:5000/api/comments/2`
+
+**Response:**
+
+Code: 200, OK
+
+```
+{
+  "comment": {
+    "book": 1,
+    "content": "Great book. Similar to 1984, only more realistic.",
+    "id": 2,
+    "owner": 2
+  }
+}
+```
+
+### Post a comment [POST]
+
+**Parameters:**
+
+* book (required)
+* owner (required)
+* content (required)
+* id (auto-increment)
+
+**Request:**
+
+`curl -u username:password -i -H "Content-Type: application/json" -X POST -d '{"book":2, "owner":2, "content":"Wow"}' http://localhost:5000/api/comments`
+
+**Response:**
+
+Code: 201, CREATED
+
+```
+{
+  "comment": {
+    "book": 2,
+    "content": "Wow",
+    "id": 4,
+    "owner": 2
+  }
+}
+```
+
+
+
 # Examples
 
 * GET: Retrive all comments
