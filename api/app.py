@@ -252,6 +252,15 @@ def delete_template(template_id):
     templates.remove(template[0])
     return jsonify({'result': True})
 
+@app.route('/api/comments/<int:comment_id>', methods=['DELETE'])
+@auth.login_required
+def delete_comment(comment_id):
+    comment = [comment for comment in comments if comment['id'] == comment_id]
+    if len(comment) == 0:
+        abort(404)
+    comments.remove(comment[0])
+    return jsonify({'result': True})
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not Found'}), 404)
