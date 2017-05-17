@@ -316,7 +316,7 @@ Code: 201, CREATED
   }
 }
 ```
-### Create a Template [POST]
+### Create new Template [POST]
 
 **Parameters:**
 
