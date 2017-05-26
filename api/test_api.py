@@ -22,6 +22,16 @@ class TestApp(unittest.TestCase):
   ]
 }
 """)
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+	def test_get_comments(self):
+		output = subprocess.check_output(['curl','-u','group4:1111','-i','http://localhost:5000/api/comments']).partition("{")[2]		
+=======
+	def test_get_comments(self):
+		output = subprocess.check_output(['curl','-u','group4:1111','-i','http://localhost:5000/api/comments']).replace("\r\n", "\n").partition("{")[2]		
+>>>>>>> refs/remotes/origin/master
+=======
 	def test_post_book(self):
 		output = subprocess.check_output(['curl','-u','group4:1111','-i','-H','Content-Type: application/json','-X','POST',
                       '-d','{"name":"1984", "author":"George Orwell", "price":11.0}',
@@ -32,6 +42,7 @@ class TestApp(unittest.TestCase):
 
 	def test_get_comments(self):
 		output = subprocess.check_output(['curl','-u','group4:1111','-i','http://localhost:5000/api/comments']).partition("{")[2]
+>>>>>>> master
 		self.assertEqual(output,"""
   "comments": [
     {
@@ -52,7 +63,12 @@ class TestApp(unittest.TestCase):
       "id": 3, 
       "owner": 1
     }
+<<<<<<< HEAD
+<<<<<<< HEAD
+	]
+=======
   ]
+>>>>>>> master
 }
 """)
 
@@ -141,6 +157,12 @@ class TestApp(unittest.TestCase):
     }
   ]
 }
+<<<<<<< HEAD
+=======
+]
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> master
 """)
 if __name__=='__main__':
   unittest.main(exit=False)
