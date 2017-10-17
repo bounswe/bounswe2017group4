@@ -26,6 +26,7 @@ SECRET_KEY = 'mg0rsw9psfe$0ho3$ejb8nvv3%d4yc6%pjdt6+-bbo8dywks#z'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+SITE_ID=1
 
 
 # Application definition
@@ -35,8 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+	'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	"rest_framework",
+    "telegrambot",
+	
 ]
 
 MIDDLEWARE = [
@@ -50,6 +55,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'bookBot.urls'
+TELEGRAM_BOT_HANDLERS_CONF = "app.handlers"
+
 
 TEMPLATES = [
     {
