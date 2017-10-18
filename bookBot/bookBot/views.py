@@ -1,6 +1,4 @@
 from django.shortcuts import render
-
-from django.shortcuts import render
 from django.http.response import HttpResponse
 import telepot
 # Create your views here.

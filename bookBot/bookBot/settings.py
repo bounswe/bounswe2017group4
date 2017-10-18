@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
+import bookBot
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 	"rest_framework",
     "telegrambot",
+	"chatBot",
 	
 ]
 
@@ -55,7 +56,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'bookBot.urls'
-TELEGRAM_BOT_HANDLERS_CONF = "app.handlers"
 
 
 TEMPLATES = [
@@ -125,3 +125,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+TELEGRAM_BOT_HANDLERS_CONF = 'chatBot.handlers'
