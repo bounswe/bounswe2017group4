@@ -1,0 +1,6 @@
+You have to run the script bookBot.py then go to telegram and look for bot cmpe451_bot.
+/start will start the conversation.
+You can say here is ozer or my name is paul it will understand.
+It understands that you say any kind of thanks.
+finish the bot with /stop
+
