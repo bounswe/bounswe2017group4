@@ -1,14 +1,14 @@
 from telegram.ext import Updater
 import logging
-from chatBot.deneme import wit_response
+from chatBot.witapi import wit_response
 from telegram.ext import CommandHandler
 from telegram.ext import MessageHandler, Filters
+
 name= "Anonymous"
 updater = Updater(token='463468162:AAGwj6oo_CrGeHip_Hzhh8IXHzSwQNDSwnE')
 dispatcher = updater.dispatcher
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
-print("started")
 def start(bot, update):
 	bot.send_message(chat_id=update.message.chat_id, text="Welcome to the Book Master")
 start_handler = CommandHandler('start', start)

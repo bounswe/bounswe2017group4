@@ -19,4 +19,5 @@ from chatBot.bot_views import StartView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+	url(r'^start/', StartView.start, name="start"),
 ]
