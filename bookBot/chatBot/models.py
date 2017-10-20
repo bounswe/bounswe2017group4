@@ -22,5 +22,5 @@ class UserInterest(models.Model):
 
 class UserRating(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	comment = models.CharField(max_length=255)
+	rating = models.IntegerField()
 	book_id = models.CharField(max_length=100)
