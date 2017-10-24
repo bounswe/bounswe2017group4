@@ -13,7 +13,7 @@ class UserInterest(models.Model):
 		('category', 'Category'),
 	)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	year_in_school = models.CharField(
+	interest_type = models.CharField(
 		max_length=10,
 		choices=INTEREST_TYPE_CHOICES,
 		default='category',
@@ -28,14 +28,14 @@ class UserRating(models.Model):
 class UserComment(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	comment = models.CharField(max_length=500)
-    book_id = models.IntegerField()
+	book_id = models.IntegerField()
 
 class Nodes(models.Model):
-    node_id = models.IntegerField(unique=True)
-    parent_id = models.IntegerField()
-    content = models.CharField(max_length=200)
+	node_id = models.IntegerField(unique=True)
+	parent_id = models.IntegerField()
+	content = models.CharField(max_length=200)
 
 class History(models.Model):
-    hist_id = models.IntegerField(unique=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    query = models.CharField(max_length=500)
+	hist_id = models.IntegerField(unique=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	query = models.CharField(max_length=500)
