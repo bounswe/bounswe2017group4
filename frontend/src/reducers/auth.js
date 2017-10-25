@@ -1,14 +1,15 @@
-import * as types from '../actions/types';
+/* eslint no-unused-vars: 0 */  // --> OFF
 import { createReducer } from '../common/utils';
+import { AUTH_USER } from '../actions/types';
 
 const initialState = {
-    isMobileSideBarOpen: false
+    isAuthenticated: false
 };
 
 export default createReducer(initialState, {
-    [types.OPEN_MOBILE_SIDEBAR]: (state) => {
+    [AUTH_USER]: (state) => {
         return Object.assign({}, state, {
-            isMobileSideBarOpen: !state.isMobileSideBarOpen
+            'isAuthenticated': true
         });
     }
 });

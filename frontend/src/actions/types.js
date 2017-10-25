@@ -16,10 +16,7 @@ export const BEGIN_AJAX_CALL = 'BEGIN_AJAX_CALL',
     AJAX_CALL_SUCCESS = 'AJAX_CALL_SUCCESS',
     AJAX_CALL_ERROR = 'AJAX_CALL_ERROR';
 
-
-
-
-
-
-
-
+//=====================
+// Auth Actions
+//=====================
+export const AUTH_USER = 'AUTH_USER';
