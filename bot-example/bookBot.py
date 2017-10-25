@@ -83,7 +83,41 @@ def bookController(bot, update):
                         value += str(resp['entities'][entity][i]['value']) + ","
                     else:
                         value += str(resp['entities'][entity][i]['value'])
-                response = "Ok.I will send you " + str(value) + " books"
+                response = "I have saved that you like " + str(value) + " books."
+
+            else:
+                value = resp['entities'][entity][0]['value']
+                response = "I have saved that you like " + str(value) + " books."
+                
+
+        else:
+            bot.send_message(chat_id=update.message.chat_id, text="Sorry,didn't understand.")
+    except:
+        pass
+    bot.send_message(chat_id=update.message.chat_id, text=response)
+    bot.send_message(chat_id=update.message.chat_id, text='From now on, you can search books. :)')
+    dispatcher.remove_handler(bookController_handler)
+
+    bot.send_message(chat_id=update.message.chat_id, text=search_book_result)
+
+
+bookController_handler = MessageHandler(Filters.text, bookController)
+dispatcher.add_handler(bookController_handler)
+
+def searchBookController(bot, update):
+    resp = client.message(update.message.text)
+    response = None
+    value = ""
+    try:
+        if (list(resp['entities'])[0] == 'booktype'):
+            entity = 'booktype'
+            if (len(resp['entities'][entity]) > 1):
+                for i in range(0, len(resp['entities'][entity])):
+                    if (i != len(resp['entities'][entity]) - 1):
+                        value += str(resp['entities'][entity][i]['value']) + ","
+                    else:
+                        value += str(resp['entities'][entity][i]['value'])
+                response = "Ok.I will send you {} books".format(str(value))
 
             else:
                 value = resp['entities'][entity][0]['value']
@@ -97,28 +131,20 @@ def bookController(bot, update):
                 json_obj = str(search_response, 'utf-8')
                 data = json.loads(json_obj)
                 search_book_result = ''
-                print('---------------------------')
                 for item in data['items']:
-                    print('Name: ' + item['volumeInfo']['title'])
                     search_book_result += 'Name: ' + item['volumeInfo']['title']+'\n'
-                    print('Author(s): ', end='')
                     search_book_result += 'Author(s): '
-                    for author in item['volumeInfo']['authors']:
-                        print(author + '\t', end='')
-                        search_book_result += author + '   '
+                    for i in range(len(item['volumeInfo']['authors'])-1):
+                        search_book_result += item['volumeInfo']['authors'][i] + ',  '
+                    search_book_result += item['volumeInfo']['authors'][-1]
                     search_book_result += '\n'
-                    print()
-                    print('Category(s): ', end='')
                     search_book_result += 'Category(s): '
-                    for category in item['volumeInfo']['categories']:
-                        print(category + '\t', end='')
+                    for category in range(len(item['volumeInfo']['categories'])-1):
                         search_book_result += category + ', '
+                    search_book_result += item['volumeInfo']['categories'][-1]
                     search_book_result += '\n'
-                    print()
-                    print('Page Count: ' + str(item['volumeInfo']['pageCount']))
                     search_book_result += 'Page Count: ' + str(item['volumeInfo']['pageCount'])+ '\n'
                     search_book_result += '---------------------------\n'
-                    print('---------------------------\n')
 
         else:
             bot.send_message(chat_id=update.message.chat_id, text="Sorry,didn't understand.")
@@ -128,8 +154,8 @@ def bookController(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=search_book_result)
 
 
-bookController_handler = MessageHandler(Filters.text, bookController)
-dispatcher.add_handler(bookController_handler)
+searchBookController_handler = MessageHandler(Filters.text, searchBookController)
+dispatcher.add_handler(searchBookController_handler)
 
 
 
