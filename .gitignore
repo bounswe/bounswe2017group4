@@ -1,11 +1,2 @@
 *.pyc
 *.pyo
-.installed.cgf
-bin
-develop-eggs
-dist
-downloads
-develop-eggsparts
-src/*.egg-info
-lib
-lib64
