@@ -21,7 +21,7 @@ class NavBar extends Component {
                 </button>
                 <div className="chitchat-navbar__logo"><a href="/"></a></div>
                 <div className="chitchat-navbar__content">
-                    <a className="navbar-brand mobile-hide">Title</a>
+                    <a className="navbar-brand mobile-hide">Admin Panel</a>
                     <button type="button" className="navbar-toggle mobile-hamburger--open">
                         <span className="fa fa-hamburger-menu"></span>
                     </button>
