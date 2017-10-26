@@ -13,43 +13,13 @@ class HomePage extends Component {
         };
     }
     componentWillMount() {
-        this.props.actions.get(
-            'users/defunkt', '',
-            response => {
-                toastr.success('Successfully connected Github API');
-                this.setState({
-                    githubUser: response
-                });
-            }, null, true);
+        
     }
 
     render() {
-        const _s = this.state;
         return (
             <MainContainer isTable={Boolean(false)}>
-
-                {
-                    _s.githubUser !== null
-                    &&
-                    <div className="row">
-                        <div className="col-md-12">
-                            <b>{'@' + _s.githubUser.login}</b>
-                            <hr />
-                            <ul className="github-user">
-                                <li><img className="github-user-avatar" src={_s.githubUser.avatar_url} alt={_s.githubUser.name} /></li>
-                                <li>{_s.githubUser.name} </li>
-                                <li> {_s.githubUser.company} </li>
-                                <li> {_s.githubUser.blog} </li>
-                                <li> {_s.githubUser.location} </li>
-                                <li> {_s.githubUser.email} </li>
-                                <li>
-                                    {_s.githubUser.created_at}
-                                </li>
-                            </ul>
-
-                        </div>
-                    </div>
-                }
+                Hello Master!!!
             </MainContainer>
         );
     }

@@ -17,7 +17,6 @@ export default function (ComposedComponent) {
         }
 
         render() {
-            debugger;
             return <ComposedComponent {...this.props} />;
         }
     }

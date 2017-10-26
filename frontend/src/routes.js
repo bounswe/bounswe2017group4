@@ -10,7 +10,6 @@ export default (
         <Route path="/login" component={Login} title="Login"/>
         <Route path="/" component={requireAuth(BaseLayout)}>
             <IndexRoute component={requireAuth(HomePage)} title="Home" />
-            <Route path="/subview" component={requireAuth(SubView)} title="SubView" />
         </Route>
         <Route path="*" component={BaseLayout}>
             <IndexRoute component={NotFoundPage} title="404" />

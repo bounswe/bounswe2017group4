@@ -23,10 +23,16 @@ class Login extends Component {
     }
 
     handleSubmit(props) {
-        debugger
-        this.props.actions.authenticate();
-        toastr.success("Başarıyla giriş yapıldı");
-        browserHistory.push("/");
+        if (props.username == "admin" && props.password == "asd123") {
+            this.props.actions.authenticate();            
+            toastr.success("Login succesful");
+            browserHistory.push("/");        
+        }
+        else
+        {
+            toastr.error("Username or password is wrong")
+        }
+        console.log(props);
     }
 
     render() {

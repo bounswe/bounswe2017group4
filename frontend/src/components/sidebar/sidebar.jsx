@@ -27,7 +27,6 @@ class SideBar extends Component {
                     </div>
                     <ul className="nav">
                         <SideLink onClick={this.toggleMobileSideBar}{...this.props} to="/" label="Home" icon="home" />
-                        <SideLink onClick={this.toggleMobileSideBar}{...this.props} to="/subview" label="SubView" icon="star" />
                     </ul>
                 </div>
             </div>
