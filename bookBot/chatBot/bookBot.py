@@ -228,4 +228,3 @@ def chitchat(bot, update):
 
 chitchat_handler = CommandHandler('chitchat', chitchat)
 dispatcher.add_handler(chitchat_handler)
-updater.idle()
