@@ -17,7 +17,7 @@ updater.start_polling()
 
 
 def start(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text="hello! I am book search chatbot")
+    bot.send_message(chat_id=update.message.chat_id, text="Hello! I am book search chatbot")
     bot.send_message(chat_id=update.message.chat_id, text="May I ask a few questions to offer you a better service?")
 
 
@@ -156,8 +156,6 @@ def searchBookController(bot, update):
 
 searchBookController_handler = MessageHandler(Filters.text, searchBookController)
 dispatcher.add_handler(searchBookController_handler)
-
-
 
 def stop(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text="Ok.CYA LATER {}".format(str(name)))
