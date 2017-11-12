@@ -18,10 +18,86 @@ client = Wit(access_token=access_token)
 logging.basicConfig(
 format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 updater.start_polling()
+greetings = 'Hello, I am book search chatbot. May I ask a few questions to offer you a better service?'
+askName = 'How would you like to be called?'
+askInterest = 'What kind of books do you read most?'
+meetingUser = 'Hello Bookworm, nice to meet you'
+askBookInterest = 'What kind of books do you read most'
+bookSearch = 'You can search books now.'
+
+listSearch = ''
+
+
+def introductionToChitChat(bot, update, greetings):
+    bot.send_message(chat_id=update.message.chat_id, text=greetings)
+    resp = client.message(update.message.text)
+    try:
+        if (list(resp['entities'])[0] == "accept"):
+            askName(bot,update, askName)
+        elif (list(resp['entities'])[0] == "reject"):
+            bookSearch(bot, update, bookSearch)
+
+def askName(bot, update, askName):
+    bot.send_message(chat_id=update.message.chat_id, text=askName)
+    resp = client.message(update.message.text)
+    try:
+        if (list(resp['entities'])[0] == 'name'):
+            entity = "name"
+            value = resp['entities'][entity][0]['value']
+            bot.send_message(chat_id=update.message.chat_id,
+                             text="Hello {},nice to meet you".format(str(value)))
+            global name
+            name = str(value)
+            meetingUser.replace('Bookworm', name)
+
+
+
+def meetingUser(bot, update, askName, meetingUser):
+    bot.send_message(chat_id=update.message.chat_id, text=meetingUser)
+    bookSearch(bot, update, bookSearch)
+
+def askBookInterest(bot, update, askBookInterest)
+    bot.send_message(chat_id=update.message.chat_id, text=askBookInterest)
+    resp = client.message(update.message.text)
+    value = ""
+    try:
+        if (list(resp['entities'])[0] == 'booktype'):
+            entity = 'booktype'
+            if (len(resp['entities'][entity]) > 1):
+                for i in range(0, len(resp['entities'][entity])):
+                    if (i != len(resp['entities'][entity]) - 1):
+                        value += str(resp['entities']
+                                     [entity][i]['value']) + ","
+                    else:
+                        value += str(resp['entities']
+                                     [entity][i]['value'])
+                response = "I have saved that you like " + \
+                           str(value) + " books."
+                bot.send_message(chat_id=update.message.chat_id, text=response)
+                bot.send_message(
+                    chat_id=update.message.chat_id, text='From now on, you can search books. :)')
+                dispatcher.remove_handler(bookController_handler)
+                dispatcher.add_handler(searchBookController_handler)
+
+            else:
+                value = resp['entities'][entity][0]['value']
+                bot.send_message(chat_id=update.message.chat_id,
+                                 text="I have saved that you like " + str(value) + " books.")
+                bot.send_message(
+                    chat_id=update.message.chat_id, text='From now on, you can search books. :)')
+                dispatcher.remove_handler(bookController_handler)
+                dispatcher.add_handler(searchBookController_handler)
+
+
+def bookSearch(bot, update, bookSearch):
+    bot.send_message(chat_id=update.message.chat_id, text=bookSearch)
+
 
 
 def start(bot, update):
         global name
+        print(update.message.chat_id)
+
         if(name == ""):
                 bot.send_message(chat_id=update.message.chat_id,
                                  text="hello! I am book search chatbot")
@@ -44,6 +120,7 @@ dispatcher.add_handler(start_handler)
 def controller(bot, update):
         resp = client.message(update.message.text)
         global name
+        print(update.message.chat_id)
         try:
                 if (list(resp['entities'])[0] == "accept"):
                         bot.send_message(
@@ -76,6 +153,7 @@ controller_handler = MessageHandler(Filters.text, controller)
 
 def nameController(bot, update):
         resp = client.message(update.message.text)
+        print(update.message.chat_id)
         try:
                 if (list(resp['entities'])[0] == 'name'):
                         entity = "name"
@@ -104,6 +182,7 @@ nameController_handler = MessageHandler(Filters.text, nameController)
 
 def bookController(bot, update):
         resp = client.message(update.message.text)
+        print(update.message.chat_id)
         value = ""
         try:
                 if (list(resp['entities'])[0] == 'booktype'):
@@ -143,6 +222,7 @@ bookController_handler = MessageHandler(Filters.text, bookController)
 
 def searchBookController(bot, update):
         resp = client.message(update.message.text)
+        print(update.message.chat_id)
         response = None
         value = ""
         search_book_result = ''
