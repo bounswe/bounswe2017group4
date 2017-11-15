@@ -25,7 +25,7 @@ SECRET_KEY = 'mg0rsw9psfe$0ho3$ejb8nvv3%d4yc6%pjdt6+-bbo8dywks#z'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '18.194.230.124']
+ALLOWED_HOSTS = ['localhost', '18.194.230.124', '127.0.0.1']
 
 SITE_ID=1
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 	'chatBot',
     'rest_framework'
+
 ]
 
 MIDDLEWARE = [
