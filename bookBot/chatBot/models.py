@@ -33,9 +33,9 @@ class UserComment(models.Model):
 
 class Edge(models.Model):
     id = models.IntegerField(primary_key=True)
-    node_id = models.IntegerField()
+    current_state_id = models.IntegerField()
     user_response = models.CharField(max_length=200)
-    next_node_id = models.IntegerField()
+    next_state_id = models.IntegerField()
 
 class Response(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -46,3 +46,7 @@ class History(models.Model):
     hist_id = models.IntegerField(unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     query = models.CharField(max_length=500)
+
+class State(models.Model):
+    id=models.ForeignKey(Edge, on_delete=models.CASCADE)
+    description=models.CharField(max_length=500)
