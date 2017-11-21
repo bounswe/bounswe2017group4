@@ -4,7 +4,7 @@ from django.db import models
 
 class User(models.Model):
     name = models.CharField(max_length=200)
-    password = models.CharField(max_length=100)
+    password = models.CharField(max_length=100, null=True)
     created_at = models.DateTimeField('date published')
     telegram_id = models.IntegerField(unique=True, null=True)
 
@@ -23,30 +23,30 @@ class UserInterest(models.Model):
 
 class UserRating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.IntegerField()
+    rating = models.IntegerField(null=True)
     book_id = models.CharField(max_length=100)
 
 class UserComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment = models.CharField(max_length=500)
+    comment = models.CharField(max_length=500, null=True)
     book_id = models.IntegerField()
 
+class State(models.Model):
+    id=models.AutoField(primary_key=True)
+    description=models.CharField(max_length=500)
+
 class Edge(models.Model):
-    id = models.IntegerField(primary_key=True)
-    current_state_id = models.IntegerField()
+    id = models.AutoField(primary_key=True)
+    current_state_id = models.ForeignKey(State, null=True, related_name='current')
     user_response = models.CharField(max_length=200)
-    next_state_id = models.IntegerField()
+    next_state_id = models.ForeignKey(State, null=True, related_name='next')
 
 class Response(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     edge_id = models.ForeignKey(Edge)
     chatbot_response = models.CharField(max_length=500)
 
 class History(models.Model):
-    hist_id = models.IntegerField(unique=True)
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     query = models.CharField(max_length=500)
-
-class State(models.Model):
-    id=models.ForeignKey(Edge, on_delete=models.CASCADE)
-    description=models.CharField(max_length=500)
