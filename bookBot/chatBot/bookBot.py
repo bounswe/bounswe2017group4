@@ -87,21 +87,21 @@ def start_message(bot, update, job_queue):
 
 def ask_name(bot, update, job_queue):
     resp = client.message(update.message.text)
-    # try:
-    intent = list(resp['entities'])[0]
-    current_state, next_state, response = general(2, intent)
-    value = resp['entities'][intent][0]['value']
-    user = models.User.objects.filter(telegram_id=update.message.chat_id)
-    if len(user) == 0:
-        new_user = models.User.objects.create(telegram_id=update.message.chat_id)
-        new_user.name = value
-        new_user.save()
-    else:
-        user.update(name=value)
-    bot.send_message(chat_id=update.message.chat_id, text=response.chatbot_response.format(str(value)))
-    handler_generator(bot, update, job_queue, next_state, value, response, current_state)
-    # except:
-    #     bot.send_message(chat_id=update.message.chat_id, text='Sorry, didn’t understand.')
+    try:
+        intent = list(resp['entities'])[0]
+        current_state, next_state, response = general(2, intent)
+        value = resp['entities'][intent][0]['value']
+        user = models.User.objects.filter(telegram_id=update.message.chat_id)
+        if len(user) == 0:
+            new_user = models.User.objects.create(telegram_id=update.message.chat_id)
+            new_user.name = value
+            new_user.save()
+        else:
+            user.update(name=value)
+        bot.send_message(chat_id=update.message.chat_id, text=response.chatbot_response.format(str(value)))
+        handler_generator(bot, update, job_queue, next_state, value, response, current_state)
+    except:
+        bot.send_message(chat_id=update.message.chat_id, text='Sorry, didn’t understand.')
 
 
 def meeting_user(bot, update):
