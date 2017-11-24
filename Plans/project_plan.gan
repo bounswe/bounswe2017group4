@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2017-08-01" view-index="0" gantt-divider-location="300" resource-divider-location="300" version="2.8.5" locale="tr_TR">
+    <description/>
+    <view zooming-state="default:8" id="gantt-chart">
+        <field id="tpd3" name="İsim" width="158" order="0"/>
+        <field id="tpd4" name="Başlangıç tarihi" width="62" order="1"/>
+        <field id="tpd5" name="Bitiş tarihi" width="61" order="2"/>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="İsim" width="210" order="0"/>
+        <field id="1" name="Varsayılan rol" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="true"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="0" name="Chatbot" color="#8cb6ce" meeting="false" start="2017-02-14" duration="323" complete="0" expand="true">
+            <task id="2" name="Documentation" meeting="false" start="2017-02-14" duration="21" complete="0" expand="true">
+                <task id="3" name="Personal Pages" color="#8cb6ce" meeting="false" start="2017-02-14" duration="1" complete="0" expand="true"/>
+                <task id="4" name="API Research" color="#8cb6ce" meeting="false" start="2017-02-14" duration="7" complete="0" expand="true"/>
+                <task id="5" name="Requirements" color="#8cb6ce" meeting="false" start="2017-02-21" duration="7" complete="0" expand="true"/>
+                <task id="6" name="User Stories" color="#8cb6ce" meeting="false" start="2017-02-28" duration="7" complete="0" expand="true"/>
+                <task id="7" name="Communication Plan" color="#8cb6ce" meeting="false" start="2017-02-21" duration="4" complete="0" expand="true"/>
+            </task>
+            <task id="13" name="Mockups" color="#8cb6ce" meeting="false" start="2017-02-21" duration="7" complete="0" expand="true">
+                <task id="15" name="Telegram UI" color="#8cb6ce" meeting="false" start="2017-02-21" duration="6" complete="0" expand="true"/>
+                <task id="16" name="Comments and Ratings" color="#8cb6ce" meeting="false" start="2017-02-23" duration="4" complete="0" expand="true"/>
+                <task id="17" name="Conversation Graph Editor" color="#8cb6ce" meeting="false" start="2017-02-24" duration="4" complete="0" expand="true"/>
+                <task id="21" name="MS:Completion of requirements" color="#8cb6ce" meeting="true" start="2017-02-28" duration="0" complete="0" expand="true"/>
+            </task>
+            <task id="24" name="Design" meeting="false" start="2017-02-28" duration="49" complete="0" expand="true">
+                <task id="25" name="Use Case Diagram" color="#8cb6ce" meeting="false" start="2017-02-28" duration="21" complete="0" expand="true"/>
+                <task id="26" name="Use Cases" color="#8cb6ce" meeting="false" start="2017-03-28" duration="21" complete="0" expand="true"/>
+                <task id="27" name="Use Case Scenarios" color="#8cb6ce" meeting="false" start="2017-03-28" duration="21" complete="0" expand="true"/>
+                <task id="28" name="Class Diagram" color="#8cb6ce" meeting="false" start="2017-03-07" duration="21" complete="0" expand="true"/>
+                <task id="29" name="Sequence Diagram" color="#8cb6ce" meeting="false" start="2017-03-07" duration="21" complete="0" expand="true"/>
+                <task id="30" name="Data model design" color="#8cb6ce" meeting="false" start="2017-03-21" duration="14" complete="0" expand="true"/>
+                <task id="37" name="MS:Competion of use cases&amp;design" color="#8cb6ce" meeting="true" start="2017-03-28" duration="0" complete="0" expand="true"/>
+            </task>
+            <task id="39" name="Implementation" meeting="false" start="2017-10-19" duration="76" complete="0" expand="true">
+                <task id="40" name="Admin Web Page" meeting="false" start="2017-10-19" duration="76" complete="0" expand="true">
+                    <task id="41" name="Login Page" meeting="false" start="2017-10-19" duration="7" complete="0" expand="true">
+                        <task id="42" name="Backend" color="#8cb6ce" meeting="false" start="2017-10-19" duration="7" complete="0" expand="true"/>
+                        <task id="43" name="Frontend" color="#8cb6ce" meeting="false" start="2017-10-19" duration="7" complete="0" expand="true"/>
+                        <task id="44" name="Milestone1" color="#8cb6ce" meeting="true" start="2017-10-26" duration="0" complete="0" expand="true"/>
+                    </task>
+                    <task id="45" name="Dashboard" meeting="false" start="2017-10-26" duration="21" complete="0" expand="true">
+                        <task id="47" name="Backend" color="#000000" meeting="false" start="2017-10-26" duration="21" complete="0" expand="true"/>
+                        <task id="49" name="Frontend" color="#8cb6ce" meeting="false" start="2017-10-26" duration="21" complete="0" expand="true"/>
+                    </task>
+                    <task id="53" name="Comment/Rating View" meeting="false" start="2017-11-16" duration="21" complete="0" expand="true">
+                        <task id="54" name="Backend_54" color="#8cb6ce" meeting="false" start="2017-11-16" duration="21" complete="0" expand="true"/>
+                        <task id="55" name="Frontend" color="#8cb6ce" meeting="false" start="2017-11-16" duration="21" complete="0" expand="true"/>
+                        <task id="56" name="Milestone2" color="#8cb6ce" meeting="true" start="2017-12-07" duration="0" complete="0" expand="true"/>
+                    </task>
+                    <task id="57" name="Conversation Graph Edit" meeting="false" start="2017-12-07" duration="27" complete="0" expand="true">
+                        <task id="58" name="Backend_58" color="#8cb6ce" meeting="false" start="2017-12-07" duration="27" complete="0" expand="true"/>
+                        <task id="59" name="Frontend_59" color="#8cb6ce" meeting="false" start="2017-12-07" duration="27" complete="0" expand="true"/>
+                    </task>
+                </task>
+                <task id="65" name="Chatbot" meeting="false" start="2017-10-19" duration="76" complete="0" expand="true">
+                    <task id="66" name="Chit-chat" color="#8cb6ce" meeting="false" start="2017-10-19" duration="7" complete="0" expand="true"/>
+                    <task id="67" name="Milestone1" color="#8cb6ce" meeting="true" start="2017-10-26" duration="0" complete="0" expand="true"/>
+                    <task id="68" name="Book search" color="#8cb6ce" meeting="false" start="2017-10-26" duration="35" complete="0" expand="true"/>
+                    <task id="69" name="Comment and Rate Books" color="#8cb6ce" meeting="false" start="2017-11-30" duration="7" complete="0" expand="true"/>
+                    <task id="70" name="Milestone2" color="#8cb6ce" meeting="true" start="2017-12-07" duration="0" complete="0" expand="true"/>
+                    <task id="71" name="Viewing Comment/Rating" color="#8cb6ce" meeting="false" start="2017-12-07" duration="7" complete="0" expand="true"/>
+                    <task id="72" name="Book recommendation" color="#8cb6ce" meeting="false" start="2017-12-07" duration="27" complete="0" expand="true"/>
+                </task>
+            </task>
+        </task>
+        <task id="80" name="Milestone Final" color="#8cb6ce" meeting="true" start="2018-01-03" duration="0" complete="0" expand="true"/>
+    </tasks>
+    <resources/>
+    <allocations/>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>
