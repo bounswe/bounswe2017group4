@@ -1,0 +1,17 @@
+.subSideLink{
+    padding: 0 0 0 35px !important;
+    list-style: none;
+    line-height: normal;
+    &-level2{
+     padding: 0 0 0 15px !important;
+    }
+    
+    > li{
+        margin: 0 !important;
+         > a{
+        margin: 0 !important;
+        display: block;
+        padding: 5px 0;
+    }
+    }
+}
