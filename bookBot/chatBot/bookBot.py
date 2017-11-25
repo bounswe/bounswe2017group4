@@ -7,8 +7,17 @@ import json
 import urllib.request
 import urllib.parse
 import urllib.error
+class bookObj:
+    def __init__(self, id, title, authors, publisher, description, pageCount, categories):
+        self.id = id
+        self.title = title
+        self.authors = authors
+        self.publisher = publisher
+        self.description = description
+        self.pageCount = pageCount
+        self.categories = categories
+bookList = []
 url = 'https://www.googleapis.com/books/v1/volumes?q='
-
 access_token = "IQXRZALWN7LAYGHQZWSNKWU2GMGYPHMA"
 name = ""
 controller1 = ""
@@ -168,7 +177,7 @@ def searchBookController(bot, update):
                                 search_text = str(value)
                                 search_text = search_text.replace(' ', '+')
                                 language = 'en'
-                                maxResults = '5'
+                                maxResults = '40'
                                 full_url = url + search_text + '&langRestrict=' + \
                                     language + '&maxResults=' + maxResults
                                 search_response = urllib.request.urlopen(
@@ -176,7 +185,7 @@ def searchBookController(bot, update):
                                 json_obj=str(search_response,'utf-8')
                                 data = json.loads(json_obj)
                                 search_book_result = ''
-                                for item in data['items']:
+                                '''for item in data['items']:
                                         search_book_result += 'Name: ' + \
                                             item['volumeInfo']['title'] + '\n'
                                         search_book_result += 'Author(s): '
@@ -193,6 +202,71 @@ def searchBookController(bot, update):
                                             str(item['volumeInfo']
                                                 ['pageCount']) + '\n'
                                         search_book_result += '---------------------------\n'
+                                '''
+                                for item in data['items']:
+                                    volumeInfo = item['volumeInfo']
+                                    id = ''
+                                    title = ''
+                                    authors = []
+                                    publisher = ''
+                                    description = ''
+                                    pageCount = ''
+                                    categories = []
+                                    if 'id' in item:
+                                        id = item['id']
+                                    if 'title' in volumeInfo:
+                                        #print('Name: ' + item['volumeInfo']['title'])
+                                        title = item['volumeInfo']['title']
+                                    if 'authors' in volumeInfo:
+                                        #print('Author(s): ', end='')
+                                        for author in item['volumeInfo']['authors']:
+                                            #print(author + '\t', end='')
+                                            authors.append(author)
+                                        #print()
+                                    if 'categories' in volumeInfo:
+                                        #print('Category(s): ', end='')
+                                        for category in item['volumeInfo']['categories']:
+                                            #print(category + '\t', end='')
+                                            categories.append(category)
+                                        #print()
+                                    if 'pageCount' in volumeInfo:
+                                        #print('Page Count: ' + str(item['volumeInfo']['pageCount']))
+                                        pageCount = str(item['volumeInfo']['pageCount'])
+                                    if 'description' in volumeInfo:
+                                        description = item['volumeInfo']['description']
+                                    if 'publisher' in volumeInfo:
+                                        publisher = item['volumeInfo']['publisher']
+                                    bookElem = bookObj(id, title, authors, publisher, description, pageCount,
+                                                       categories)
+                                    bookList.append(bookElem)
+                                    #print('---------------------------')
+                                i = 1
+                                #List first results
+                                search_book_result=''
+                                j=1
+                                for bookElem in bookList:
+                                    search_book_result += str(i)+'. '+'Name: ' + \
+                                                          bookElem.title + '\n'
+                                    search_book_result += 'Author(s): '
+                                    for j in range(len(bookElem.authors)-1):
+                                        search_book_result += bookElem.authors[j]   + ',  '
+                                    search_book_result += bookElem.authors[-1]
+
+                                    search_book_result += '\n'
+
+                                    search_book_result += 'Category(s): '
+                                    for category in range(len(bookElem.categories) - 1):
+                                        search_book_result += categories[i] + ', '
+                                    search_book_result += categories[-1]
+                                    search_book_result += '\n'
+                                    search_book_result += 'Page Count: ' + \
+                                                          bookElem.pageCount + '\n'
+                                    search_book_result += '---------------------------\n'
+                                    if (i == 5):
+                                        break
+                                    i += 1
+
+                                del bookList[:]
 
                 else:
                         bot.send_message(
