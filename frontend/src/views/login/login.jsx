@@ -22,17 +22,21 @@ class Login extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    componentDidUpdate(nextProps, prevProps) {
+        console.log("nextProps", nextProps);
+        console.log("prevProps", prevProps);
+    }
+
     handleSubmit(props) {
         if (props.username == "admin" && props.password == "asd123") {
-            this.props.actions.authenticate();            
+            this.props.actions.authenticate();
             toastr.success("Login succesful");
-            browserHistory.push("/");        
+            browserHistory.push("/");
         }
         else
         {
-            toastr.error("Username or password is wrong")
+            toastr.error("Username or password is wrong");
         }
-        console.log(props);
     }
 
     render() {
@@ -63,13 +67,17 @@ class Login extends Component {
     }
 }
 
+const mapStateToProps = (state) => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
+
 const mapDispatchToProps = (dispatch) => ({
     actions: bindActionCreators(auth, dispatch)
 });
 
 let form = reduxForm({
-    form: 'loginForm',
+    form: "loginForm",
     validate
 });
 
-export default connect(null, mapDispatchToProps)(form(Login));
+export default connect(mapStateToProps, mapDispatchToProps)(form(Login));

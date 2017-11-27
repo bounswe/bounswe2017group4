@@ -27,6 +27,7 @@ class SideBar extends Component {
                     </div>
                     <ul className="nav">
                         <SideLink onClick={this.toggleMobileSideBar}{...this.props} to="/" label="Home" icon="home" />
+                        <SideLink onClick={this.toggleMobileSideBar}{...this.props} to="/edgeedit" label="Edge Edit" />
                     </ul>
                 </div>
             </div>

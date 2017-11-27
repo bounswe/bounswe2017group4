@@ -26,8 +26,10 @@
     "moment": "^2.17.1",
     "react": "15.3.2",
     "react-addons-css-transition-group": "^15.4.1",
+    "react-bootstrap-table": "^3.0.0",
     "react-dom": "15.0.2",
     "react-helmet": "^3.1.0",
+    "react-modal-bootstrap": "^1.1.0",
     "react-redux": "4.4.5",
     "react-redux-i18n": "^1.7.1",
     "react-redux-toastr": "^4.4.2",
@@ -37,6 +39,7 @@
     "redux": "3.6.0",
     "redux-actions": "^0.11.0",
     "redux-thunk": "2.0.1",
+    "react-widgets": "^3.4.4",
     "styled-components": "^2.1.0"
   },
   "devDependencies": {

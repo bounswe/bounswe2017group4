@@ -9,7 +9,7 @@ const initialState = {
 export default createReducer(initialState, {
     [AUTH_USER]: (state) => {
         return Object.assign({}, state, {
-            'isAuthenticated': true
+            "isAuthenticated": true
         });
     }
 });
