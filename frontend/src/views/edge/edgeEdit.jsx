@@ -6,6 +6,7 @@ import * as http from '../../actions/http';
 import { toastr } from 'react-redux-toastr';
 import { MainContainer } from '../../components';
 import { input, dropdown } from '../../components/common/inputComponents';
+import ConfirmBox from '../../components/common/confirmBox';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { Modal, ModalHeader, ModalTitle, ModalClose, ModalBody, ModalFooter } from 'react-modal-bootstrap';
 
@@ -13,16 +14,28 @@ class EdgeEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isModalOpen: false
+            isModalOpen: false,
+            modalTitle: "Yeni Kayıt",
+            edgeList: []
         };
         
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
+        this.openModalWithRow = this.openModalWithRow.bind(this);
+        this.detailFormatter = this.detailFormatter.bind(this);
+    }
+
+    componentWillMount() {
+
     }
 
     openModal() {
-        this.setState({ isModalOpen: true });
+        this.setState({
+            isModalOpen: true,
+            modalTitle: "Yeni Kayıt"
+        });
     }
 
     closeModal() {
@@ -32,6 +45,32 @@ class EdgeEdit extends Component {
 
     handleSubmit(props) {
 
+    }
+
+    onDeleteConfirm(id) {
+
+    }
+
+    openModalWithRow(row) {
+        this.props.initialize(row);
+        this.setState({
+            isModalOpen: true,
+            modalTitle: "Düzenle"
+        });
+    }
+
+    detailFormatter(cell, row) {
+        return (
+            <div>
+                <a title="Düzenle" className="btn btn-simple btn-default btn-icon table-action edit" href="javascript:void(0)" onClick={() => this.openModalWithRow(row)}><i className="icon-pencil-square-o">Edit</i></a>
+                <ConfirmBox
+                    showCancelButton={true}
+                    onConfirm={() => this.onDeleteConfirm(row.id)} body="Silmek istediğinize emin misiniz?"
+                    confirmText="Sil" cancelText="Vazgeç" identifier={row.id}>
+                    <a title="Sil" className="btn btn-simple btn-default btn-icon table-action remove"><i className="icon-trash">Delete</i></a>
+                </ConfirmBox>
+            </div>
+        );
     }
 
     render() {
@@ -62,10 +101,10 @@ class EdgeEdit extends Component {
                     remote={true}
                     pagination={true}
                 >
-                    <TableHeaderColumn dataAlign="center" dataField="node_id" type="text" >Current Node</TableHeaderColumn>
-                    <TableHeaderColumn dataAlign="center" dataField="response" type="text" >Response</TableHeaderColumn>
-                    <TableHeaderColumn dataAlign="center" dataField="next_node" type="text" >Next Node</TableHeaderColumn>
-                    <TableHeaderColumn dataAlign="center" dataField="id" type="text" hidden={true} isKey={true} />
+                    <TableHeaderColumn dataAlign="left" dataField="node_id" type="text" >Current Node</TableHeaderColumn>
+                    <TableHeaderColumn dataAlign="left" dataField="response" type="text" >Response</TableHeaderColumn>
+                    <TableHeaderColumn dataAlign="left" dataField="next_node" type="text" >Next Node</TableHeaderColumn>
+                    <TableHeaderColumn dataAlign="right" dataField="id" type="text" columnClassName="td-actions text-right" dataFormat={this.detailFormatter} isKey={true} >&nbsp; </TableHeaderColumn>
                 </BootstrapTable>
                 <Modal isOpen={isModalOpen} onRequestHide={this.closeModal}>
                     <form className="form-horizontal" onSubmit={handleSubmit(this.handleSubmit)}>
