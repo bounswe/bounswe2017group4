@@ -1,12 +1,19 @@
 from django.db import models
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters.html import HtmlFormatter
+from pygments import highlight
+from django.contrib.auth import authenticate, login
 
-# Create your models here.
+
 
 class User(models.Model):
     name = models.CharField(max_length=200)
     password = models.CharField(max_length=100, null=True)
     created_at = models.DateTimeField('date published')
     telegram_id = models.IntegerField(unique=True, null=True)
+
+
+
 
 class UserInterest(models.Model):
     INTEREST_TYPE_CHOICES = (
