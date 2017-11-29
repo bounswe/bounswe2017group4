@@ -152,6 +152,7 @@ bookController_handler = MessageHandler(Filters.text, bookController)
 
 def searchBookController(bot, update):
         resp = client.message(update.message.text)
+        global bookList
         response = None
         value = ""
         search_book_result = ''
@@ -185,24 +186,7 @@ def searchBookController(bot, update):
                                 json_obj=str(search_response,'utf-8')
                                 data = json.loads(json_obj)
                                 search_book_result = ''
-                                '''for item in data['items']:
-                                        search_book_result += 'Name: ' + \
-                                            item['volumeInfo']['title'] + '\n'
-                                        search_book_result += 'Author(s): '
-                                        for i in range(len(item['volumeInfo']['authors']) - 1):
-                                                search_book_result += item['volumeInfo']['authors'][i] + ',  '
-                                        search_book_result += item['volumeInfo']['authors'][-1]
-                                        search_book_result += '\n'
-                                        search_book_result += 'Category(s): '
-                                        for category in range(len(item['volumeInfo']['categories']) - 1):
-                                                search_book_result += category + ', '
-                                        search_book_result += item['volumeInfo']['categories'][-1]
-                                        search_book_result += '\n'
-                                        search_book_result += 'Page Count: ' + \
-                                            str(item['volumeInfo']
-                                                ['pageCount']) + '\n'
-                                        search_book_result += '---------------------------\n'
-                                '''
+                                #Fill the array of books by id, title, authors, publisher, description, page count and categories
                                 for item in data['items']:
                                     volumeInfo = item['volumeInfo']
                                     id = ''
@@ -255,8 +239,8 @@ def searchBookController(bot, update):
                                     search_book_result += '\n'
 
                                     search_book_result += 'Category(s): '
-                                    for category in range(len(bookElem.categories) - 1):
-                                        search_book_result += categories[i] + ', '
+                                    for j in range(len(bookElem.categories) - 1):
+                                        search_book_result += bookElem.categories[j] + ', '
                                     search_book_result += categories[-1]
                                     search_book_result += '\n'
                                     search_book_result += 'Page Count: ' + \
@@ -265,8 +249,9 @@ def searchBookController(bot, update):
                                     if (i == 5):
                                         break
                                     i += 1
+                                #Filter by page number
 
-                                del bookList[:]
+                                #del bookList[:]
 
                 else:
                         bot.send_message(
@@ -277,11 +262,96 @@ def searchBookController(bot, update):
                          text="Sorry,didn't understand.")
         bot.send_message(chat_id=update.message.chat_id,
                          text=search_book_result)
+        print('end of search book controller')
+        dispatcher.remove_handler(searchBookController_handler)
+        dispatcher.add_handler(filterBooks_handler)
 
 
 searchBookController_handler = MessageHandler(
     Filters.text, searchBookController)
 
+def filterBooks(bot, update):
+    print('filter books is entered')
+    global bookList
+    resp = client.message(update.message.text)
+    search_book_result = ''
+    if ('page_filter' in list(resp['entities'])):
+        print('yes')
+    #try:
+    print(list(resp['entities']))
+    if ('page_filter' in list(resp['entities'])):
+
+        if 'is_more' in list(resp['entities']):
+            filter_num_String = list(resp['entities']['page_filter'])[0]['value']
+            filter_num = 0
+            try:
+                filter_num = int(filter_num_String)
+                is_more = list(resp['entities']['is_more'])[0]['value']
+                if is_more == 'more':
+                    for bookElem in bookList:
+                        i = 1
+                        if int(bookElem.pageCount)>filter_num:
+                            search_book_result += 'Name: ' + \
+                                                  bookElem.title + '\n'
+                            search_book_result += 'Author(s): '
+                            for j in range(len(bookElem.authors) - 1):
+                                search_book_result += bookElem.authors[j] + ',  '
+                            search_book_result += bookElem.authors[-1]
+
+                            search_book_result += '\n'
+
+                            search_book_result += 'Category(s): '
+                            for j in range(len(bookElem.categories) - 1):
+                                search_book_result += bookElem.categories[j] + ', '
+                            search_book_result += bookElem.categories[-1]
+                            search_book_result += '\n'
+                            search_book_result += 'Page Count: ' + \
+                                                  bookElem.pageCount + '\n'
+                            search_book_result += '---------------------------\n'
+                            if (i == 5):
+                                break
+                            i += 1
+                elif is_more == 'less':
+                    for bookElem in bookList:
+                        i = 1
+                        if int(bookElem.pageCount) < filter_num:
+                            search_book_result += 'Name: ' + \
+                                                  bookElem.title + '\n'
+                            search_book_result += 'Author(s): '
+                            for j in range(len(bookElem.authors) - 1):
+                                search_book_result += bookElem.authors[j] + ',  '
+                            search_book_result += bookElem.authors[-1]
+
+                            search_book_result += '\n'
+
+                            search_book_result += 'Category(s): '
+                            for j in range(len(bookElem.categories) - 1):
+                                search_book_result += bookElem.categories[j] + ', '
+                            search_book_result += bookElem.categories[-1]
+                            search_book_result += '\n'
+                            search_book_result += 'Page Count: ' + \
+                                                  bookElem.pageCount + '\n'
+                            search_book_result += '---------------------------\n'
+                            if (i == 5):
+                                break
+                            i += 1
+
+            except:
+                print('Couldnt cast to int')
+    else:
+        dispatcher.remove_handler(searchBookController_handler)
+        dispatcher.add_handler(filterBooks_handler)
+
+    '''except:
+        pass
+        bot.send_message(chat_id=update.message.chat_id,
+                         text="Sorry didn't understand(except e girdi.")
+                         '''
+    bot.send_message(chat_id=update.message.chat_id,
+                         text=search_book_result)
+
+filterBooks_handler = MessageHandler(
+    Filters.text, filterBooks)
 
 def stop(bot, update):
         bot.send_message(chat_id=update.message.chat_id,
