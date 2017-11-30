@@ -10,6 +10,9 @@ from .models import UserComment, UserInterest, UserRating, User, History, Edge, 
 from .serializers import UserCommentSerializer, UserInterestSerializer, UserRatingSerializer,\
     UserSerializer, ResponseSerializer, HistorySerializer, EdgeSerializer, StateSerializer
 
+from django.core import serializers
+from django.forms.models import model_to_dict
+
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -18,6 +21,35 @@ from django.views.decorators.csrf import csrf_exempt
 #class StartView(TemplateCommandView):
 #    template_text = "bot/messages/hello"
 #    print('hello')
+
+# Basic APIs for front-end
+
+# Requestten name ve password parametrelerini çekiyoruz. Kullanıcılarda bu bilgilere göre filtreleme yapıyoruz
+# Uygun kullanıcı çıkarsa true yoksa false dönüyoruz.
+def isAdmin(request):
+    name = request.GET.get('name', '')
+    password = request.GET.get('password', '')
+    user = User.objects.filter(name=name, password=password)
+
+    if user:
+        return JsonResponse(True, safe=False)
+    else:
+        return JsonResponse(False, safe=False)
+
+# Requestten book_id parametresini çekiyoruz. Her bir rating için response birimi oluşturuyoruz.
+# Bu birimleri response arrayine doldurup en son return ediyoruz.
+def getRatings(request):
+    book_id = request.GET.get('book_id', '')
+    userRatings = UserRating.objects.filter(book_id=book_id)
+
+    response = []
+    for userRating in userRatings:
+        responseSample = {}
+        responseSample['rating'] = userRating.rating
+        responseSample['user'] = model_to_dict(userRating.user)
+        response.append(responseSample)
+
+    return JsonResponse(response, safe=False)
 
 #User
 class UserList(mixins.ListModelMixin, mixins.CreateModelMixin,

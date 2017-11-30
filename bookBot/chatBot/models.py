@@ -8,9 +8,9 @@ from django.contrib.auth import authenticate, login
 
 class User(models.Model):
     name = models.CharField(max_length=200)
-    password = models.CharField(max_length=100, null=True)
+    password = models.CharField(max_length=100, null=True, blank=True)
     created_at = models.DateTimeField('date published')
-    telegram_id = models.IntegerField(unique=True, null=True)
+    telegram_id = models.IntegerField(unique=True, null=True, blank=True)
 
 
 

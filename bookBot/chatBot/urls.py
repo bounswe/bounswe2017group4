@@ -22,6 +22,9 @@ urlpatterns = [
     url(r'^histories/$', views.HistoryList.as_view()),
     url(r'^histories/(?P<pk>[0-9]+)/$', views.HistoryDetail.as_view()),
 
+    url('isAdmin', views.isAdmin),
+    url('getRatings', views.getRatings)
+
 ]
 
 
