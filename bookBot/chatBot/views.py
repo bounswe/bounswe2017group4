@@ -12,6 +12,7 @@ from .serializers import UserCommentSerializer, UserInterestSerializer, UserRati
 
 from django.core import serializers
 from django.forms.models import model_to_dict
+from django.views.decorators.csrf import csrf_exempt
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -50,6 +51,18 @@ def getRatings(request):
         response.append(responseSample)
 
     return JsonResponse(response, safe=False)
+
+# Requestten book_id parametresini çekiyoruz. Her bir rating için response birimi oluşturuyoruz.
+# Bu birimleri response arrayine doldurup en son return ediyoruz.
+@csrf_exempt
+def addState(request):
+    description = request.POST.get('description', 'xyz')
+
+    state = State()
+    state.description = description
+    state.save()
+
+    return JsonResponse("OK", safe=False)
 
 #User
 class UserList(mixins.ListModelMixin, mixins.CreateModelMixin,
