@@ -15,7 +15,7 @@ url = 'https://www.googleapis.com/books/v1/volumes?q='
 access_token = "IQXRZALWN7LAYGHQZWSNKWU2GMGYPHMA"
 name = ""
 controller1 = ""
-updater = Updater(token='471766784:AAHJPT82C21DvW_EhZXZ9fEQdS9a94mIYs0')
+updater = Updater(token='306155790:AAHshYWFsAmOKly8107HkSISlUziQz77DLs')
 dispatcher = updater.dispatcher
 client = Wit(access_token=access_token)
 logging.basicConfig(
@@ -76,6 +76,7 @@ def start(bot, update):
 def not_understand():
     response = random.choice(models.Response.objects.filter(state_id=11))
     return response
+
 # each message handler selects next handler according to
 # entity and sends next handler's message
 # since handlers always wait for an input
@@ -133,7 +134,7 @@ def ask_book_interests(bot, update, job_queue):
         entity = list(resp['entities'])[0]
         current_state, next_state, response = get_state_variables(4, entity)
         value = ''
-        if len(resp['entities'][entity]) > 1:
+        if len(resp['entities'][entity]) > 0:
             for i in range(0, len(resp['entities'][entity])):
                 if i != len(resp['entities'][entity]) - 1:
                     value += str(resp['entities']
@@ -161,7 +162,6 @@ def save_book_interests(bot, update, job_queue):
 
 
 def book_search(bot, update, job_queue):
-    print('hello')
     resp = client.message(update.message.text)
     # TODO this part should be handled by book api class
     # try:
