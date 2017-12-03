@@ -1,0 +1,116 @@
+.sidebar .sidebar-wrapper>.nav li>a,
+.off-canvas-sidebar .sidebar-wrapper>.nav li>a {
+    opacity: 1;
+    &:hover {
+        color: #FDCB00;
+    }
+}
+
+.sidebar[data-background-color="brown"][data-active-color="danger"] ul .nav li.active {
+    >a {
+        color: #FDCB00 !important;
+        background-color: #383A3D;
+    }
+}
+
+.sidebar[data-background-color="brown"][data-active-color="danger"] .nav li.active {
+    >a {
+        color: #FDCB00 !important;
+    }
+}
+
+.off-canvas-sidebar[data-background-color="brown"][data-active-color="danger"] .nav li.active {
+    >a {
+        color: #FDCB00 !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .sidebar[data-active-color="danger"] .nav li.active>a,
+    .off-canvas-sidebar[data-active-color="danger"] .nav li.active>a {
+        background-color: #383a3d;
+    }
+    .mobile-header {
+        padding-bottom: 20px;
+        &:before,
+        &:after {
+            display: table;
+            content: '';
+            clear: both;
+        }
+    }
+    .sidebar .logo,
+    .off-canvas-sidebar .logo {
+        padding: 0;
+    }
+    .sidebar {
+        position: fixed;
+        height: 100% !important;
+        top: 0;
+    }
+    .sidebar-wrapper>.nav.chitchat-sidebar-nav>li.active {
+        background-color: #383A3D
+    }
+    .sidebar .sidebar-wrapper .collapse.in .nav>li.active,
+    .off-canvas-sidebar .sidebar-wrapper .collapse.in .nav>li.active> {
+        a:before,
+        a:after {
+            border-left: none;
+        }
+    }
+    .sidebar,
+    .off-canvas-sidebar {
+        right: auto;
+        left: -100%;
+        height: 100%;
+        z-index: 10000;
+        visibility: hidden;
+        transform: none !important;
+        width: 100%;
+        .sidebar-wrapper {
+            background-color: #27292B;
+            width: 100%;
+        }
+    }
+    .nav-open {
+        .wrapper {
+            transform: translate3d(0, 0, 0);
+        }
+        .navbar .container {
+            transform: translateX(0);
+            left: auto;
+        }
+        .sidebar,
+        .off-canvas-sidebar {
+            visibility: visible;
+            transform: none !important;
+            left: 0;
+        }
+    }
+
+    .navbar-toggle {
+        float: left;
+    }
+    .mobile {
+        &-logo {
+            // float: left;
+            padding: 0;
+            margin: 15px 0 0 15px;
+        }
+        &-hamburger {
+            float: right;
+            padding: 0;
+            margin: 20px 15px 0 0;
+            span {
+                color: #fff;
+                font-size: 24px !important;
+            }
+            &--open {
+                margin: 15px 15px 0 0;
+                span {
+                    font-size: 24px !important;
+                }
+            }
+        }
+    }
+}
