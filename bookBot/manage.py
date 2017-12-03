@@ -2,6 +2,14 @@
 import os
 import sys
 
+if(len(sys.argv)>2):
+	if(sys.argv[2] == "test") : 
+		os.environ['RUNMODE'] = "test"
+		sys.argv[2]=""
+	elif(sys.argv[2]=="prod") :
+		os.environ['RUNMODE'] = "prod"
+		sys.argv[2]=""
+	
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bookBot.settings")
     try:

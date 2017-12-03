@@ -5,11 +5,18 @@ from telegram.ext import MessageHandler, Filters
 from wit import Wit
 import urllib.request
 import json
+import os
 url = 'https://www.googleapis.com/books/v1/volumes?q='
-
 access_token = "IQXRZALWN7LAYGHQZWSNKWU2GMGYPHMA"
 name = "Anonymous"
-updater = Updater(token='471766784:AAHJPT82C21DvW_EhZXZ9fEQdS9a94mIYs0')
+if(os.environ.get('RUNMODE')=="test"):
+	print("Running in test mode")
+	updater = Updater(token='471766784:AAHJPT82C21DvW_EhZXZ9fEQdS9a94mIYs0')
+else :
+	print("Running in prod mode")
+	updater = Updater(token='471766784:AAHJPT82C21DvW_EhZXZ9fEQdS9a94mIYs0')
+
+
 dispatcher = updater.dispatcher
 client = Wit(access_token=access_token)
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
