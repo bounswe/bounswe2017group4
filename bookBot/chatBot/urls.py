@@ -1,12 +1,12 @@
 from django.conf.urls import url
 from chatBot import views
 from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework import status, mixins, generics
+from rest_framework.response import Response
 
 urlpatterns = [
-    # url(r'^users/$', views.user_list), Çalışan url
-    # url(r'^users/(?P<pk>[0-9]+)/$', views.user_detail),
-    url(r'^users/$', views.UserList.as_view()),
-    url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
+     url(r'^users/$', views.UserList.as_view()),
+    #url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
     url(r'^userinterests/$', views.UserInterestList.as_view()),
     url(r'^userinterests/(?P<pk>[0-9]+)/$', views.UserInterestDetail.as_view()),
     url(r'^userratings/$', views.UserRatingList.as_view()),

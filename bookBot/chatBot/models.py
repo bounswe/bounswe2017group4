@@ -3,6 +3,8 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters.html import HtmlFormatter
 from pygments import highlight
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+
 
 
 
