@@ -52,6 +52,64 @@ def getRatings(request):
 
     return JsonResponse(response, safe=False)
 
+##Comment'ten book_id çek. Her bir rating için response birimi oluştur. Response array'ine doldur ve return et.
+
+def getComments(request):
+    book_id = request.GET.get('book_id', '')
+    userComments = UserComment.objects.filter(book_id=book_id)
+
+    response=[]
+    for userComment in userComments:
+        responseSample={}
+        responseSample['comment'] = userComment.comment
+        responseSample['user'] = model_to_dict(userComment.user)
+        response.append(responseSample)
+
+    return JsonResponse(response, safe=False)
+
+##getStates returns all states
+
+def getStates(request):
+    id = request.GET.get('id', '')
+    states = State.objects.all()
+    response=[]
+    for state in states:
+        responseSample={}
+        responseSample['id'] = state.id
+        responseSample['description'] = state.description
+        response.append(responseSample)
+
+    return JsonResponse(response, safe=False)
+#getEdges returns all Edges
+
+def getEdges(request):
+    id = request.GET.get('id', '')
+    edges = Edge.objects.all()
+    response = []
+    for edge in edges:
+        responseSample={}
+        responseSample['id'] = edge.id
+        responseSample['current_state_id'] = model_to_dict(edge.current_state_id)
+        responseSample['user_response'] = edge.user_response
+        responseSample['next_state_id'] = model_to_dict(edge.next_state_id)
+        response.append(responseSample)
+
+    return JsonResponse(response, safe=False)
+#getResponse returns all Responses and post a new response
+
+def getResponses(request):
+    id = request.GET.get('id', '')
+    responses = Response.objects.all()
+    response = []
+    for res in responses:
+        responseSample = {}
+        responseSample['id'] = res.id
+        responseSample['edge_id'] = model_to_dict(res.edge_id)
+        responseSample['chatbot_response'] = res.chatbot_response
+        response.append(responseSample)
+
+    return JsonResponse(response, safe=False)
+
 # Requestten book_id parametresini çekiyoruz. Her bir rating için response birimi oluşturuyoruz.
 # Bu birimleri response arrayine doldurup en son return ediyoruz.
 @csrf_exempt
@@ -63,6 +121,189 @@ def addState(request):
     state.save()
 
     return JsonResponse("OK", safe=False)
+
+@csrf_exempt
+def addEdge(request):
+    current_state_id = request.POST.get('current_state_id','')
+    user_response = request.POST.get('user_response', '')
+    next_state_id = request.POST.get('next_state_id', '')
+    edge= Edge()
+    edge.current_state_id = current_state_id
+    edge.user_response = user_response
+    edge.next_state_id = next_state_id
+    edge.save()
+
+    return JsonResponse("OK", safe=False)
+
+
+@csrf_exempt
+def addResponse(request):
+    edge_id = request.POST.get('edge_id','')
+    chatbot_response = request.POST.get('chatbot_response', '')
+    response = Response()
+    response.edge_id = edge_id
+    response.chatbot_response = chatbot_response
+    response.save()
+
+    return JsonResponse("OK", safe=False)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #User
 class UserList(mixins.ListModelMixin, mixins.CreateModelMixin,

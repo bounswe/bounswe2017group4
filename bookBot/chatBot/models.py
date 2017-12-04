@@ -32,12 +32,12 @@ class UserInterest(models.Model):
 
 class UserRating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.IntegerField(null=True)
+    rating = models.IntegerField(blank=True)
     book_id = models.CharField(max_length=100)
 
 class UserComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment = models.CharField(max_length=500, null=True)
+    comment = models.CharField(max_length=500, blank=True)
     book_id = models.IntegerField()
 
 class State(models.Model):
@@ -46,9 +46,9 @@ class State(models.Model):
 
 class Edge(models.Model):
     id = models.AutoField(primary_key=True)
-    current_state_id = models.ForeignKey(State, null=True, related_name='current')
+    current_state_id = models.ForeignKey(State, blank=True, related_name='current')
     user_response = models.CharField(max_length=200)
-    next_state_id = models.ForeignKey(State, null=True, related_name='next')
+    next_state_id = models.ForeignKey(State, blank=True, related_name='next')
 
 class Response(models.Model):
     id = models.AutoField(primary_key=True)

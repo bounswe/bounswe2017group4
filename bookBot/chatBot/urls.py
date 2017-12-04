@@ -17,17 +17,21 @@ urlpatterns = [
     url(r'^states/(?P<pk>[0-9]+)/$', views.StateDetail.as_view()),
     url(r'^edges/$', views.EdgeList.as_view()),
     url(r'^edges/(?P<pk>[0-9]+)/$', views.EdgeDetail.as_view()),
-    url(r'^responses/$', views.ResponseList.as_view()),
-    url(r'^responses/(?P<pk>[0-9]+)/$', views.ResponseDetail.as_view()),
     url(r'^histories/$', views.HistoryList.as_view()),
     url(r'^histories/(?P<pk>[0-9]+)/$', views.HistoryDetail.as_view()),
 
     # GET 
     url('isAdmin', views.isAdmin),
     url('getRatings', views.getRatings),
+    url('getComments', views.getComments),
+    url('getStates', views.getStates),
+    url('getEdges', views.getEdges),
+    url('getResponses', views.getResponses),
 
     # POST
     url('addState', views.addState),
+    url('addEdge', views.addEdge),
+    url('addResponse', views.addResponse),
 
 ]
 
