@@ -1,2 +1,3 @@
 *.pyc
 *.pyo
+/bookBot/py3env/
