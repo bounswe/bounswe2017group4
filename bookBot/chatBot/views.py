@@ -70,7 +70,6 @@ def getComments(request):
 ##getStates returns all states
 
 def getStates(request):
-    id = request.GET.get('id', '')
     states = State.objects.all()
     response=[]
     for state in states:
@@ -83,7 +82,6 @@ def getStates(request):
 #getEdges returns all Edges
 
 def getEdges(request):
-    id = request.GET.get('id', '')
     edges = Edge.objects.all()
     response = []
     for edge in edges:
@@ -98,7 +96,6 @@ def getEdges(request):
 #getResponse returns all Responses and post a new response
 
 def getResponses(request):
-    id = request.GET.get('id', '')
     responses = Response.objects.all()
     response = []
     for res in responses:
@@ -106,6 +103,30 @@ def getResponses(request):
         responseSample['id'] = res.id
         responseSample['edge_id'] = model_to_dict(res.edge_id)
         responseSample['chatbot_response'] = res.chatbot_response
+        response.append(responseSample)
+
+    return JsonResponse(response, safe=False)
+
+def getHistories(request):
+    responses = History.objects.all()
+    response = []
+    for res in responses:
+        responseSample = {}
+        responseSample['id'] = res.id
+        responseSample['user'] = model_to_dict(res.user)
+        responseSample['query'] = res.query
+        response.append(responseSample)
+
+    return JsonResponse(response, safe=False)
+
+def getInterests(request):
+    responses = UserInterest.objects.all()
+    response = []
+    for res in responses:
+        responseSample = {}
+        responseSample['user'] = model_to_dict(res.user)
+        responseSample['interest_type'] = res.interest_type
+        responseSample['interest'] = res.interest
         response.append(responseSample)
 
     return JsonResponse(response, safe=False)
@@ -144,6 +165,37 @@ def addResponse(request):
     response.edge_id = edge_id
     response.chatbot_response = chatbot_response
     response.save()
+
+    return JsonResponse("OK", safe=False)
+
+@csrf_exempt
+def addRating(request):
+    rating = UserRating()
+    rating.user = request.POST.get('user','')
+    rating.rating = request.POST.get('rating','')
+    rating.book_id = request.POST.get('book_id','')
+    rating.save()
+
+    return JsonResponse("OK", safe=False)
+
+@csrf_exempt
+def addComment(request):
+    comment = UserComment()
+    comment.user = request.POST.get('user','')
+    comment.comment = request.POST.get('comment','')
+    comment.book_id = request.POST.get('book_id','')
+    comment.save()
+
+    return JsonResponse("OK", safe=False)
+
+@csrf_exempt
+def addUser(request):
+    user = User()
+    user.name = request.POST.get('name','')
+    user.password = request.POST.get('password','')
+    user.created_at = request.POST.get('created_at','')
+    user.telegram_id = request.POST.get('telegram_id','')
+    comment.save()
 
     return JsonResponse("OK", safe=False)
 

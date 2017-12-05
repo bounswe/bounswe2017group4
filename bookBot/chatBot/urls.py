@@ -27,11 +27,16 @@ urlpatterns = [
     url('getStates', views.getStates),
     url('getEdges', views.getEdges),
     url('getResponses', views.getResponses),
+    url('getHistories', views.getHistories),
+    url('getInterests', views.getInterests),
 
     # POST
     url('addState', views.addState),
     url('addEdge', views.addEdge),
     url('addResponse', views.addResponse),
+    url('addRating', views.addRating),
+    url('addComment', views.addComment),
+    url('addUser', views.addUser),
 
 ]
 
