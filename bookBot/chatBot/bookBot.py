@@ -149,6 +149,8 @@ def not_understand():
 
 def start_message(response, update, entity):
     resp = client.message(update.message.text)
+    print('Entered start message')
+    print('what I look for is '+update.message.text)
     try:
         value = resp['entities'][entity][0]['value']
     except:
@@ -157,6 +159,8 @@ def start_message(response, update, entity):
 
 
 def ask_name(response, update, entity):
+    print('Entered ask name')
+    print(update.message.text)
     resp = client.message(update.message.text)
     try:
         value = resp['entities'][entity][0]['value']
@@ -217,10 +221,12 @@ def list_search(response, update, entity):
     resp = client.message(update.message.text)
     print('STARTED SEARCH')
     global bookList
+    del bookList[:]
     value = ''
     search_book_result = ''
     text = ''
     if (len(resp['entities'][entity]) > 1):
+        print('IT DOES NOT ENTER HERE ANYTIME!!!!')
         for i in range(0, len(resp['entities'][entity])):
             if (i != len(resp['entities'][entity]) - 1):
                 value += str(resp['entities']
@@ -304,7 +310,6 @@ def list_search(response, update, entity):
 
 
 def filter_by_page_number(response, update, entity):
-    print('STARTED FILTER')
     global bookList
     resp = client.message(update.message.text)
     search_book_result = ''
@@ -367,22 +372,110 @@ def filter_by_page_number(response, update, entity):
                         if (i == 5):
                             break
                         i += 1
-
         except:
-            print('Couldnt cast to int')
+          print('some error that I don\'t know')
     return search_book_result
 
 
 def filter_by_category(response, update, entity):
+    global bookList
     resp = client.message(update.message.text)
+    search_book_list=''
+    filter_category = list(resp['entities']['filter_category'])[0]['value']
+    search_book_result = fill_the_list(bookList, filter_category, 'category')
+    return search_book_result
     # TODO this part should be handled by book api class
 
 
 def filter_by_author(response, update, entity):
+    global bookList
     resp = client.message(update.message.text)
+    search_book_result = ''
+    filter_category = list(resp['entities']['author'])[0]['value']
+    search_book_result = fill_the_list(bookList, filter_category, 'author')
+    return search_book_result
     # TODO this part should be handled by book api class
 
 
+
+def fill_the_list(bookList, filter_category, type):
+    print('fill the list is entered')
+    print('filter category is '+filter_category)
+    search_book_result = ''
+    for bookElem in bookList:
+        i = 1
+        if(type=='more' or type=='less'):
+            if(type=='more'):
+                for bookElem in bookList:
+                    i = 1
+                    if int(bookElem.pageCount) > filter_category:
+                        search_book_result += 'Name: ' + \
+                                              bookElem.title + '\n'
+                        search_book_result += 'Author(s): '
+                        for j in range(len(bookElem.authors) - 1):
+                            search_book_result += bookElem.authors[j] + ',  '
+                        search_book_result += bookElem.authors[-1]
+                        search_book_result += '\n'
+                        search_book_result += 'Category(s): '
+                        for j in range(len(bookElem.categories) - 1):
+                            search_book_result += bookElem.categories[j] + ', '
+                        search_book_result += bookElem.categories[-1]
+                        search_book_result += '\n'
+                        search_book_result += 'Page Count: ' + \
+                                              bookElem.pageCount + '\n'
+                        search_book_result += '---------------------------\n'
+                        if (i == 5):
+                            break
+                        i += 1
+            elif(type=='less'):
+                for bookElem in bookList:
+                    i = 1
+                    if int(bookElem.pageCount) < filter_category:
+                        search_book_result += 'Name: ' + \
+                                              bookElem.title + '\n'
+                        search_book_result += 'Author(s): '
+                        for j in range(len(bookElem.authors) - 1):
+                            search_book_result += bookElem.authors[j] + ',  '
+                        search_book_result += bookElem.authors[-1]
+                        search_book_result += '\n'
+                        search_book_result += 'Category(s): '
+                        for j in range(len(bookElem.categories) - 1):
+                            search_book_result += bookElem.categories[j] + ', '
+                        search_book_result += bookElem.categories[-1]
+                        search_book_result += '\n'
+                        search_book_result += 'Page Count: ' + \
+                                              bookElem.pageCount + '\n'
+                        search_book_result += '---------------------------\n'
+                        if (i == 5):
+                            break
+                        i += 1
+        else:
+            if(type=='category'):
+                searchIn = bookElem.categories
+            elif(type=='author'):
+                searchIn = bookElem.authors
+            if filter_category.lower() in (bookElemItem.lower() for bookElemItem in searchIn):
+                search_book_result += 'Name: ' + \
+                                      bookElem.title + '\n'
+                search_book_result += 'Author(s): '
+                for j in range(len(bookElem.authors) - 1):
+                    search_book_result += bookElem.authors[j] + ',  '
+                search_book_result += bookElem.authors[-1]
+                search_book_result += '\n'
+                search_book_result += 'Category(s): '
+                for j in range(len(bookElem.categories) - 1):
+                    search_book_result += bookElem.categories[j] + ', '
+                search_book_result += bookElem.categories[-1]
+                search_book_result += '\n'
+                search_book_result += 'Page Count: ' + \
+                                      bookElem.pageCount + '\n'
+                search_book_result += '---------------------------\n'
+
+                if (i == 5):
+                    print(search_book_result)
+                    break
+                i += 1
+    return search_book_result
 start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
 general_handler = MessageHandler(Filters.text, general, pass_job_queue=True)
