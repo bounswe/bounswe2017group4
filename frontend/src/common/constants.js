@@ -1,1 +1,1 @@
-export const BUSINESS_SERVICE = process.env.NODE_ENV === "production" ? "18.194.230.124/8080/" : "18.194.230.124/8080/";
+export const BUSINESS_SERVICE = process.env.NODE_ENV === "production" ? "http://18.194.230.124:8000" : "http://18.194.230.124:8000";
