@@ -11,12 +11,11 @@ from django.contrib.auth.models import User
 class User(models.Model):
     name = models.CharField(max_length=200)
     password = models.CharField(max_length=100, null=True, blank=True)
-    created_at = models.DateTimeField('date published')
+    created_at = models.DateTimeField('date published', auto_now_add=True)
     telegram_id = models.IntegerField(unique=True, null=True, blank=True)
 
     def __str__(self):
         return self.name
-
 
 class UserInterest(models.Model):
     INTEREST_TYPE_CHOICES = (
@@ -42,12 +41,10 @@ class UserComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.CharField(max_length=500, blank=True)
     book_id = models.CharField(max_length=100)
-<<<<<<< HEAD
+
     def __str__(self):
         return self.book_id
-=======
 
->>>>>>> origin/development
 class State(models.Model):
     id=models.AutoField(primary_key=True)
     description=models.CharField(max_length=500)
@@ -56,24 +53,28 @@ class State(models.Model):
         return self.description
 
 class Edge(models.Model):
-    id = models.AutoField(primary_key=True)
-    current_state_id = models.ForeignKey(State, blank=True, related_name='current')
+
+    id = models.IntegerField(primary_key=True)
+    current_state_id = models.ForeignKey(State, null=True, related_name='current')
     user_response = models.CharField(max_length=200)
-    next_state_id = models.ForeignKey(State, blank=True, related_name='next')
+    next_state_id = models.ForeignKey(State, null=True, related_name='next')
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 class Response(models.Model):
-    id = models.AutoField(primary_key=True)
-    edge_id = models.ForeignKey(Edge)
+    id = models.IntegerField(primary_key=True)
+    state = models.ForeignKey(State)
     chatbot_response = models.CharField(max_length=500)
+
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 class History(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     query = models.CharField(max_length=500)
+
     def __str__(self):
-        return self.id
+        return str(self.id)
+

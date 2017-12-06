@@ -5,3 +5,9 @@ export function authenticate() {
         type: types.AUTH_USER
     };
 }
+
+export function deauthenticate() {
+    return {
+        type: types.DEAUTH_USER
+    };
+}
