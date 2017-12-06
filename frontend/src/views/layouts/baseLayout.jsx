@@ -17,7 +17,6 @@ class BaseLayout extends Component {
 
         return (
             <div className="wrapper">
-                <ReduxToastr timeOut={5000} newestOnTop={Boolean(true)} position="top-right" />
                 <NavBar {...this.props} />
                 <Helmet
                     htmlAttributes={{ "lang": "tr", "amp": undefined }}
