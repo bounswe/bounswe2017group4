@@ -29,6 +29,8 @@ ALLOWED_HOSTS = ['localhost', '18.194.230.124', '127.0.0.1']
 
 SITE_ID=1
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 # Application definition
 
 INSTALLED_APPS = [
