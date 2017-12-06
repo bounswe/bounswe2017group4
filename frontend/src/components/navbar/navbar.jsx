@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
-import { HOME_LOGOUT } from '../../common/constants';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as auth from '../../actions/auth';
+import { browserHistory } from 'react-router';
 
 class NavBar extends Component {
     constructor(props) {
         super(props);
+
+        this.onClick = this.onClick.bind(this);
         this.toggleMobileSideBar = this.toggleMobileSideBar.bind(this);
+    }
+
+    onClick() {
+        this.props.actions.deauthenticate();
+        browserHistory.push("/");
+
     }
 
     toggleMobileSideBar() {
@@ -25,21 +36,32 @@ class NavBar extends Component {
                     <button type="button" className="navbar-toggle mobile-hamburger--open">
                         <span className="fa fa-hamburger-menu"></span>
                     </button>
-                    <ul className="nav navbar-nav chitchat-nav-right pull-right">
-                        <li className="dropdown chitchat-nav-usermenu">
-                            <div className="dropdown-toggle">
-                                <div className="chitchat-nav-usermenu-username">
-                                    John Due
-                                    &nbsp;|&nbsp;
-                                    <a href={HOME_LOGOUT}>ÇIKIŞ</a>
+                    {
+                        this.props.isAuthenticated &&
+                        <ul className="nav navbar-nav chitchat-nav-right pull-right">
+                            <li className="dropdown chitchat-nav-usermenu">
+                                <div className="dropdown-toggle">
+                                    <div className="chitchat-nav-usermenu-username">
+                                        John Due
+                                        &nbsp;|&nbsp;
+                                        <button onClick={this.onClick} className="btn btn-fill btn-primary" type="submit">LOGOUT</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
-                    </ul>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </nav>
         );
     }
 }
 
-export default NavBar;
+const mapStateToProps = (state) => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    actions: bindActionCreators(auth, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar);
