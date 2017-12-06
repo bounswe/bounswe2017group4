@@ -195,7 +195,7 @@ def addUser(request):
     user.password = request.POST.get('password','')
     user.created_at = request.POST.get('created_at','')
     user.telegram_id = request.POST.get('telegram_id','')
-    comment.save()
+    user.save()
 
     return JsonResponse("OK", safe=False)
 
