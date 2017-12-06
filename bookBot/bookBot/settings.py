@@ -29,7 +29,6 @@ ALLOWED_HOSTS = ['localhost', '18.194.230.124', '127.0.0.1']
 
 SITE_ID=1
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,10 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'chatBot.apps.ChatbotConfig',
     'rest_framework',
-
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
