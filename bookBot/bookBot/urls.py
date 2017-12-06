@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-#from chatBot.bot_views import StartView
+from chatBot.bot_views import StartView
 from rest_framework.urlpatterns import format_suffix_patterns
 from chatBot import views
 
