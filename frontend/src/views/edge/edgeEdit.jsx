@@ -14,6 +14,7 @@ class EdgeEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentPage: 0,
             isModalOpen: false,
             modalTitle: "Yeni Kayıt",
             edgeList: []
@@ -28,7 +29,15 @@ class EdgeEdit extends Component {
     }
 
     componentWillMount() {
+        this.props.actions.get(
+            "getEdges", null,
+            response => {
+                console.log(response);
+            }, null, true);
+    }
 
+    onPageChange() {
+        
     }
 
     openModal() {
@@ -44,11 +53,15 @@ class EdgeEdit extends Component {
     }
 
     handleSubmit(props) {
-
+        //eğer doluysa update yoksa new
     }
 
     onDeleteConfirm(id) {
-
+        this.props.actions.del(
+            "getEdges", null,
+            response => {
+                console.log(response);
+            }, null, true);
     }
 
     openModalWithRow(row) {
@@ -75,9 +88,9 @@ class EdgeEdit extends Component {
 
     render() {
         let { handleSubmit, submitting } = this.props;
-        let { isModalOpen } = this.state;
+        let { isModalOpen, edgeList, currentPage } = this.state;
         this.tableOptions = {
-            page: 0,  // which page you want to show as default
+            page: currentPage,  // which page you want to show as default
             sizePerPageList: [50, 100, 250], // you can change the dropdown list for size per page
             sizePerPage: 3,  // which size per page you want to locate as default
             pageStartIndex: 1, // where to start counting the pages
@@ -97,9 +110,9 @@ class EdgeEdit extends Component {
                     data={[{id: 0, node_id: 2, response: "hello", next_node: "5"}]}
                     hover={true} bordered={false}
                     options={this.tableOptions}
-                    fetchInfo={{ dataTotalSize: 3 }}
+                    fetchInfo={{ dataTotalSize: 10 }}
                     remote={true}
-                    pagination={true}
+                    pagination={false}
                 >
                     <TableHeaderColumn dataAlign="left" dataField="node_id" type="text" >Current Node</TableHeaderColumn>
                     <TableHeaderColumn dataAlign="left" dataField="response" type="text" >Response</TableHeaderColumn>
@@ -115,13 +128,13 @@ class EdgeEdit extends Component {
                         <ModalBody>
                             <div className="form-group">
                                 <div className="col-md-12">
-                                    <Field name="state" type="text" component={dropdown} label="State seçiniz" />
+                                    <Field name="state" placeholder="Birim seçiniz" type="text" component={dropdown} label="State seçiniz" data={edgeList} valueField="id" textField="description" filter="contains" />
                                 </div>
                                 <div className="col-md-12">
                                     <Field name="response" type="text" component={input} label="Cevabı seçiniz" />
                                 </div>
                                 <div className="col-md-12">
-                                    <Field name="next_state" type="text" component={dropdown} label="Bir sonraki olması gereken statei seçiniz" />
+                                    <Field name="next_state" placeholder="Birim seçiniz" type="text" component={dropdown} label="Bir sonraki olması gereken statei seçiniz" data={edgeList} valueField="id" textField="description" filter="contains" />
                                 </div>
                             </div>
                         </ModalBody>
