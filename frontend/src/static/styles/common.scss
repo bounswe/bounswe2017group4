@@ -728,3 +728,78 @@ a {
             }
         }
 }
+
+.icon-times::before {
+    content: "\EA6A";
+}
+
+.confirm-box {
+    z-index: 1040;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.confirm-box .modal-dialog.modal-dialog-open {
+    margin-top: 150px;
+}
+
+.confirm-box .modal-dialog.modal-dialog-open:focus {
+    outline: none;
+}
+
+.confirm-box .modal-header,
+.confirm-box .modal-footer {
+    text-align: center;
+}
+
+.confirm-box .modal-body {
+    font-size: 16px;
+    color: #575757;
+    font-weight: 300;
+}
+
+.tagged-input-wrapper .tag:hover .remove {
+    visibility: visible;
+    padding: 0 7.5px 0 5px;
+}
+
+.tagged-input-wrapper .tag .remove {
+    color: #fff;
+    font-size: 12px;
+    line-height: 100%;
+    cursor: pointer;
+    visibility: visible;
+    padding: 0 7.5px 0 5px;
+    -webkit-transition: all 300ms ease-in-out;
+    -moz-transition: all 300ms ease-in-out;
+    -ms-transition: all 300ms ease-in-out;
+    -o-transition: all 300ms ease-in-out;
+    transition: all 300ms ease-in-out;
+}
+
+.tagged-input-wrapper .tag .remove,
+.tagged-input-wrapper .tag .tag-text {
+    display: inline-block;
+}
+
+.places-buttons .btn{
+    margin-bottom: 30px
+}
+
+.btn {
+    border-radius: 5px !important;
+    i {
+        top: 0px !important;
+    }
+}
+
+.btn-icon {
+    border-radius: 50% !important;
+}
+
+.modal-footer .btn+.btn {
+    margin-left: 20px;
+}

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import SideLink from '../sidelink/sidelink';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
 
 class SideBar extends Component {
     constructor(props) {
@@ -10,6 +12,7 @@ class SideBar extends Component {
     toggleMobileSideBar() {
         this.props.sideBarActions.openMobileSideBar();
     }
+
     render() {
         return (
 
@@ -27,6 +30,11 @@ class SideBar extends Component {
                     </div>
                     <ul className="nav">
                         <SideLink onClick={this.toggleMobileSideBar}{...this.props} to="/" label="Home" icon="home" />
+                        {
+                            this.props.isAuthenticated &&
+                            <SideLink onClick={this.toggleMobileSideBar}{...this.props} to="/edgeedit" label="Edge Edit" />
+                        }
+                        <SideLink onClick={this.toggleMobileSideBar}{...this.props} to="/bookcomments" label="Book Comments" />
                     </ul>
                 </div>
             </div>
@@ -35,4 +43,8 @@ class SideBar extends Component {
     }
 }
 
-export default SideBar;
+const mapStateToProps = (state) => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, null)(SideBar);

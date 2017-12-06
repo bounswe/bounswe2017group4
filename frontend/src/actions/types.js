@@ -20,3 +20,4 @@ export const BEGIN_AJAX_CALL = 'BEGIN_AJAX_CALL',
 // Auth Actions
 //=====================
 export const AUTH_USER = 'AUTH_USER';
+export const DEAUTH_USER = 'DEAUTH_USER';

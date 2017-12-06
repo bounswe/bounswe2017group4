@@ -10,7 +10,8 @@ import * as auth from '../../actions/auth';
 import { browserHistory } from 'react-router';
 
 const validate = createValidator({
-    name: required
+    username: required,
+    password: required
 });
 
 class Login extends Component {
@@ -22,17 +23,38 @@ class Login extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    componentWillMount() {
+        if (this.props.isAuthenticated) {
+            browserHistory.push("/edgeedit");
+        }
+    }
+
     handleSubmit(props) {
-        if (props.username == "admin" && props.password == "asd123") {
-            this.props.actions.authenticate();            
-            toastr.success("Login succesful");
-            browserHistory.push("/");        
-        }
-        else
-        {
-            toastr.error("Username or password is wrong")
-        }
-        console.log(props);
+        let query = {
+            name: "admin",
+            password: "chatbot"
+        };
+        this.props.http.get(
+            "/isAdmin",
+            query,
+            response => {
+                console.log(response);
+            },
+            error => {
+                console.log(error);
+            },
+            true
+        );
+
+        // if (props.username == "admin" && props.password == "asd123") {
+        //     this.props.auth.authenticate();
+        //     browserHistory.push("/edgeedit");
+        //     toastr.success("Login Successful")
+        // }
+        // else
+        // {
+        //     toastr.error("Username or password is wrong");
+        // }
     }
 
     render() {
@@ -63,13 +85,18 @@ class Login extends Component {
     }
 }
 
+const mapStateToProps = (state) => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
+
 const mapDispatchToProps = (dispatch) => ({
-    actions: bindActionCreators(auth, dispatch)
+    auth: bindActionCreators(auth, dispatch),
+    http: bindActionCreators(http, dispatch)
 });
 
 let form = reduxForm({
-    form: 'loginForm',
+    form: "loginForm",
     validate
 });
 
-export default connect(null, mapDispatchToProps)(form(Login));
+export default connect(mapStateToProps, mapDispatchToProps)(form(Login));
