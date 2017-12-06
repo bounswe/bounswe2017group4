@@ -23,6 +23,10 @@ from django.views.decorators.csrf import csrf_exempt
 #    template_text = "bot/messages/hello"
 #    print('hello')
 
+# Index view yükleniyor
+def index(request):
+   return render(request, 'index.html')
+
 # Basic APIs for front-end
 
 # Requestten name ve password parametrelerini çekiyoruz. Kullanıcılarda bu bilgilere göre filtreleme yapıyoruz

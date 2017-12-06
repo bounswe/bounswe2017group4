@@ -5,7 +5,8 @@ from rest_framework import status, mixins, generics
 from rest_framework.response import Response
 
 urlpatterns = [
-     url(r'^users/$', views.UserList.as_view()),
+    url(r'^$', views.index),
+    url(r'^users/$', views.UserList.as_view()),
     #url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
     url(r'^userinterests/$', views.UserInterestList.as_view()),
     url(r'^userinterests/(?P<pk>[0-9]+)/$', views.UserInterestDetail.as_view()),
