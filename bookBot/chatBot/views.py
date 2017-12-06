@@ -135,7 +135,7 @@ def getInterests(request):
 # Bu birimleri response arrayine doldurup en son return ediyoruz.
 @csrf_exempt
 def addState(request):
-    description = request.POST.get('description','xyz')
+    description = request.POST.get('description','')
 
     state = State()
     state.description = description
@@ -198,7 +198,6 @@ def addUser(request):
     user.save()
 
     return JsonResponse("OK", safe=False)
-
 
 
 
