@@ -315,8 +315,7 @@ def filter_by_page_number(response, update, entity):
     search_book_result = ''
     print('PAGE FILTER IS ENTERED')
     if 'is_more' in list(resp['entities']):
-        value = 'more than ' + resp['entities'][entity][0]['value']
-        search_book_result += (response + '\n').format(str(value))
+
         filter_num_String = list(resp['entities']['page_filter'])[0]['value']
         filter_num = 0
         print('cast value is ' + filter_num_String)
@@ -325,6 +324,8 @@ def filter_by_page_number(response, update, entity):
             is_more = list(resp['entities']['is_more'])[0]['value']
             # fill_the_list(bookList, filter_num, is_more)
             if is_more == 'more':
+                value = 'more than ' + resp['entities'][entity][0]['value']
+                search_book_result += (response + '\n').format(str(value))
                 for bookElem in bookList:
                     i = 1
                     if int(bookElem.pageCount) > filter_num:
@@ -409,7 +410,7 @@ def fill_the_list(bookList, filter_category, type):
                 for bookElem in bookList:
                     i = 1
                     if int(bookElem.pageCount) > filter_category:
-                        search_book_result += 'Name: ' + \
+                        search_book_result += get_book_emoji()+'Name: ' + \
                                               bookElem.title + '\n'
                         search_book_result += 'Author(s): '
                         for j in range(len(bookElem.authors) - 1):
@@ -431,7 +432,7 @@ def fill_the_list(bookList, filter_category, type):
                 for bookElem in bookList:
                     i = 1
                     if int(bookElem.pageCount) < filter_category:
-                        search_book_result += 'Name: ' + \
+                        search_book_result += get_book_emoji()+'Name: ' + \
                                               bookElem.title + '\n'
                         search_book_result += 'Author(s): '
                         for j in range(len(bookElem.authors) - 1):
@@ -455,7 +456,7 @@ def fill_the_list(bookList, filter_category, type):
             elif(type=='author'):
                 searchIn = bookElem.authors
             if filter_category.lower() in (bookElemItem.lower() for bookElemItem in searchIn):
-                search_book_result += 'Name: ' + \
+                search_book_result += get_book_emoji()+'Name: ' + \
                                       bookElem.title + '\n'
                 search_book_result += 'Author(s): '
                 for j in range(len(bookElem.authors) - 1):
