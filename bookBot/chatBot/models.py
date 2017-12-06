@@ -42,8 +42,12 @@ class UserComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.CharField(max_length=500, blank=True)
     book_id = models.CharField(max_length=100)
+<<<<<<< HEAD
     def __str__(self):
         return self.book_id
+=======
+
+>>>>>>> origin/development
 class State(models.Model):
     id=models.AutoField(primary_key=True)
     description=models.CharField(max_length=500)
