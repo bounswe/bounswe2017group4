@@ -4,12 +4,29 @@ from telegram.ext import CommandHandler
 from telegram.ext import MessageHandler, Filters
 from wit import Wit
 import json
+<<<<<<< HEAD
+<<<<<<< HEAD
+import urllib.request
+import urllib.parse
+import urllib.error
+=======
+import os
+>>>>>>> master
+url = 'https://www.googleapis.com/books/v1/volumes?q='
+access_token = "IQXRZALWN7LAYGHQZWSNKWU2GMGYPHMA"
+<<<<<<< HEAD
+name = ""
+controller1 = ""
+updater = Updater(token='471766784:AAHJPT82C21DvW_EhZXZ9fEQdS9a94mIYs0')
+=======
+=======
 
 import os
 
 url = 'https://www.googleapis.com/books/v1/volumes?q='
 access_token = "IQXRZALWN7LAYGHQZWSNKWU2GMGYPHMA"
 
+>>>>>>> origin/development
 name = "Anonymous"
 if(os.environ.get('RUNMODE')=="test"):
 	print("Running in test mode")
@@ -19,7 +36,11 @@ else :
 	updater = Updater(token='471766784:AAHJPT82C21DvW_EhZXZ9fEQdS9a94mIYs0')
 
 
+<<<<<<< HEAD
+>>>>>>> master
+=======
 
+>>>>>>> origin/development
 dispatcher = updater.dispatcher
 client = Wit(access_token=access_token)
 logging.basicConfig(
