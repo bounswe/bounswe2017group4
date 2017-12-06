@@ -30,10 +30,13 @@ class EdgeEdit extends Component {
 
     componentWillMount() {
         this.props.actions.get(
-            "getEdges", null,
+            "/getEdges", null,
             response => {
                 console.log(response);
-            }, null, true);
+            },
+            error => {
+                console.log(error);
+            }, true);
     }
 
     onPageChange() {
