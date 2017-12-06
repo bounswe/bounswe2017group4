@@ -7,9 +7,8 @@ import requireAuth from './components/hoc/requireAuth';
 
 export default (
     <Route>
-        <Route path="/login" component={Login} title="Login"/>
-        <Route path="/" component={requireAuth(BaseLayout)}>
-            <IndexRoute component={requireAuth(Home)} title="Home" />
+        <Route path="/" component={BaseLayout}>
+            <IndexRoute component={Login} title="Home" />
             <Route path="edgeedit" component={requireAuth(EdgeEdit)} title="Edge Edit" />
             <Route path="bookcomments" component={BookComments} title="Book Comments" />
         </Route>
