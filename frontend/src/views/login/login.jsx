@@ -31,30 +31,26 @@ class Login extends Component {
 
     handleSubmit(props) {
         let query = {
-            name: "admin",
-            password: "chatbot"
+            name: props.username,
+            password: props.password
         };
         this.props.http.get(
             "/isAdmin",
             query,
             response => {
-                console.log(response);
+                if (response) {
+                    this.props.auth.authenticate();
+                    browserHistory.push("/edgeedit");
+                    toastr.success("Login successful");
+                }
+                else {
+                    toastr.error("Login failed");
+                }
+                
             },
-            error => {
-                console.log(error);
-            },
+            null,
             true
         );
-
-        // if (props.username == "admin" && props.password == "asd123") {
-        //     this.props.auth.authenticate();
-        //     browserHistory.push("/edgeedit");
-        //     toastr.success("Login Successful")
-        // }
-        // else
-        // {
-        //     toastr.error("Username or password is wrong");
-        // }
     }
 
     render() {
