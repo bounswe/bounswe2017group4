@@ -26,6 +26,7 @@ class EdgeEdit extends Component {
         this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
         this.openModalWithRow = this.openModalWithRow.bind(this);
         this.detailFormatter = this.detailFormatter.bind(this);
+        this.stateDetailFormatter = this.stateDetailFormatter.bind(this);
     }
 
     componentWillMount() {
@@ -33,6 +34,9 @@ class EdgeEdit extends Component {
             "/getEdges", null,
             response => {
                 console.log(response);
+                this.setState({
+                    edgeList: response
+                });
             },
             error => {
                 console.log(error);
@@ -60,11 +64,8 @@ class EdgeEdit extends Component {
     }
 
     onDeleteConfirm(id) {
-        this.props.actions.del(
-            "getEdges", null,
-            response => {
-                console.log(response);
-            }, null, true);
+        // this.props.actions.del(
+        // );
     }
 
     openModalWithRow(row) {
@@ -85,6 +86,14 @@ class EdgeEdit extends Component {
                     confirmText="Sil" cancelText="Vazgeç" identifier={row.id}>
                     <a title="Sil" className="btn btn-simple btn-default btn-icon table-action remove"><i className="icon-trash">Delete</i></a>
                 </ConfirmBox>
+            </div>
+        );
+    }
+
+    stateDetailFormatter(cell, row) {
+        return (
+            <div>
+                {cell.description}
             </div>
         );
     }
@@ -110,16 +119,16 @@ class EdgeEdit extends Component {
                     Yeni Edge Ekle
                 </button>
                 <BootstrapTable
-                    data={[{id: 0, node_id: 2, response: "hello", next_node: "5"}]}
+                    data={edgeList}
                     hover={true} bordered={false}
                     options={this.tableOptions}
                     fetchInfo={{ dataTotalSize: 10 }}
                     remote={true}
                     pagination={false}
                 >
-                    <TableHeaderColumn dataAlign="left" dataField="node_id" type="text" >Current Node</TableHeaderColumn>
-                    <TableHeaderColumn dataAlign="left" dataField="response" type="text" >Response</TableHeaderColumn>
-                    <TableHeaderColumn dataAlign="left" dataField="next_node" type="text" >Next Node</TableHeaderColumn>
+                    <TableHeaderColumn dataAlign="left" dataField="current_state_id"  type="text" dataFormat={this.stateDetailFormatter} >Current Node</TableHeaderColumn>
+                    <TableHeaderColumn dataAlign="left" dataField="user_response" type="text" >Response</TableHeaderColumn>
+                    <TableHeaderColumn dataAlign="left" dataField="next_state_id" type="text" dataFormat={this.stateDetailFormatter} >Next Node</TableHeaderColumn>
                     <TableHeaderColumn dataAlign="right" dataField="id" type="text" columnClassName="td-actions text-right" dataFormat={this.detailFormatter} isKey={true} >&nbsp; </TableHeaderColumn>
                 </BootstrapTable>
                 <Modal isOpen={isModalOpen} onRequestHide={this.closeModal}>
@@ -131,13 +140,13 @@ class EdgeEdit extends Component {
                         <ModalBody>
                             <div className="form-group">
                                 <div className="col-md-12">
-                                    <Field name="state" placeholder="Birim seçiniz" type="text" component={dropdown} label="State seçiniz" data={edgeList} valueField="id" textField="description" filter="contains" />
+                                    <Field name="state" placeholder="Birim seçiniz" type="text" component={dropdown} label="State seçiniz" data={edgeList} valueField="id" textField={item => item.user_response + " -> " + item.current_state_id.description} filter="contains" />
                                 </div>
                                 <div className="col-md-12">
-                                    <Field name="response" type="text" component={input} label="Cevabı seçiniz" />
+                                    <Field name="response" type="text" component={input} label="Cevabı yazınız" />
                                 </div>
                                 <div className="col-md-12">
-                                    <Field name="next_state" placeholder="Birim seçiniz" type="text" component={dropdown} label="Bir sonraki olması gereken statei seçiniz" data={edgeList} valueField="id" textField="description" filter="contains" />
+                                    <Field name="next_state" placeholder="Birim seçiniz" type="text" component={dropdown} label="Bir sonraki olması gereken statei seçiniz" data={edgeList} valueField="id" textField={item => item.user_response + " -> " + item.next_state_id.description} filter="contains" />
                                 </div>
                             </div>
                         </ModalBody>
