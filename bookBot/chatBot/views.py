@@ -105,7 +105,7 @@ def getResponses(request):
     for res in responses:
         responseSample = {}
         responseSample['id'] = res.id
-        responseSample['edge_id'] = model_to_dict(res.edge_id)
+        responseSample['state'] = model_to_dict(res.state)
         responseSample['chatbot_response'] = res.chatbot_response
         response.append(responseSample)
 

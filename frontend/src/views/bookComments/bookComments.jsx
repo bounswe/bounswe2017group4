@@ -4,59 +4,81 @@ import * as http from '../../actions/http';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import ConfirmBox from '../../components/common/confirmBox';
 
 class BookComments extends Component {
     constructor (props) {
         super(props);
         this.state = {
             searchText: "",
+            bookName: "",
             comments: []
         };
 
         this.onChange = this.onChange.bind(this);
-        this.onClick = this.onClick.bind(this);
+        this.onSearchClick = this.onSearchClick.bind(this);
+        this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
     }
 
     onChange(e) {
         this.setState({
             searchText: e.target.value
         });
+    }
 
-        // this.props.actions.get()
+    onSearchClick() {
+        let query = {
+            book_id: this.state.searchText
+        };
+        this.props.actions.get(
+            "/getComments",
+            query,
+            response => {
+                this.setState({
+                    comments: response,
+                    bookName: this.state.searchText
+                });
+            },
+            null,
+            true
+        );
     }
     
-    onClick() {
+    onDeleteConfirm() {
 
     }
 
     render() {
-        let { searchText, comments } = this.state;
+        let { searchText, comments, bookName } = this.state;
         return (
             <div>
-                <input type="text" value={searchText} onChange={this.onChange} />
+                <input type="text" placeholder="Enter a book name" value={searchText} onChange={this.onChange} />
+                <button onClick={this.onSearchClick} className="btn btn-fill btn-primary" type="submit">Search</button>
                 {
-                    searchText != "" &&
+                    searchText != "" && comments.length != 0 &&
                     <MuiThemeProvider>
                         <Card>
-                            <CardHeader title="Book name" subtitle="Book id" />
+                            <CardHeader title={bookName} />
                             {
-                                // comments.map((comment, index) => (
-                                    <div>
-                                        <CardTitle title="Username" subtitle="date" />
+                                comments.map((comment, index) => (
+                                    <div key={index}>
+                                        <CardTitle subtitle={comment.user.name} />
                                         <CardText>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                                            Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                                            Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
+                                            {comment.comment}
                                         </CardText>
                                         {
                                             this.props.isAuthenticated &&
                                             <CardActions>
-                                                <button onClick={this.onClick} className="btn btn-fill btn-primary" type="submit">Delete Comment</button>
+                                                <ConfirmBox
+                                                    showCancelButton={true}
+                                                    onConfirm={() => this.onDeleteConfirm(comment.id)} body="Silmek istediğinize emin misiniz?"
+                                                    confirmText="Delete" cancelText="Cancel" identifier={comment.id}>
+                                                    <a title="Delete" className="btn btn-simple btn-default btn-icon table-action remove"><i className="icon-trash">Delete Comment</i></a>
+                                                </ConfirmBox>
                                             </CardActions>
                                         }
                                     </div>
-                                // ))
+                                ))
                             }
                         </Card>
                     </MuiThemeProvider>
