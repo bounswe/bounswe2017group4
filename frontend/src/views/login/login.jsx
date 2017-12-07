@@ -60,26 +60,33 @@ class Login extends Component {
     render() {
         const { handleSubmit, submitting } = this.props;
         return (
-            <div className="col-md-3 login-form">
-                <MainContainer>
-                    <form className="form-horizontal" onSubmit={handleSubmit(this.handleSubmit)} style={{ position: 'relative', overflow: 'hidden', float: 'none !important' }}>
-                        <div className="row">
-                            <div className="col-md-4">
-                                <div className="form-group">
-                                    <div className="col-md-12">
-                                        <Field className="col-md-12" name="username" component="input" type="text" placeholder="Username"/>
+            <div>
+                <div className="col-md-offset-4 col-md-4 text-center">
+                    <div className="main-color text-center mb50 mt50 fs30">WELCOME</div>
+                    <MainContainer>
+                        <form className="form-horizontal" onSubmit={handleSubmit(this.handleSubmit)} style={{ position: 'relative', overflow: 'hidden', float: 'none !important' }}>
+                            <div className="row">
+                                <div className="col-md-12">
+                                    <div className="form-group">
+                                        <div className="col-md-12">
+                                            <Field className="form-control col-md-12 main-color" name="username" component="input" type="text" placeholder="Username"/>
+                                        </div>
                                     </div>
-                                    <div className="col-md-12">
-                                        <Field className="col-md-12" name="password" component="input" type="password" placeholder="Password"/>
+                                    <div className="form-group">
+                                        <div className="col-md-12">
+                                            <Field className="form-control col-md-12 main-color" name="password" component="input" type="password" placeholder="Password"/>
+                                        </div>
                                     </div>
-                                    <div className="col-md-12">
-                                        <button className="btn btn-fill">Login</button>
+                                    <div className="form-group">
+                                        <div className="col-md-12">
+                                            <button className="btn btn-fill">Login</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
-                </MainContainer>
+                        </form>
+                    </MainContainer>
+                </div>
             </div>
         );
     }
