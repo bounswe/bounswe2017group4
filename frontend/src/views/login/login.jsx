@@ -64,7 +64,7 @@ class Login extends Component {
                 <MainContainer>
                     <form className="form-horizontal" onSubmit={handleSubmit(this.handleSubmit)} style={{ position: 'relative', overflow: 'hidden', float: 'none !important' }}>
                         <div className="row">
-                            <div className="col-md-12">
+                            <div className="col-md-4">
                                 <div className="form-group">
                                     <div className="col-md-12">
                                         <Field className="col-md-12" name="username" component="input" type="text" placeholder="Username"/>
