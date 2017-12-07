@@ -4,6 +4,7 @@ import * as http from '../../actions/http';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import ConfirmBox from '../../components/common/confirmBox';
 
 class BookComments extends Component {
     constructor (props) {
@@ -16,7 +17,7 @@ class BookComments extends Component {
 
         this.onChange = this.onChange.bind(this);
         this.onSearchClick = this.onSearchClick.bind(this);
-        this.onClick = this.onClick.bind(this);
+        this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
     }
 
     onChange(e) {
@@ -36,15 +37,14 @@ class BookComments extends Component {
                 this.setState({
                     comments: response,
                     bookName: this.state.searchText
-                })
-                console.log(response);
+                });
             },
             null,
             true
         );
     }
     
-    onClick() {
+    onDeleteConfirm() {
 
     }
 
@@ -52,7 +52,7 @@ class BookComments extends Component {
         let { searchText, comments, bookName } = this.state;
         return (
             <div>
-                <input type="text" value={searchText} onChange={this.onChange} />
+                <input type="text" placeholder="Enter a book name" value={searchText} onChange={this.onChange} />
                 <button onClick={this.onSearchClick} className="btn btn-fill btn-primary" type="submit">Search</button>
                 {
                     searchText != "" && comments.length != 0 &&
@@ -69,7 +69,12 @@ class BookComments extends Component {
                                         {
                                             this.props.isAuthenticated &&
                                             <CardActions>
-                                                <button onClick={this.onClick} className="btn btn-fill btn-primary" type="submit">Delete Comment</button>
+                                                <ConfirmBox
+                                                    showCancelButton={true}
+                                                    onConfirm={() => this.onDeleteConfirm(comment.id)} body="Silmek istediğinize emin misiniz?"
+                                                    confirmText="Delete" cancelText="Cancel" identifier={comment.id}>
+                                                    <a title="Delete" className="btn btn-simple btn-default btn-icon table-action remove"><i className="icon-trash">Delete Comment</i></a>
+                                                </ConfirmBox>
                                             </CardActions>
                                         }
                                     </div>
