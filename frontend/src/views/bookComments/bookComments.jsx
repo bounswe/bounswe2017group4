@@ -10,10 +10,12 @@ class BookComments extends Component {
         super(props);
         this.state = {
             searchText: "",
+            bookName: "",
             comments: []
         };
 
         this.onChange = this.onChange.bind(this);
+        this.onSearchClick = this.onSearchClick.bind(this);
         this.onClick = this.onClick.bind(this);
     }
 
@@ -21,8 +23,25 @@ class BookComments extends Component {
         this.setState({
             searchText: e.target.value
         });
+    }
 
-        // this.props.actions.get()
+    onSearchClick() {
+        let query = {
+            book_id: this.state.searchText
+        };
+        this.props.actions.get(
+            "/getComments",
+            query,
+            response => {
+                this.setState({
+                    comments: response,
+                    bookName: this.state.searchText
+                })
+                console.log(response);
+            },
+            null,
+            true
+        );
     }
     
     onClick() {
@@ -30,24 +49,22 @@ class BookComments extends Component {
     }
 
     render() {
-        let { searchText, comments } = this.state;
+        let { searchText, comments, bookName } = this.state;
         return (
             <div>
                 <input type="text" value={searchText} onChange={this.onChange} />
+                <button onClick={this.onSearchClick} className="btn btn-fill btn-primary" type="submit">Search</button>
                 {
-                    searchText != "" &&
+                    searchText != "" && comments.length != 0 &&
                     <MuiThemeProvider>
                         <Card>
-                            <CardHeader title="Book name" subtitle="Book id" />
+                            <CardHeader title={bookName} />
                             {
-                                // comments.map((comment, index) => (
-                                    <div>
-                                        <CardTitle title="Username" subtitle="date" />
+                                comments.map((comment, index) => (
+                                    <div key={index}>
+                                        <CardTitle subtitle={comment.user.name} />
                                         <CardText>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                                            Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                                            Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
+                                            {comment.comment}
                                         </CardText>
                                         {
                                             this.props.isAuthenticated &&
@@ -56,7 +73,7 @@ class BookComments extends Component {
                                             </CardActions>
                                         }
                                     </div>
-                                // ))
+                                ))
                             }
                         </Card>
                     </MuiThemeProvider>
