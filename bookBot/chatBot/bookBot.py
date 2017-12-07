@@ -117,19 +117,19 @@ def general(bot, update, job_queue):
     resp = client.message(update.message.text)
     if len(list(resp['entities'])) == 1:
         # TODO check if list is empty (not sure if it is important)
-        # try:
-        entity = list(resp['entities'])[0]
-        current_state, next_state, response = get_state_variables(current_state_id, entity)
         try:
-            value = resp['entities'][entity][0]['value']
-        except:
+            entity = list(resp['entities'])[0]
+            current_state, next_state, response = get_state_variables(current_state_id, entity)
+            try:
+                value = resp['entities'][entity][0]['value']
+            except:
+                value = ''
+            text = eval(next_state.description + '(response.chatbot_response, update, entity)')
+            bot.send_message(chat_id=update.message.chat_id, text=text)
             value = ''
-        text = eval(next_state.description + '(response.chatbot_response, update, entity)')
-        bot.send_message(chat_id=update.message.chat_id, text=text)
-        value = ''
-        handler_generator(update, job_queue, next_state)
-        # except:
-        #     bot.send_message(chat_id=update.message.chat_id, text=not_understand())
+            handler_generator(update, job_queue, next_state)
+        except:
+            bot.send_message(chat_id=update.message.chat_id, text=not_understand())
     elif len(list(resp['entities'])) > 1:
         try:
             entity = list(resp['entities'])[1]
