@@ -100,7 +100,7 @@ class NavBar extends Component {
                                 <div className="dropdown-toggle">
                                     <div className="chitchat-nav-usermenu-username">
                                         <span className="mr10">John Due</span>
-                                        <button onClick={this.onClick} className="btn btn-fill btn-primary" type="submit">LOGOUT</button>
+                                        <button onClick={this.onClick} className="btn btn-fill btn-warning" type="submit">LOGOUT</button>
                                     </div>
                                 </div>
                             </li>

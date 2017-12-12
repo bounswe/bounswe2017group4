@@ -79,12 +79,12 @@ class EdgeEdit extends Component {
     detailFormatter(cell, row) {
         return (
             <div>
-                <a title="Düzenle" className="btn btn-simple btn-default btn-icon table-action edit" href="javascript:void(0)" onClick={() => this.openModalWithRow(row)}><i className="icon-pencil-square-o">Edit</i></a>
+                <a title="Düzenle" className="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)" onClick={() => this.openModalWithRow(row)}><i className="icon-pencil-square-o">Edit</i></a>
                 <ConfirmBox
                     showCancelButton={true}
                     onConfirm={() => this.onDeleteConfirm(row.id)} body="Silmek istediğinize emin misiniz?"
                     confirmText="Delete" cancelText="Cancel" identifier={row.id}>
-                    <a title="Delete" className="btn btn-simple btn-default btn-icon table-action remove"><i className="icon-trash">Delete</i></a>
+                    <a title="Delete" className="btn btn-simple btn-danger btn-icon table-action remove colorDanger"><i className="icon-trash">Delete</i></a>
                 </ConfirmBox>
             </div>
         );
@@ -115,51 +115,65 @@ class EdgeEdit extends Component {
         };
         return (
             <MainContainer isTable={true}>
-                <button disabled={submitting} onClick={this.openModal} className="btn btn-fill btn-primary" type="submit">
-                    New Edge
-                </button>
-                <BootstrapTable
-                    data={edgeList}
-                    hover={true} bordered={false}
-                    options={this.tableOptions}
-                    fetchInfo={{ dataTotalSize: 10 }}
-                    remote={true}
-                    pagination={false}
-                >
-                    <TableHeaderColumn dataAlign="left" dataField="current_state_id"  type="text" dataFormat={this.stateDetailFormatter} >Current Node</TableHeaderColumn>
-                    <TableHeaderColumn dataAlign="left" dataField="user_response" type="text" >Response</TableHeaderColumn>
-                    <TableHeaderColumn dataAlign="left" dataField="next_state_id" type="text" dataFormat={this.stateDetailFormatter} >Next Node</TableHeaderColumn>
-                    <TableHeaderColumn dataAlign="right" dataField="id" type="text" columnClassName="td-actions text-right" dataFormat={this.detailFormatter} isKey={true} >&nbsp; </TableHeaderColumn>
-                </BootstrapTable>
-                <Modal isOpen={isModalOpen} onRequestHide={this.closeModal}>
-                    <form className="form-horizontal" onSubmit={handleSubmit(this.handleSubmit)}>
-                        <ModalHeader>
-                            <ModalClose onClick={this.closeModal} />
-                            <ModalTitle>{modalTitle}</ModalTitle>
-                        </ModalHeader>
-                        <ModalBody>
-                            <div className="form-group">
-                                <div className="col-md-12">
-                                    <Field name="state" type="text" placeholder="Select State" component={dropdown} label="Current State" data={edgeList} valueField="id" textField={item => item.user_response + " -> " + item.current_state_id.description} filter="contains" />
-                                </div>
-                                <div className="col-md-12">
-                                    <Field name="response" type="text" component={input} label="Cevabı yazınız" />
-                                </div>
-                                <div className="col-md-12">
-                                    <Field name="next_state" type="text" placeholder="Select State" component={dropdown} label="Next State" data={edgeList} valueField="id" textField={item => item.user_response + " -> " + item.next_state_id.description} filter="contains" />
-                                </div>
-                            </div>
-                        </ModalBody>
-                        <ModalFooter>
-                            <button className="btn btn-fill btn-tertiary" type="reset" onClick={this.closeModal}>
-                                Kapat
-                            </button>
-                            <button disabled={submitting} className="btn btn-fill btn-primary" type="submit">
-                                Kaydet
-                            </button>
-                        </ModalFooter>
-                    </form>
-                </Modal>
+                <div className="panel bgNone">
+                    <div className="panel-heading text-right">
+                        <button disabled={submitting} onClick={this.openModal} className="btn btn-fill btn-primary" type="submit">
+                            New Edge
+                        </button>
+                    </div>
+                    <div className="panel-body">
+                        <BootstrapTable
+                            data={edgeList}
+                            hover={true} bordered={false}
+                            options={this.tableOptions}
+                            fetchInfo={{ dataTotalSize: 10 }}
+                            remote={true}
+                            pagination={false}
+                            striped
+                            hover={false}
+                        >
+                            <TableHeaderColumn width="30%" dataAlign="left" dataField="current_state_id"  type="text" dataFormat={this.stateDetailFormatter}>
+                                <span className="fontBold">Current Node</span>
+                            </TableHeaderColumn>
+                            <TableHeaderColumn width="25%" dataAlign="left" dataField="user_response" type="text">
+                                <span className="fontBold">Response</span>
+                            </TableHeaderColumn>
+                            <TableHeaderColumn width="30%" dataAlign="left" dataField="next_state_id" type="text" dataFormat={this.stateDetailFormatter}>
+                                <span className="fontBold">Next Node</span>
+                            </TableHeaderColumn>
+                            <TableHeaderColumn dataAlign="right" dataField="id" type="text" columnClassName="td-actions text-right" dataFormat={this.detailFormatter} isKey={true} ></TableHeaderColumn>
+                        </BootstrapTable>
+                        <Modal isOpen={isModalOpen} onRequestHide={this.closeModal}>
+                            <form className="form-horizontal" onSubmit={handleSubmit(this.handleSubmit)}>
+                                <ModalHeader>
+                                    <ModalClose onClick={this.closeModal} />
+                                    <ModalTitle>{modalTitle}</ModalTitle>
+                                </ModalHeader>
+                                <ModalBody>
+                                    <div className="form-group">
+                                        <div className="col-md-12">
+                                            <Field name="state" type="text" placeholder="Select State" component={dropdown} label="Current State" data={edgeList} valueField="id" textField={item => item.user_response + " -> " + item.current_state_id.description} filter="contains" />
+                                        </div>
+                                        <div className="col-md-12">
+                                            <Field name="response" type="text" component={input} label="Cevabı yazınız" />
+                                        </div>
+                                        <div className="col-md-12">
+                                            <Field name="next_state" type="text" placeholder="Select State" component={dropdown} label="Next State" data={edgeList} valueField="id" textField={item => item.user_response + " -> " + item.next_state_id.description} filter="contains" />
+                                        </div>
+                                    </div>
+                                </ModalBody>
+                                <ModalFooter>
+                                    <button className="btn btn-fill btn-tertiary" type="reset" onClick={this.closeModal}>
+                                        Kapat
+                                    </button>
+                                    <button disabled={submitting} className="btn btn-fill btn-primary" type="submit">
+                                        Kaydet
+                                    </button>
+                                </ModalFooter>
+                            </form>
+                        </Modal>
+                    </div>
+                </div>
             </MainContainer>
         );
     }

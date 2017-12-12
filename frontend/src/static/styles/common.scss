@@ -811,6 +811,20 @@ a {
 .mt10 {
     margin-top: 10px;
 }
+
 .mr10 {
     margin-right: 10px;
+}
+
+.bgNone {
+    background: none;
+    background-color: none;
+}
+
+.colorDanger {
+    color: #d9534f !important;
+}
+
+.fontBold {
+    font-weight: bold;
 }
