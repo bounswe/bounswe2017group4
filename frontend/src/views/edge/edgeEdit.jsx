@@ -10,6 +10,12 @@ import ConfirmBox from '../../components/common/confirmBox';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { Modal, ModalHeader, ModalTitle, ModalClose, ModalBody, ModalFooter } from 'react-modal-bootstrap';
 
+const defStyles = {
+  open: {
+    top: 100
+  }
+};
+
 class EdgeEdit extends Component {
     constructor(props) {
         super(props);
@@ -143,7 +149,7 @@ class EdgeEdit extends Component {
                             </TableHeaderColumn>
                             <TableHeaderColumn dataAlign="right" dataField="id" type="text" columnClassName="td-actions text-right" dataFormat={this.detailFormatter} isKey={true} ></TableHeaderColumn>
                         </BootstrapTable>
-                        <Modal isOpen={isModalOpen} onRequestHide={this.closeModal}>
+                        <Modal isOpen={isModalOpen} onRequestHide={this.closeModal} dialogStyles={defStyles}>
                             <form className="form-horizontal" onSubmit={handleSubmit(this.handleSubmit)}>
                                 <ModalHeader>
                                     <ModalClose onClick={this.closeModal} />
@@ -154,21 +160,23 @@ class EdgeEdit extends Component {
                                         <div className="col-md-12">
                                             <Field name="state" type="text" placeholder="Select State" component={dropdown} label="Current State" data={edgeList} valueField="id" textField={item => item.user_response + " -> " + item.current_state_id.description} filter="contains" />
                                         </div>
-                                        <div className="col-md-12">
+                                        <div className="col-md-12 mt20">
                                             <Field name="response" type="text" component={input} label="Cevabı yazınız" />
                                         </div>
-                                        <div className="col-md-12">
+                                        <div className="col-md-12 mt20">
                                             <Field name="next_state" type="text" placeholder="Select State" component={dropdown} label="Next State" data={edgeList} valueField="id" textField={item => item.user_response + " -> " + item.next_state_id.description} filter="contains" />
                                         </div>
                                     </div>
                                 </ModalBody>
                                 <ModalFooter>
-                                    <button className="btn btn-fill btn-tertiary" type="reset" onClick={this.closeModal}>
-                                        Kapat
-                                    </button>
-                                    <button disabled={submitting} className="btn btn-fill btn-primary" type="submit">
-                                        Kaydet
-                                    </button>
+                                    <div className="text-center">
+                                        <button className="btn btn-fill btn-tertiary" type="reset" onClick={this.closeModal}>
+                                            Kapat
+                                        </button>
+                                        <button disabled={submitting} className="btn btn-fill btn-primary" type="submit">
+                                            Kaydet
+                                        </button>
+                                    </div>
                                 </ModalFooter>
                             </form>
                         </Modal>
