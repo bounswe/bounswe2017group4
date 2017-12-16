@@ -56,17 +56,17 @@ class BookComments extends Component {
                     <input type="text" className="form-control text-primary" placeholder="Enter a book name" value={searchText} onChange={this.onChange} autoFocus="true" />
                 </div>
                 <div>
-                    <button onClick={this.onSearchClick} className="btn btn-sm btn-fill btn-primary mt10" type="submit">Search</button>
+                    <button onClick={this.onSearchClick} className="btn btn-sm btn-fill btn-success mt10" type="submit">Search</button>
                     {
                         searchText != "" && comments.length != 0 &&
                         <MuiThemeProvider>
-                            <Card>
-                                <CardHeader title={bookName} />
+                            <Card className="cardStyle">
+                                <CardHeader title={bookName} className="cardHeaderStyle" />
                                 {
                                     comments.map((comment, index) => (
-                                        <div key={index}>
-                                            <CardTitle subtitle={comment.user.name} />
-                                            <CardText>
+                                        <div key={index} className="cardGroupStyle">
+                                            <CardTitle className="cardTitleStyle" subtitle={comment.user.name} />
+                                            <CardText className="cardTextStyle">
                                                 {comment.comment}
                                             </CardText>
                                             {

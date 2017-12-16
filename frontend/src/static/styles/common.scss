@@ -828,3 +828,38 @@ a {
 .fontBold {
     font-weight: bold;
 }
+
+.cardStyle {
+    margin-top: 10px;
+}
+
+.cardHeaderStyle {
+    background-color: gainsboro;
+}
+
+.cardHeaderStyle > div {
+    padding-right: 0px !important;
+}
+
+.cardHeaderStyle > div > span {
+    color: indianred !important;
+    font-weight: bold !important;
+    font-family: fantasy;
+}
+
+.cardGroupStyle {
+    border-bottom: 1px solid gainsboro;
+}
+
+.cardTitleStyle {
+    text-align: left;
+}
+
+.cardTitleStyle > span {
+    color: #3FB0E8 !important;
+}
+
+.cardTextStyle {
+    text-align: left;
+    padding-top: 0 !important;
+}
