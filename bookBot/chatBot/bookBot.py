@@ -21,7 +21,7 @@ if(os.environ.get('RUNMODE')=="test"):
 	updater = Updater(token='471766784:AAHJPT82C21DvW_EhZXZ9fEQdS9a94mIYs0')
 else :
 	print("Running in prod mode")
-	updater = Updater(token='471766784:AAHJPT82C21DvW_EhZXZ9fEQdS9a94mIYs0')
+	updater = Updater(token='306155790:AAHshYWFsAmOKly8107HkSISlUziQz77DLs')
 
 dispatcher = updater.dispatcher
 client = Wit(access_token=access_token)
@@ -150,7 +150,7 @@ def general(bot, update, job_queue):
 
 
 def not_understand():
-    response = random.choice(models.Response.objects.filter(state_id=13))
+    response = random.choice(models.Response.objects.filter(state_id=models.State.objects.get(description="does_not_understand")))
     return response.chatbot_response
 
 
