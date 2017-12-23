@@ -21,7 +21,7 @@ if(os.environ.get('RUNMODE')=="test"):
 	updater = Updater(token='471766784:AAHJPT82C21DvW_EhZXZ9fEQdS9a94mIYs0')
 else :
 	print("Running in prod mode")
-	updater = Updater(token='306155790:AAHshYWFsAmOKly8107HkSISlUziQz77DLs')
+	updater = Updater(token='259050850:AAEmi9ht7rw50zVYjWlszKJvDI7mzgk3Ivg')
 
 dispatcher = updater.dispatcher
 client = Wit(access_token=access_token)
@@ -75,7 +75,7 @@ def callback_with_none(bot, job):
         current_state_id = next_state.id
         dispatcher.add_handler(general_handler)
     except:
-        bot.send_message(chat_id=job.context, text=not_understand())
+        bot.send_message(chat_id=job.context, text=not_understand(current_state))
 
 
 def has_none_entity(state_id):
@@ -108,7 +108,6 @@ def start(bot, update):
     responses = response_formatter(response.chatbot_response)
     for r in responses:
         bot.send_message(chat_id=update.message.chat_id, text=r + blush, use_aliases=True)
-    # dispatcher.add_handler(start_message_handler)
     current_state_id = 1
 
 
@@ -129,7 +128,7 @@ def general(bot, update, job_queue):
             value = ''
             handler_generator(update, job_queue, next_state)
         except:
-            bot.send_message(chat_id=update.message.chat_id, text=not_understand())
+            bot.send_message(chat_id=update.message.chat_id, text=not_understand(models.State.objects.get(id=current_state_id)))
     elif len(list(resp['entities'])) > 1:
         try:
             entity = list(resp['entities'])[1]
@@ -144,14 +143,22 @@ def general(bot, update, job_queue):
             value = ''
             handler_generator(update, job_queue, next_state)
         except:
-            bot.send_message(chat_id=update.message.chat_id, text=not_understand())
+            bot.send_message(chat_id=update.message.chat_id, text=not_understand(current_state))
     else:
-        bot.send_message(chat_id=update.message.chat_id, text=not_understand())
+        bot.send_message(chat_id=update.message.chat_id, text=not_understand(models.State.objects.get(id=current_state_id)))
 
 
-def not_understand():
+def not_understand(current_state):
     response = random.choice(models.Response.objects.filter(state_id=models.State.objects.get(description="does_not_understand")))
-    return response.chatbot_response
+    resp = response.chatbot_response
+    try:
+        print ('dfgf')
+        print (models.State.objects.get(id=current_state_id))
+        edge = random.choice(models.Edge.objects.filter(current_state_id=current_state_id))
+        resp += '\nYou can enter something like this:\n\"' + edge.recommended_response + '\"'
+    except:
+        pass
+    return resp
 
 
 def start_message(response, update, entity):
