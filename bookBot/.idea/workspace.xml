@@ -32,8 +32,8 @@
       <file leaf-file-name="bookBot.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/chatBot/bookBot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="86">
-              <caret line="458" column="55" lean-forward="false" selection-start-line="458" selection-start-column="55" selection-end-line="458" selection-end-column="55" />
+            <state relative-caret-position="2469">
+              <caret line="247" column="13" lean-forward="false" selection-start-line="247" selection-start-column="8" selection-end-line="247" selection-end-column="13" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
                 <element signature="e#3704#5324#0" expanded="false" />
@@ -42,7 +42,6 @@
                 <element signature="e#6612#6786#0" expanded="false" />
                 <element signature="e#6844#7314#0" expanded="false" />
                 <element signature="e#7364#7538#0" expanded="false" />
-                <element signature="e#7588#11248#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -74,6 +73,7 @@
     <findStrings>
       <find>coul</find>
       <find>del</find>
+      <find>print</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -90,7 +90,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-7" />
     <option name="width" value="697" />
     <option name="height" value="745" />
@@ -110,6 +110,27 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <expand>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="bookBot" type="cbb8eebc:String" user="bookBot" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="bookBot" type="cbb8eebc:String" user="bookBot" />
+              <item name="bookBot" type="cbb8eebc:String" user="bookBot" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="bookBot" type="cbb8eebc:String" user="bookBot" />
+              <item name="chatBot" type="cbb8eebc:String" user="chatBot" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -132,36 +153,6 @@
               <item name="bookBot" type="462c0819:PsiDirectoryNode" />
               <item name="chatBot" type="462c0819:PsiDirectoryNode" />
               <item name="migrations" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <expand>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="bookBot" type="cbb8eebc:String" user="bookBot" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="bookBot" type="cbb8eebc:String" user="bookBot" />
-              <item name="bookBot" type="cbb8eebc:String" user="bookBot" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="bookBot" type="cbb8eebc:String" user="bookBot" />
-              <item name="chatBot" type="cbb8eebc:String" user="chatBot" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="External Dependencies" type="cbb8eebc:String" user="External Dependencies" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="External Dependencies" type="cbb8eebc:String" user="External Dependencies" />
-              <item name="C:" type="cbb8eebc:String" user="C:" />
             </path>
           </expand>
           <select />
@@ -208,7 +199,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="" />
+      <module name="bookBot" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/chatBot/bookBot.py" />
       <option name="PARAMETERS" value="" />
@@ -227,7 +218,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="" />
+      <module name="bookBot" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/manage.py" />
       <option name="PARAMETERS" value="" />
@@ -329,8 +320,8 @@
     </configuration>
     <list size="3">
       <item index="0" class="java.lang.String" itemvalue="Python.bookBot" />
-      <item index="1" class="java.lang.String" itemvalue="Python.manage" />
-      <item index="2" class="java.lang.String" itemvalue="Django server.bookBot" />
+      <item index="1" class="java.lang.String" itemvalue="Django server.bookBot" />
+      <item index="2" class="java.lang.String" itemvalue="Python.manage" />
     </list>
     <recent_temporary>
       <list size="1">
@@ -364,15 +355,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="754" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3344209" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.329582" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2908497" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29500756" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30408472" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -429,6 +421,90 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/chatBot/models.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1512561973784" expanded="true" signature="83:84" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chatBot/bookBot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7956">
+          <caret line="468" column="27" lean-forward="true" selection-start-line="468" selection-start-column="27" selection-end-line="468" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+            <element signature="e#3704#5324#0" expanded="false" />
+            <element signature="e#5353#5459#0" expanded="false" />
+            <element signature="e#6106#6555#0" expanded="false" />
+            <element signature="e#6612#6786#0" expanded="false" />
+            <element signature="e#6844#7314#0" expanded="false" />
+            <element signature="e#7364#7538#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bookBot/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/manage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="7" column="68" lean-forward="false" selection-start-line="7" selection-start-column="68" selection-end-line="7" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chatBot/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="27" lean-forward="false" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
+          <folding>
+            <marker date="1512561973784" expanded="true" signature="83:84" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bookBot/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chatBot/bookBot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7786">
+          <caret line="458" column="55" lean-forward="false" selection-start-line="458" selection-start-column="55" selection-end-line="458" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+            <element signature="e#3704#5324#0" expanded="false" />
+            <element signature="e#5353#5459#0" expanded="false" />
+            <element signature="e#6106#6555#0" expanded="false" />
+            <element signature="e#6612#6786#0" expanded="false" />
+            <element signature="e#6844#7314#0" expanded="false" />
+            <element signature="e#7364#7538#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/manage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="7" column="68" lean-forward="false" selection-start-line="7" selection-start-column="68" selection-end-line="7" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chatBot/models.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
           <caret line="22" column="27" lean-forward="false" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
           <folding>
@@ -465,7 +541,6 @@
             <element signature="e#6612#6786#0" expanded="false" />
             <element signature="e#6844#7314#0" expanded="false" />
             <element signature="e#7364#7538#0" expanded="false" />
-            <element signature="e#7588#11248#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -508,7 +583,6 @@
             <element signature="e#6612#6786#0" expanded="false" />
             <element signature="e#6844#7314#0" expanded="false" />
             <element signature="e#7364#7538#0" expanded="false" />
-            <element signature="e#7588#11248#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -659,23 +733,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/chatBot/bookBot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="86">
-          <caret line="458" column="55" lean-forward="false" selection-start-line="458" selection-start-column="55" selection-end-line="458" selection-end-column="55" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-            <element signature="e#3704#5324#0" expanded="false" />
-            <element signature="e#5353#5459#0" expanded="false" />
-            <element signature="e#6106#6555#0" expanded="false" />
-            <element signature="e#6612#6786#0" expanded="false" />
-            <element signature="e#6844#7314#0" expanded="false" />
-            <element signature="e#7364#7538#0" expanded="false" />
-            <element signature="e#7588#11248#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/chatBot/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -792,6 +849,22 @@
           <caret line="22" column="27" lean-forward="false" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
           <folding>
             <marker date="1512561973784" expanded="true" signature="83:84" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chatBot/bookBot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2469">
+          <caret line="247" column="13" lean-forward="false" selection-start-line="247" selection-start-column="8" selection-end-line="247" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+            <element signature="e#3704#5324#0" expanded="false" />
+            <element signature="e#5353#5459#0" expanded="false" />
+            <element signature="e#6106#6555#0" expanded="false" />
+            <element signature="e#6612#6786#0" expanded="false" />
+            <element signature="e#6844#7314#0" expanded="false" />
+            <element signature="e#7364#7538#0" expanded="false" />
           </folding>
         </state>
       </provider>
