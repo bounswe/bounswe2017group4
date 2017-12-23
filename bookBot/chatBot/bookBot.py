@@ -150,7 +150,7 @@ def general(bot, update, job_queue):
 
 
 def not_understand():
-    response = random.choice(models.Response.objects.filter(state_id=13))
+    response = random.choice(models.Response.objects.filter(state_id=models.State.objects.get(description="does_not_understand")))
     return response.chatbot_response
 
 
