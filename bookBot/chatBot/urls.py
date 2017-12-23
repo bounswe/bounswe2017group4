@@ -38,7 +38,7 @@ urlpatterns = [
     url('addRating', views.addRating),
     url('addComment', views.addComment),
     url('addUser', views.addUser),
-
+    url('addUserInterest', views.addUserInterest),
 ]
 
 
