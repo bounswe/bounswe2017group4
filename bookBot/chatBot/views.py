@@ -205,6 +205,16 @@ def addUser(request):
 
 
 
+#add user interest
+@csrf_exempt
+def addUserInterest(request):
+    userinterest=UserInterest()
+    userinterest.user= request.POST.get('user','')
+    userinterest.interest_type= request.POST.get('interest_type','')
+    userinterest.interest= request.POST.get('interest','')
+    userinterest.save()
+
+    return JsonResponse("OK", safe=False)
 
 
 

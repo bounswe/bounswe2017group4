@@ -58,6 +58,7 @@ class Edge(models.Model):
     current_state_id = models.ForeignKey(State, null=True, related_name='current')
     user_response = models.CharField(max_length=200)
     next_state_id = models.ForeignKey(State, null=True, related_name='next')
+    recommended_response = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
         return str(self.id)
