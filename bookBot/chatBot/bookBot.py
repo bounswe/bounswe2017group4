@@ -23,7 +23,7 @@ if(os.environ.get('RUNMODE')=="test"):
 	updater = Updater(token='468419437:AAGyilEfIMQehUMjsfGWE_7pmSpzGQN45qE')
 else :
 	print("Running in prod mode")
-	updater = Updater(token='468419437:AAGyilEfIMQehUMjsfGWE_7pmSpzGQN45qE')
+	updater = Updater(token='259050850:AAEmi9ht7rw50zVYjWlszKJvDI7mzgk3Ivg')
 
 dispatcher = updater.dispatcher
 client = Wit(access_token=access_token)
@@ -79,7 +79,7 @@ def callback_with_none(bot, job):
         current_state_id = next_state.id
         dispatcher.add_handler(general_handler)
     except:
-        bot.send_message(chat_id=job.context, text=not_understand())
+        bot.send_message(chat_id=job.context, text=not_understand(current_state))
 
 
 def has_none_entity(state_id):
@@ -112,8 +112,11 @@ def start(bot, update):
     responses = response_formatter(response.chatbot_response)
     for r in responses:
         bot.send_message(chat_id=update.message.chat_id, text=r + blush, use_aliases=True)
-    # dispatcher.add_handler(start_message_handler)
     current_state_id = 1
+    user = models.User.objects.filter(telegram_id=update.message.chat_id)
+    if len(user) == 0:
+        new_user = models.User.objects.create(telegram_id=update.message.chat_id)
+        new_user.save()
 
 
 def general(bot, update, job_queue):
@@ -136,11 +139,10 @@ def general(bot, update, job_queue):
             value = ''
             handler_generator(update, job_queue, next_state)
         except:
-            bot.send_message(chat_id=update.message.chat_id, text=not_understand())
+            bot.send_message(chat_id=update.message.chat_id, text=not_understand(models.State.objects.get(id=current_state_id)))
     elif len(list(resp['entities'])) > 1:
         try:
             entity = list(resp['entities'])[1]
-            print (list(resp['entities']))
             current_state, next_state, response = get_state_variables(current_state_id, entity)
             try:
                 value = resp['entities'][entity][0]['value']
@@ -151,20 +153,25 @@ def general(bot, update, job_queue):
             value = ''
             handler_generator(update, job_queue, next_state)
         except:
-            bot.send_message(chat_id=update.message.chat_id, text=not_understand())
+            bot.send_message(chat_id=update.message.chat_id, text=not_understand(current_state))
     else:
-        bot.send_message(chat_id=update.message.chat_id, text=not_understand())
+        bot.send_message(chat_id=update.message.chat_id, text=not_understand(models.State.objects.get(id=current_state_id)))
 
 
-def not_understand():
+def not_understand(current_state):
     response = random.choice(models.Response.objects.filter(state_id=models.State.objects.get(description="does_not_understand")))
-    return response.chatbot_response
+    resp = response.chatbot_response
+    try:
+        edge = random.choice(models.Edge.objects.filter(current_state_id=current_state_id))
+        resp += '\nYou can enter something like this:\n\"' + edge.recommended_response + '\"'
+    except:
+        pass
+    return resp
 
 
 def start_message(response, update, entity):
     resp = client.message(update.message.text)
     print('Entered start message')
-    print('what I look for is '+update.message.text)
     try:
         value = resp['entities'][entity][0]['value']
     except:
@@ -174,7 +181,6 @@ def start_message(response, update, entity):
 
 def ask_name(response, update, entity):
     print('Entered ask name')
-    print(update.message.text)
     resp = client.message(update.message.text)
     try:
         value = resp['entities'][entity][0]['value']
@@ -219,6 +225,10 @@ def save_book_interests(response, update, entity):
             else:
                 value += str(resp['entities']
                              [entity][i]['value'])
+    user = models.User.objects.get(telegram_id=update.message.chat_id)
+    user_interest = models.UserInterest.objects.create(user=user)
+    user_interest.interest = value
+    user_interest.save()
     return response.format(str(value))
 
 
@@ -252,6 +262,10 @@ def list_search(response, update, entity):
         search_book_result += response + '\n'
     else:
         value = resp['entities'][entity][0]['value']
+        user = models.User.objects.get(telegram_id=update.message.chat_id)
+        history = models.History.objects.create(user=user)
+        history.query = value
+        history.save()
         search_book_result += response + '\n'
         search_text = str(value)
         search_text = search_text.replace(' ', '+')
