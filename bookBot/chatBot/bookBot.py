@@ -109,6 +109,10 @@ def start(bot, update):
     for r in responses:
         bot.send_message(chat_id=update.message.chat_id, text=r + blush, use_aliases=True)
     current_state_id = 1
+    user = models.User.objects.filter(telegram_id=update.message.chat_id)
+    if len(user) == 0:
+        new_user = models.User.objects.create(telegram_id=update.message.chat_id)
+        new_user.save()
 
 
 def general(bot, update, job_queue):
@@ -132,7 +136,6 @@ def general(bot, update, job_queue):
     elif len(list(resp['entities'])) > 1:
         try:
             entity = list(resp['entities'])[1]
-            print (list(resp['entities']))
             current_state, next_state, response = get_state_variables(current_state_id, entity)
             try:
                 value = resp['entities'][entity][0]['value']
@@ -152,8 +155,6 @@ def not_understand(current_state):
     response = random.choice(models.Response.objects.filter(state_id=models.State.objects.get(description="does_not_understand")))
     resp = response.chatbot_response
     try:
-        print ('dfgf')
-        print (models.State.objects.get(id=current_state_id))
         edge = random.choice(models.Edge.objects.filter(current_state_id=current_state_id))
         resp += '\nYou can enter something like this:\n\"' + edge.recommended_response + '\"'
     except:
@@ -164,7 +165,6 @@ def not_understand(current_state):
 def start_message(response, update, entity):
     resp = client.message(update.message.text)
     print('Entered start message')
-    print('what I look for is '+update.message.text)
     try:
         value = resp['entities'][entity][0]['value']
     except:
@@ -174,7 +174,6 @@ def start_message(response, update, entity):
 
 def ask_name(response, update, entity):
     print('Entered ask name')
-    print(update.message.text)
     resp = client.message(update.message.text)
     try:
         value = resp['entities'][entity][0]['value']
@@ -219,6 +218,10 @@ def save_book_interests(response, update, entity):
             else:
                 value += str(resp['entities']
                              [entity][i]['value'])
+    user = models.User.objects.get(telegram_id=update.message.chat_id)
+    user_interest = models.UserInterest.objects.create(user=user)
+    user_interest.interest = value
+    user_interest.save()
     return response.format(str(value))
 
 
@@ -252,6 +255,10 @@ def list_search(response, update, entity):
         search_book_result += response + '\n'
     else:
         value = resp['entities'][entity][0]['value']
+        user = models.User.objects.get(telegram_id=update.message.chat_id)
+        history = models.History.objects.create(user=user)
+        history.query = value
+        history.save()
         search_book_result += response + '\n'
         search_text = str(value)
         search_text = search_text.replace(' ', '+')
