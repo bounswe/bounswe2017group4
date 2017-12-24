@@ -63,7 +63,7 @@ class Edge(models.Model):
     recommended_response = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.current_state_id) + '->' + str(self.next_state_id)
 
 class Response(models.Model):
     id = models.IntegerField(primary_key=True)
