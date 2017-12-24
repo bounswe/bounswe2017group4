@@ -12,13 +12,15 @@ from . import models
 from emoji import emojize
 import os
 
+selected_book = 1
 url = 'https://www.googleapis.com/books/v1/volumes?q='
+#wit.ai's token
 access_token = "IQXRZALWN7LAYGHQZWSNKWU2GMGYPHMA"
 
 name = "Anonymous"
 if(os.environ.get('RUNMODE')=="test"):
 	print("Running in test mode")
-	updater = Updater(token='471766784:AAHJPT82C21DvW_EhZXZ9fEQdS9a94mIYs0')
+	updater = Updater(token='468419437:AAGyilEfIMQehUMjsfGWE_7pmSpzGQN45qE')
 else :
 	print("Running in prod mode")
 	updater = Updater(token='259050850:AAEmi9ht7rw50zVYjWlszKJvDI7mzgk3Ivg')
@@ -30,6 +32,7 @@ logging.basicConfig(
 updater.start_polling()
 current_state_id = 1
 bookList = []
+filtered_bookList = []
 
 blush = emojize(":blush:", use_aliases=True)
 blue_book = emojize(":blue_book:", use_aliases=True)
@@ -39,7 +42,7 @@ closed_book = emojize(":closed_book:", use_aliases=True)
 
 
 class bookObj:
-    def __init__(self, id, title, authors, publisher, description, pageCount, categories):
+    def __init__(self, id, title, authors, publisher, description, pageCount, categories, isbn_13):
         self.id = id
         self.title = title
         self.authors = authors
@@ -47,6 +50,7 @@ class bookObj:
         self.description = description
         self.pageCount = pageCount
         self.categories = categories
+        self.isbn_13 = isbn_13
 
 
 def get_book_emoji():
@@ -122,7 +126,10 @@ def general(bot, update, job_queue):
         # TODO check if list is empty (not sure if it is important)
         try:
             entity = list(resp['entities'])[0]
+            print('my intent is: ' +entity)
             current_state, next_state, response = get_state_variables(current_state_id, entity)
+            #print('my state is: '+ current_state)
+
             try:
                 value = resp['entities'][entity][0]['value']
             except:
@@ -282,6 +289,7 @@ def list_search(response, update, entity):
             description = ''
             pageCount = ''
             categories = []
+            isbn_10 = ''
             if 'id' in item:
                 id = item['id']
             if 'title' in volumeInfo:
@@ -300,8 +308,14 @@ def list_search(response, update, entity):
                 description = item['volumeInfo']['description']
             if 'publisher' in volumeInfo:
                 publisher = item['volumeInfo']['publisher']
+            if 'industryIdentifiers' in volumeInfo:
+                getFirst = True
+                for identifier in item['volumeInfo']['industryIdentifiers']:
+                    if getFirst:
+                        isbn_10 = identifier['identifier']
+                    getFirst = False
             bookElem = bookObj(id, title, authors, publisher, description, pageCount,
-                               categories)
+                               categories, isbn_10)
             bookList.append(bookElem)
         i = 1
         # List first results
@@ -403,7 +417,6 @@ def filter_by_page_number(response, update, entity):
 def filter_by_category(response, update, entity):
     global bookList
     resp = client.message(update.message.text)
-    search_book_list=''
     filter_category = list(resp['entities']['filter_category'])[0]['value']
     search_book_result = fill_the_list(bookList, filter_category, 'category')
     return search_book_result
@@ -413,13 +426,39 @@ def filter_by_category(response, update, entity):
 def filter_by_author(response, update, entity):
     global bookList
     resp = client.message(update.message.text)
-    search_book_result = ''
     filter_category = list(resp['entities']['author'])[0]['value']
     search_book_result = fill_the_list(bookList, filter_category, 'author')
     return search_book_result
     # TODO this part should be handled by book api class
 
+def book_detail(response, update, entity):
+    global bookList
+    resp = client.message(update.message.text)
+    bookOrder = list(resp['entities']['ordinal'])[0]['value']
+    bookItem = bookList[bookOrder-1]
+    bookDetailMessage = 'Name: '+bookItem.title + '\n'
+    bookDetailMessage += 'Author(s): '
+    for j in range(len(bookItem.authors) - 1):
+        bookDetailMessage += bookItem.authors[j] + ',  '
+    bookDetailMessage += bookItem.authors[-1]+'\n'
+    bookDetailMessage += 'Category(s): '
+    for j in range(len(bookItem.categories) - 1):
+        bookDetailMessage += bookItem.categories[j] + ',  '
+    bookDetailMessage += bookItem.categories[-1]+'\n'
+    bookDetailMessage += 'Page number: '+bookItem.pageCount +'\n'
+    bookDetailMessage += 'Description: ' + bookItem.description +'\n'
+    bookDetailMessage += 'Publisher: '+ bookItem.publisher+'\n'
+    bookDetailMessage += 'Buy from Amazon: '+ buy_book(bookItem.isbn_13)
+    bookDetailMessage += '\n'
+    return bookDetailMessage
 
+
+def buy_book(isbn_13):
+    #generate amazon link
+    amazonUrl = "https://www.amazon.com/gp/search/ref=sr_adv_b/?search-alias=stripbooks&unfiltered=1&field-keywords=&field-author=&field-title=&field-isbn="
+    amazonUrl += isbn_13
+    amazonUrl += "&field-publisher=&node=&field-p_n_condition-type=&p_n_feature_browse-bin=&field-age_range=&field-language=&field-dateop=During&field-datemod=&field-dateyear=&sort=relevanceexprank&Adv-Srch-Books-Submit.x=39&Adv-Srch-Books-Submit.y=15"
+    return amazonUrl
 
 def fill_the_list(bookList, filter_category, type):
     print('fill the list is entered')
@@ -499,6 +538,9 @@ def fill_the_list(bookList, filter_category, type):
                     break
                 i += 1
     return search_book_result
+
+
+
 start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
 general_handler = MessageHandler(Filters.text, general, pass_job_queue=True)
