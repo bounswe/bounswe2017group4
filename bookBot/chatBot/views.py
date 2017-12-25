@@ -94,6 +94,7 @@ def getEdges(request):
         responseSample['current_state_id'] = model_to_dict(edge.current_state_id)
         responseSample['user_response'] = edge.user_response
         responseSample['next_state_id'] = model_to_dict(edge.next_state_id)
+        responseSample['recommended_response'] = edge.recommended_response
         response.append(responseSample)
 
     return JsonResponse(response, safe=False)
@@ -152,11 +153,13 @@ def addEdge(request):
     current_state_id = request.POST.get('current_state_id','')
     user_response = request.POST.get('user_response', '')
     next_state_id = request.POST.get('next_state_id', '')
+    recommended_response = request.POST.get('recommended_response', '')
 
     edge= Edge()
     edge.current_state_id = State.objects.get(id=current_state_id)
     edge.user_response = user_response
     edge.next_state_id = State.objects.get(id=next_state_id)
+    edge.recommended_response = recommended_response
     edge.save()
 
     return JsonResponse("OK", safe=False)
@@ -245,6 +248,7 @@ def editEdge(request):
     current_state_id = request.POST.get('current_state_id', '')
     user_response = request.POST.get('user_response', '')
     next_state_id = request.POST.get('next_state_id', '')
+    recommended_response = request.POST.get('recommended_response', '')
 
     if current_state_id != '':
         edgeObject.current_state_id = State.objects.get(id=current_state_id)
@@ -252,6 +256,8 @@ def editEdge(request):
         edgeObject.user_response = user_response
     if next_state_id != '':
         edgeObject.next_state_id = State.objects.get(id=next_state_id)
+    if recommended_response != '':
+        edgeObject.recommended_response = recommended_response
 
     edgeObject.save()
 
@@ -312,4 +318,3 @@ def deleteResponse(request):
     responseObject.delete()
 
     return JsonResponse("OK", safe=False)
-    
