@@ -164,10 +164,11 @@ def addEdge(request):
 
 @csrf_exempt
 def addResponse(request):
-    edge_id = request.POST.get('edge_id','')
+    state_id = request.POST.get('state_id','')
     chatbot_response = request.POST.get('chatbot_response', '')
+
     response = Response()
-    response.edge_id = edge_id
+    response.state_id = State.objects.get(id=state_id)
     response.chatbot_response = chatbot_response
     response.save()
 
@@ -175,8 +176,10 @@ def addResponse(request):
 
 @csrf_exempt
 def addRating(request):
+    user_id = request.POST.get('user_id','')
+
     rating = UserRating()
-    rating.user = request.POST.get('user','')
+    rating.user = User.objects.get(id=user_id)
     rating.rating = request.POST.get('rating','')
     rating.book_id = request.POST.get('book_id','')
     rating.save()
@@ -185,8 +188,10 @@ def addRating(request):
 
 @csrf_exempt
 def addComment(request):
+    user_id = request.POST.get('user_id','')
+
     comment = UserComment()
-    comment.user = request.POST.get('user','')
+    comment.user = User.objects.get(id=user_id)
     comment.comment = request.POST.get('comment','')
     comment.book_id = request.POST.get('book_id','')
     comment.save()
@@ -207,8 +212,10 @@ def addUser(request):
 #add user interest
 @csrf_exempt
 def addUserInterest(request):
+    user_id = request.POST.get('user_id','')
+
     userinterest=UserInterest()
-    userinterest.user= request.POST.get('user','')
+    userinterest.user= User.objects.get(id=user_id)
     userinterest.interest_type= request.POST.get('interest_type','')
     userinterest.interest= request.POST.get('interest','')
     userinterest.save()
@@ -305,379 +312,4 @@ def deleteResponse(request):
     responseObject.delete()
 
     return JsonResponse("OK", safe=False)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#User
-class UserList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class UserDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-#UserInterest
-class UserInterestList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = UserInterest.objects.all()
-    serializer_class = UserInterestSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class UserInterestDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = UserInterest.objects.all()
-    serializer_class = UserInterestSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-#UserRating
-class UserRatingList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = UserRating.objects.all()
-    serializer_class = UserRatingSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class UserRatingDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = UserRating.objects.all()
-    serializer_class = UserRatingSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-#UserComment
-class UserCommentList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = UserComment.objects.all()
-    serializer_class = UserCommentSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class UserCommentDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = UserComment.objects.all()
-    serializer_class = UserCommentSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-#State
-class StateList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class StateDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-#Edge
-class EdgeList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = Edge.objects.all()
-    serializer_class = EdgeSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class EdgeDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = Edge.objects.all()
-    serializer_class = EdgeSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-#Response
-class ResponseList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = Response.objects.all()
-    serializer_class = ResponseSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class ResponseDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = Response.objects.all()
-    serializer_class = ResponseSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-#History
-class HistoryList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = History.objects.all()
-    serializer_class = HistorySerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class HistoryDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = History.objects.all()
-    serializer_class = HistorySerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+    
