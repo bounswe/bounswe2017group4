@@ -71,7 +71,7 @@ class Response(models.Model):
     chatbot_response = models.CharField(max_length=500)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.state) + '->' + self.chatbot_response
 
 class History(models.Model):
     id = models.AutoField(primary_key=True)
