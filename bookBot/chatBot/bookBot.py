@@ -257,7 +257,7 @@ def list_search(response, update, entity):
             full_url).read()
         json_obj = str(search_response, 'utf-8')
         data = json.loads(json_obj)
-        
+
         # Fill the array of books by id, title, authors, publisher, description, page count and categories
         for item in data['items']:
             volumeInfo = item['volumeInfo']
@@ -316,6 +316,26 @@ def list_search(response, update, entity):
             i += 1
     return search_book_result
 
+def ask_recommendation_preference(response,update,entity):
+	print('Entered ask_recommendation_preference')
+    print(update.message.text)
+    resp = client.message(update.message.text)
+    try:
+        value = resp['entities'][entity][0]['value']
+    except:
+        value = ''
+    return response.format(str(value))
+
+
+def get_recommendation_list(response,update,entity):
+	print('Entered ask_recommendation_preference')
+    print(update.message.text)
+    resp = client.message(update.message.text)
+    try:
+        value = resp['entities'][entity][0]['value']
+    except:
+        value = ''
+    return response.format(str(value))
 
 def filter_by_page_number(response, update, entity):
     global bookList
