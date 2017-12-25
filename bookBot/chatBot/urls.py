@@ -39,6 +39,14 @@ urlpatterns = [
     url('addComment', views.addComment),
     url('addUser', views.addUser),
     url('addUserInterest', views.addUserInterest),
+
+    # UPDATE
+    url('editState', views.editState),
+    url('editEdge', views.editEdge),
+    
+    # DELETE
+    url('deleteState', views.deleteState),
+    url('deleteEdge', views.deleteEdge),
 ]
 
 

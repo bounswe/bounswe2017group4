@@ -203,8 +203,6 @@ def addUser(request):
 
     return JsonResponse("OK", safe=False)
 
-
-
 #add user interest
 @csrf_exempt
 def addUserInterest(request):
@@ -216,9 +214,60 @@ def addUserInterest(request):
 
     return JsonResponse("OK", safe=False)
 
+# EDIT APIS
+@csrf_exempt
+def editState(request):
+    state_id = request.POST.get('state_id', '')
+    stateObject = State.objects.get(id=state_id)
 
+    description = request.POST.get('next_state_id', '')
 
+    if description != '':
+        stateObject.description = description
+        
+    stateObject.save()
 
+    return JsonResponse("OK", safe=False)
+
+@csrf_exempt
+def editEdge(request):
+    edge_id = request.POST.get('edge_id', '')
+    edgeObject = Edge.objects.get(id=edge_id)
+
+    current_state_id = request.POST.get('current_state_id', '')
+    user_response = request.POST.get('user_response', '')
+    next_state_id = request.POST.get('next_state_id', '')
+
+    if current_state_id != '':
+        edgeObject.current_state_id = current_state_id
+    if user_response != '':
+        edgeObject.user_response = user_response
+    if next_state_id != '':
+        edgeObject.next_state_id = next_state_id
+
+    edgeObject.save()
+
+    return JsonResponse("OK", safe=False)
+
+# DELETE APIS
+
+@csrf_exempt
+def deleteState(request):
+    state_id = request.POST.get('state_id', '')
+    stateObject = State.objects.get(id=state_id)
+
+    stateObject.delete()
+
+    return JsonResponse("OK", safe=False)
+
+@csrf_exempt
+def deleteEdge(request):
+    edge_id = request.POST.get('edge_id', '')
+    edgeObject = Edge.objects.get(id=edge_id)
+
+    edgeObject.delete()
+
+    return JsonResponse("OK", safe=False)
 
 
 
