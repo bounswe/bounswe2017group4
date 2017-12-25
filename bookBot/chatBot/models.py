@@ -55,16 +55,16 @@ class State(models.Model):
 class Edge(models.Model):
 
     id = models.IntegerField(primary_key=True)
-    current_state_id = models.ForeignKey(State, null=True, related_name='current')
+    current_state_id = models.ForeignKey(State, null=True, related_name='current', on_delete=models.CASCADE)
     user_response = models.CharField(max_length=200)
-    next_state_id = models.ForeignKey(State, null=True, related_name='next')
+    next_state_id = models.ForeignKey(State, null=True, related_name='next', on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.id)
 
 class Response(models.Model):
     id = models.IntegerField(primary_key=True)
-    state = models.ForeignKey(State)
+    state = models.ForeignKey(State, on_delete=models.CASCADE)
     chatbot_response = models.CharField(max_length=500)
 
     def __str__(self):

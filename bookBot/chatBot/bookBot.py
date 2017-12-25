@@ -18,7 +18,7 @@ access_token = "IQXRZALWN7LAYGHQZWSNKWU2GMGYPHMA"
 name = "Anonymous"
 if(os.environ.get('RUNMODE')=="test"):
 	print("Running in test mode")
-	updater = Updater(token='471766784:AAHJPT82C21DvW_EhZXZ9fEQdS9a94mIYs0')
+	updater = Updater(token='463468162:AAErlS600lDoJrAIhvqn9byvZsn7oYtT11Q')
 else :
 	print("Running in prod mode")
 	updater = Updater(token='306155790:AAHshYWFsAmOKly8107HkSISlUziQz77DLs')
@@ -316,27 +316,6 @@ def list_search(response, update, entity):
             i += 1
     return search_book_result
 
-def ask_recommendation_preference(response,update,entity):
-	print('Entered ask_recommendation_preference')
-    print(update.message.text)
-    resp = client.message(update.message.text)
-    try:
-        value = resp['entities'][entity][0]['value']
-    except:
-        value = ''
-    return response.format(str(value))
-
-
-def get_recommendation_list(response,update,entity):
-	print('Entered ask_recommendation_preference')
-    print(update.message.text)
-    resp = client.message(update.message.text)
-    try:
-        value = resp['entities'][entity][0]['value']
-    except:
-        value = ''
-    return response.format(str(value))
-
 def filter_by_page_number(response, update, entity):
     global bookList
     resp = client.message(update.message.text)
@@ -505,7 +484,34 @@ def fill_the_list(bookList, filter_category, type):
                     break
                 i += 1
     return search_book_result
+
+
+def ask_recommendation(response, update, entity):
+	print("asking recommendation")
+	resp = client.message(update.message.text)
+	try:
+		value = resp['entities'][entity][0]['value']
+	except:
+		value = ''
+	return response.format(str(value))
+
+def save_recommendation_preference(response, update, entity):
+	print("recommendation preference saved")
+	resp = client.message(update.message.text)
+	print('Entered start message')
+	try:
+		value = resp['entities'][entity][0]['value']
+	except:
+		value = ''
+	return response.format(str(value))
+
+def get_recommendation(bot,update):
+	print('in recommendation system')
+	resp = client.message(update.message.text)
+	
 start_handler = CommandHandler('start', start)
+recommended_handler = CommandHandler('recommend',get_recommendation);
 dispatcher.add_handler(start_handler)
+dispatcher.add_handler(recommended_handler)
 general_handler = MessageHandler(Filters.text, general, pass_job_queue=True)
 dispatcher.add_handler(general_handler)
