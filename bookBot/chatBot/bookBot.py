@@ -33,7 +33,7 @@ updater.start_polling()
 current_state_id = 1
 bookList = []
 filtered_bookList = []
-
+bookitem = ''
 blush = emojize(":blush:", use_aliases=True)
 blue_book = emojize(":blue_book:", use_aliases=True)
 green_book = emojize(":green_book:", use_aliases=True)
@@ -91,7 +91,13 @@ def has_none_entity(state_id):
 
 
 def get_state_variables(state_id, entity):
-    edge = models.Edge.objects.get(current_state_id=state_id, user_response=entity)
+    try:
+        edge = models.Edge.objects.get(current_state_id=state_id, user_response=entity)
+    except Exception as e:
+        print(e)
+        edge = models.Edge.objects.get(current_state_id=state_id, user_response='*')
+        print (edge)
+
     current_state = edge.current_state_id
     next_state = edge.next_state_id
     response = random.choice(models.Response.objects.filter(state_id=next_state.id))
@@ -129,17 +135,12 @@ def general(bot, update, job_queue):
             print('my intent is: ' + entity)
             current_state, next_state, response = get_state_variables(current_state_id, entity)
             print('my state is: ' + current_state.description)
-
-            try:
-                value = resp['entities'][entity][0]['value']
-            except:
-                value = ''
             try:
                 text = eval(next_state.description + '(response.chatbot_response, update, entity)')
-            except:
+            except Exception as e:
+                print(e)
                 text = general_state(response.chatbot_response, update, entity)
             bot.send_message(chat_id=update.message.chat_id, text=text)
-            value = ''
             handler_generator(update, job_queue, next_state)
         except Exception as e:
             print(e)
@@ -150,12 +151,9 @@ def general(bot, update, job_queue):
             entity = list(resp['entities'])[1]
             current_state, next_state, response = get_state_variables(current_state_id, entity)
             try:
-                value = resp['entities'][entity][0]['value']
-            except:
-                value = ''
-            try:
                 text = eval(next_state.description + '(response.chatbot_response, update, entity)')
-            except:
+            except Exception as e:
+                print(e)
                 text = general_state(response.chatbot_response, update, entity)
             bot.send_message(chat_id=update.message.chat_id, text=text)
             value = ''
@@ -164,8 +162,20 @@ def general(bot, update, job_queue):
             print(e)
             bot.send_message(chat_id=update.message.chat_id, text=not_understand(models.State.objects.get(id=current_state_id)))
     else:
-        bot.send_message(chat_id=update.message.chat_id,
-                         text=not_understand(models.State.objects.get(id=current_state_id)))
+        try:
+            entity = ''
+            current_state, next_state, response = get_state_variables(current_state_id, entity)
+            try:
+                text = eval(next_state.description + '(response.chatbot_response, update, entity)')
+            except Exception as e:
+                print(e)
+                text = general_state(response.chatbot_response, update, entity)
+            bot.send_message(chat_id=update.message.chat_id, text=text)
+            value = ''
+            handler_generator(update, job_queue, next_state)
+        except Exception as e:
+            print(e)
+            bot.send_message(chat_id=update.message.chat_id, text=not_understand(models.State.objects.get(id=current_state_id)))
 
 
 def not_understand(current_state):
@@ -174,7 +184,8 @@ def not_understand(current_state):
     resp = response.chatbot_response
     try:
         edge = random.choice(models.Edge.objects.filter(current_state_id=current_state_id))
-        resp += '\nYou can enter something like this:\n\"' + edge.recommended_response + '\"'
+        if edge.recommended_response != '':
+            resp += '\nYou can enter something like this:\n\"' + edge.recommended_response + '\"'
     except:
         pass
     return resp
@@ -183,6 +194,7 @@ def not_understand(current_state):
 def general_state(response, update, entity):
     resp = client.message(update.message.text)
     print('Entered start message')
+    print (str(models.Edge.objects.filter(current_state_id=current_state_id)))
     try:
         value = resp['entities'][entity][0]['value']
     except:
@@ -401,7 +413,8 @@ def filter_by_category(response, update, entity):
     global bookList
     resp = client.message(update.message.text)
     filter_category = list(resp['entities']['filter_category'])[0]['value']
-    search_book_result = response + '\n'
+    value = resp['entities'][entity][0]['value']
+    search_book_result = (response + '\n').format(str(value))
     search_book_result += fill_the_list(bookList, filter_category, 'category')
     return search_book_result
     # TODO this part should be handled by book api class
@@ -411,16 +424,20 @@ def filter_by_author(response, update, entity):
     global bookList
     resp = client.message(update.message.text)
     filter_category = list(resp['entities']['author'])[0]['value']
-    search_book_result = response + '\n'
+    value = resp['entities'][entity][0]['value']
+    search_book_result = (response + '\n').format(str(value))
     search_book_result += fill_the_list(bookList, filter_category, 'author')
     return search_book_result
     # TODO this part should be handled by book api class
 
+
 def book_detail(response, update, entity):
     global bookList
+    global bookitem
     resp = client.message(update.message.text)
     bookOrder = list(resp['entities']['ordinal'])[0]['value']
     bookItem = bookList[bookOrder - 1]
+    bookitem = bookItem
     bookDetailMessage = 'Name: ' + bookItem.title + '\n'
     bookDetailMessage += 'Author(s): '
     for j in range(len(bookItem.authors) - 1):
@@ -436,6 +453,49 @@ def book_detail(response, update, entity):
     bookDetailMessage += 'Buy from Amazon: ' + buy_book(bookItem.isbn_13)
     bookDetailMessage += '\n'
     return bookDetailMessage
+
+
+def save_rating(response, update, entity):
+    global bookitem
+    resp = client.message(update.message.text)
+    try:
+        print (resp)
+        value = resp['_text']
+        user = models.User.objects.get(telegram_id=update.message.chat_id)
+        try:
+            user_rating = models.UserRating.objects.get(user=user, book_id=bookitem.isbn_13)
+            user_rating.rating = value
+            user_rating.update()
+        except Exception as e:
+            print(e)
+            user_rating = models.UserRating.objects.create(user=user, book_id=bookitem.isbn_13, rating=value)
+            user_rating.rating = value
+            user_rating.save()
+    except Exception as e:
+        print(e)
+        value = ''
+    print ('rating: ' + response)
+    return response.format(str(value))
+
+
+def save_comment(response, update, entity):
+    global bookitem
+    resp = client.message(update.message.text)
+    try:
+        value = resp['_text']
+        user = models.User.objects.get(telegram_id=update.message.chat_id)
+        try:
+            user_comment = models.UserComment.objects.get(user=user, book_id=bookitem.isbn_13)
+            user_comment.comment = value
+            user_comment.update()
+        except Exception as e:
+            print(e)
+            user_comment = models.UserComment.objects.create(user=user, book_id=bookitem.isbn_13, comment=value)
+            user_comment.save()
+    except Exception as e:
+        print(e)
+        value = ''
+    return response.format(str(value))
 
 
 def buy_book(isbn_13):
