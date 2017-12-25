@@ -240,15 +240,33 @@ def editEdge(request):
     next_state_id = request.POST.get('next_state_id', '')
 
     if current_state_id != '':
-        edgeObject.current_state = State.objects.get(id=current_state_id)
+        edgeObject.current_state_id = State.objects.get(id=current_state_id)
     if user_response != '':
         edgeObject.user_response = user_response
     if next_state_id != '':
-        edgeObject.next_state = State.objects.get(id=next_state_id)
+        edgeObject.next_state_id = State.objects.get(id=next_state_id)
 
     edgeObject.save()
 
     return JsonResponse("OK", safe=False)
+
+
+def editResponse(request):
+    response_id = request.POST.get('response_id','')
+    responseObject = Response.objects.get(id=response_id)
+
+    state=request.POST.get('state', '')
+    chatbot_response = request.POST.get('chatbot_response', '')
+
+    if state != '':
+        responseObject.state = State.objects.get(id=state)
+    if chatbot_response != '':
+        responseObject.chatbot_response = chatbot_response
+
+    responseObject.save()
+
+    return JsonResponse("OK", safe=False)
+
 
 # DELETE APIS
 
@@ -279,7 +297,14 @@ def deleteComment(request):
 
     return JsonResponse("OK", safe=False)
 
+@csrf_exempt
+def deleteResponse(request):
+    response_id=request.POST.get('response_id', '')
+    responseObject = Response.objects.get(id=response_id)
 
+    responseObject.delete()
+
+    return JsonResponse("OK", safe=False)
 
 
 
