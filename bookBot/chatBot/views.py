@@ -152,10 +152,11 @@ def addEdge(request):
     current_state_id = request.POST.get('current_state_id','')
     user_response = request.POST.get('user_response', '')
     next_state_id = request.POST.get('next_state_id', '')
+
     edge= Edge()
-    edge.current_state_id = current_state_id
+    edge.current_state_id = State.objects.get(id=current_state_id)
     edge.user_response = user_response
-    edge.next_state_id = next_state_id
+    edge.next_state_id = State.objects.get(id=next_state_id)
     edge.save()
 
     return JsonResponse("OK", safe=False)
@@ -224,7 +225,7 @@ def editState(request):
 
     if description != '':
         stateObject.description = description
-        
+
     stateObject.save()
 
     return JsonResponse("OK", safe=False)
@@ -239,11 +240,11 @@ def editEdge(request):
     next_state_id = request.POST.get('next_state_id', '')
 
     if current_state_id != '':
-        edgeObject.current_state_id = current_state_id
+        edgeObject.current_state = State.objects.get(id=current_state_id)
     if user_response != '':
         edgeObject.user_response = user_response
     if next_state_id != '':
-        edgeObject.next_state_id = next_state_id
+        edgeObject.next_state = State.objects.get(id=next_state_id)
 
     edgeObject.save()
 
