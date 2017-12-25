@@ -14,16 +14,16 @@ import os
 
 selected_book = 1
 url = 'https://www.googleapis.com/books/v1/volumes?q='
-#wit.ai's token
+# wit.ai's token
 access_token = "IQXRZALWN7LAYGHQZWSNKWU2GMGYPHMA"
 
 name = "Anonymous"
-if(os.environ.get('RUNMODE')=="test"):
-	print("Running in test mode")
-	updater = Updater(token='468419437:AAGyilEfIMQehUMjsfGWE_7pmSpzGQN45qE')
-else :
-	print("Running in prod mode")
-	updater = Updater(token='259050850:AAEmi9ht7rw50zVYjWlszKJvDI7mzgk3Ivg')
+if (os.environ.get('RUNMODE') == "test"):
+    print("Running in test mode")
+    updater = Updater(token='468419437:AAGyilEfIMQehUMjsfGWE_7pmSpzGQN45qE')
+else:
+    print("Running in prod mode")
+    updater = Updater(token='259050850:AAEmi9ht7rw50zVYjWlszKJvDI7mzgk3Ivg')
 
 dispatcher = updater.dispatcher
 client = Wit(access_token=access_token)
@@ -126,20 +126,25 @@ def general(bot, update, job_queue):
         # TODO check if list is empty (not sure if it is important)
         try:
             entity = list(resp['entities'])[0]
-            print('my intent is: ' +entity)
+            print('my intent is: ' + entity)
             current_state, next_state, response = get_state_variables(current_state_id, entity)
-            #print('my state is: '+ current_state)
+            print('my state is: ' + current_state.description)
 
             try:
                 value = resp['entities'][entity][0]['value']
             except:
                 value = ''
-            text = eval(next_state.description + '(response.chatbot_response, update, entity)')
+            try:
+                text = eval(next_state.description + '(response.chatbot_response, update, entity)')
+            except:
+                text = general_state(response.chatbot_response, update, entity)
             bot.send_message(chat_id=update.message.chat_id, text=text)
             value = ''
             handler_generator(update, job_queue, next_state)
-        except:
-            bot.send_message(chat_id=update.message.chat_id, text=not_understand(models.State.objects.get(id=current_state_id)))
+        except Exception as e:
+            print(e)
+            bot.send_message(chat_id=update.message.chat_id,
+                             text=not_understand(models.State.objects.get(id=current_state_id)))
     elif len(list(resp['entities'])) > 1:
         try:
             entity = list(resp['entities'])[1]
@@ -148,18 +153,24 @@ def general(bot, update, job_queue):
                 value = resp['entities'][entity][0]['value']
             except:
                 value = ''
-            text = eval(next_state.description + '(response.chatbot_response, update, entity)')
+            try:
+                text = eval(next_state.description + '(response.chatbot_response, update, entity)')
+            except:
+                text = general_state(response.chatbot_response, update, entity)
             bot.send_message(chat_id=update.message.chat_id, text=text)
             value = ''
             handler_generator(update, job_queue, next_state)
-        except:
-            bot.send_message(chat_id=update.message.chat_id, text=not_understand(current_state))
+        except Exception as e:
+            print(e)
+            bot.send_message(chat_id=update.message.chat_id, text=not_understand(models.State.objects.get(id=current_state_id)))
     else:
-        bot.send_message(chat_id=update.message.chat_id, text=not_understand(models.State.objects.get(id=current_state_id)))
+        bot.send_message(chat_id=update.message.chat_id,
+                         text=not_understand(models.State.objects.get(id=current_state_id)))
 
 
 def not_understand(current_state):
-    response = random.choice(models.Response.objects.filter(state_id=models.State.objects.get(description="does_not_understand")))
+    response = random.choice(
+        models.Response.objects.filter(state_id=models.State.objects.get(description="does_not_understand")))
     resp = response.chatbot_response
     try:
         edge = random.choice(models.Edge.objects.filter(current_state_id=current_state_id))
@@ -169,19 +180,9 @@ def not_understand(current_state):
     return resp
 
 
-def start_message(response, update, entity):
+def general_state(response, update, entity):
     resp = client.message(update.message.text)
     print('Entered start message')
-    try:
-        value = resp['entities'][entity][0]['value']
-    except:
-        value = ''
-    return response.format(str(value))
-
-
-def ask_name(response, update, entity):
-    print('Entered ask name')
-    resp = client.message(update.message.text)
     try:
         value = resp['entities'][entity][0]['value']
     except:
@@ -205,15 +206,6 @@ def meeting_user(response, update, entity):
     return response.format(str(value))
 
 
-def ask_book_interests(response, update, entity):
-    resp = client.message(update.message.text)
-    try:
-        value = resp['entities'][entity][0]['value']
-    except:
-        value = ''
-    return response.format(str(value))
-
-
 def save_book_interests(response, update, entity):
     resp = client.message(update.message.text)
     value = ''
@@ -229,15 +221,6 @@ def save_book_interests(response, update, entity):
     user_interest = models.UserInterest.objects.create(user=user)
     user_interest.interest = value
     user_interest.save()
-    return response.format(str(value))
-
-
-def book_search(response, update, entity):
-    resp = client.message(update.message.text)
-    try:
-        value = resp['entities'][entity][0]['value']
-    except:
-        value = ''
     return response.format(str(value))
 
 
@@ -278,7 +261,7 @@ def list_search(response, update, entity):
             full_url).read()
         json_obj = str(search_response, 'utf-8')
         data = json.loads(json_obj)
-        
+
         # Fill the array of books by id, title, authors, publisher, description, page count and categories
         for item in data['items']:
             volumeInfo = item['volumeInfo']
@@ -350,8 +333,8 @@ def filter_by_page_number(response, update, entity):
     resp = client.message(update.message.text)
     search_book_result = ''
     print('PAGE FILTER IS ENTERED')
+    print (list(resp['entities']))
     if 'is_more' in list(resp['entities']):
-
         filter_num_String = list(resp['entities']['page_filter'])[0]['value']
         filter_num = 0
         print('cast value is ' + filter_num_String)
@@ -410,7 +393,7 @@ def filter_by_page_number(response, update, entity):
                             break
                         i += 1
         except:
-          print('some error that I don\'t know')
+            print('some error that I don\'t know')
     return search_book_result
 
 
@@ -418,7 +401,8 @@ def filter_by_category(response, update, entity):
     global bookList
     resp = client.message(update.message.text)
     filter_category = list(resp['entities']['filter_category'])[0]['value']
-    search_book_result = fill_the_list(bookList, filter_category, 'category')
+    search_book_result = response + '\n'
+    search_book_result += fill_the_list(bookList, filter_category, 'category')
     return search_book_result
     # TODO this part should be handled by book api class
 
@@ -427,7 +411,8 @@ def filter_by_author(response, update, entity):
     global bookList
     resp = client.message(update.message.text)
     filter_category = list(resp['entities']['author'])[0]['value']
-    search_book_result = fill_the_list(bookList, filter_category, 'author')
+    search_book_result = response + '\n'
+    search_book_result += fill_the_list(bookList, filter_category, 'author')
     return search_book_result
     # TODO this part should be handled by book api class
 
@@ -435,43 +420,44 @@ def book_detail(response, update, entity):
     global bookList
     resp = client.message(update.message.text)
     bookOrder = list(resp['entities']['ordinal'])[0]['value']
-    bookItem = bookList[bookOrder-1]
-    bookDetailMessage = 'Name: '+bookItem.title + '\n'
+    bookItem = bookList[bookOrder - 1]
+    bookDetailMessage = 'Name: ' + bookItem.title + '\n'
     bookDetailMessage += 'Author(s): '
     for j in range(len(bookItem.authors) - 1):
         bookDetailMessage += bookItem.authors[j] + ',  '
-    bookDetailMessage += bookItem.authors[-1]+'\n'
+    bookDetailMessage += bookItem.authors[-1] + '\n'
     bookDetailMessage += 'Category(s): '
     for j in range(len(bookItem.categories) - 1):
         bookDetailMessage += bookItem.categories[j] + ',  '
-    bookDetailMessage += bookItem.categories[-1]+'\n'
-    bookDetailMessage += 'Page number: '+bookItem.pageCount +'\n'
-    bookDetailMessage += 'Description: ' + bookItem.description +'\n'
-    bookDetailMessage += 'Publisher: '+ bookItem.publisher+'\n'
-    bookDetailMessage += 'Buy from Amazon: '+ buy_book(bookItem.isbn_13)
+    bookDetailMessage += bookItem.categories[-1] + '\n'
+    bookDetailMessage += 'Page number: ' + bookItem.pageCount + '\n'
+    bookDetailMessage += 'Description: ' + bookItem.description + '\n'
+    bookDetailMessage += 'Publisher: ' + bookItem.publisher + '\n'
+    bookDetailMessage += 'Buy from Amazon: ' + buy_book(bookItem.isbn_13)
     bookDetailMessage += '\n'
     return bookDetailMessage
 
 
 def buy_book(isbn_13):
-    #generate amazon link
+    # generate amazon link
     amazonUrl = "https://www.amazon.com/gp/search/ref=sr_adv_b/?search-alias=stripbooks&unfiltered=1&field-keywords=&field-author=&field-title=&field-isbn="
     amazonUrl += isbn_13
     amazonUrl += "&field-publisher=&node=&field-p_n_condition-type=&p_n_feature_browse-bin=&field-age_range=&field-language=&field-dateop=During&field-datemod=&field-dateyear=&sort=relevanceexprank&Adv-Srch-Books-Submit.x=39&Adv-Srch-Books-Submit.y=15"
     return amazonUrl
 
+
 def fill_the_list(bookList, filter_category, type):
     print('fill the list is entered')
-    print('filter category is '+filter_category)
+    print('filter category is ' + filter_category)
     search_book_result = ''
     for bookElem in bookList:
         i = 1
-        if(type=='more' or type=='less'):
-            if(type=='more'):
+        if (type == 'more' or type == 'less'):
+            if (type == 'more'):
                 for bookElem in bookList:
                     i = 1
                     if int(bookElem.pageCount) > filter_category:
-                        search_book_result += get_book_emoji()+'Name: ' + \
+                        search_book_result += get_book_emoji() + 'Name: ' + \
                                               bookElem.title + '\n'
                         search_book_result += 'Author(s): '
                         for j in range(len(bookElem.authors) - 1):
@@ -489,11 +475,11 @@ def fill_the_list(bookList, filter_category, type):
                         if (i == 5):
                             break
                         i += 1
-            elif(type=='less'):
+            elif (type == 'less'):
                 for bookElem in bookList:
                     i = 1
                     if int(bookElem.pageCount) < filter_category:
-                        search_book_result += get_book_emoji()+'Name: ' + \
+                        search_book_result += get_book_emoji() + 'Name: ' + \
                                               bookElem.title + '\n'
                         search_book_result += 'Author(s): '
                         for j in range(len(bookElem.authors) - 1):
@@ -512,12 +498,12 @@ def fill_the_list(bookList, filter_category, type):
                             break
                         i += 1
         else:
-            if(type=='category'):
+            if (type == 'category'):
                 searchIn = bookElem.categories
-            elif(type=='author'):
+            elif (type == 'author'):
                 searchIn = bookElem.authors
             if filter_category.lower() in (bookElemItem.lower() for bookElemItem in searchIn):
-                search_book_result += get_book_emoji()+'Name: ' + \
+                search_book_result += get_book_emoji() + 'Name: ' + \
                                       bookElem.title + '\n'
                 search_book_result += 'Author(s): '
                 for j in range(len(bookElem.authors) - 1):
@@ -538,7 +524,6 @@ def fill_the_list(bookList, filter_category, type):
                     break
                 i += 1
     return search_book_result
-
 
 
 start_handler = CommandHandler('start', start)
