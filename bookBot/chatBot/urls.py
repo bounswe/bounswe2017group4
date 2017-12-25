@@ -43,11 +43,13 @@ urlpatterns = [
     # UPDATE
     url('editState', views.editState),
     url('editEdge', views.editEdge),
-    
+    url('editResponse', views.editResponse),
+
     # DELETE
     url('deleteState', views.deleteState),
     url('deleteEdge', views.deleteEdge),
     url('deleteComment', views.deleteComment),
+    url('deleteResponse', views.deleteResponse),
 ]
 
 
