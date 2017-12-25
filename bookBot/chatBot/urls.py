@@ -47,6 +47,7 @@ urlpatterns = [
     # DELETE
     url('deleteState', views.deleteState),
     url('deleteEdge', views.deleteEdge),
+    url('deleteComment', views.deleteComment),
 ]
 
 

@@ -270,6 +270,15 @@ def deleteEdge(request):
 
     return JsonResponse("OK", safe=False)
 
+@csrf_exempt
+def deleteComment(request):
+    comment_id = request.POST.get('comment_id', '')
+    commentObject = Edge.objects.get(id=comment_id)
+
+    commentObject.delete()
+
+    return JsonResponse("OK", safe=False)
+
 
 
 
