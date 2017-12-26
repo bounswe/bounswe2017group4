@@ -51,38 +51,42 @@ class BookComments extends Component {
     render() {
         let { searchText, comments, bookName } = this.state;
         return (
-            <div>
-                <input type="text" placeholder="Enter a book name" value={searchText} onChange={this.onChange} />
-                <button onClick={this.onSearchClick} className="btn btn-fill btn-primary" type="submit">Search</button>
-                {
-                    searchText != "" && comments.length != 0 &&
-                    <MuiThemeProvider>
-                        <Card>
-                            <CardHeader title={bookName} />
-                            {
-                                comments.map((comment, index) => (
-                                    <div key={index}>
-                                        <CardTitle subtitle={comment.user.name} />
-                                        <CardText>
-                                            {comment.comment}
-                                        </CardText>
-                                        {
-                                            this.props.isAuthenticated &&
-                                            <CardActions>
-                                                <ConfirmBox
-                                                    showCancelButton={true}
-                                                    onConfirm={() => this.onDeleteConfirm(comment.id)} body="Silmek istediğinize emin misiniz?"
-                                                    confirmText="Delete" cancelText="Cancel" identifier={comment.id}>
-                                                    <a title="Delete" className="btn btn-simple btn-default btn-icon table-action remove"><i className="icon-trash">Delete Comment</i></a>
-                                                </ConfirmBox>
-                                            </CardActions>
-                                        }
-                                    </div>
-                                ))
-                            }
-                        </Card>
-                    </MuiThemeProvider>
-                }
+            <div className="col-md-6 col-md-offset-3 text-center mt20">
+                <div>
+                    <input type="text" className="form-control text-primary" placeholder="Enter a book name" value={searchText} onChange={this.onChange} autoFocus="true" />
+                </div>
+                <div>
+                    <button onClick={this.onSearchClick} className="btn btn-sm btn-fill btn-success mt10" type="submit">Search</button>
+                    {
+                        searchText != "" && comments.length != 0 &&
+                        <MuiThemeProvider>
+                            <Card className="cardStyle">
+                                <CardHeader title={bookName} className="cardHeaderStyle" />
+                                {
+                                    comments.map((comment, index) => (
+                                        <div key={index} className="cardGroupStyle">
+                                            <CardTitle className="cardTitleStyle" subtitle={comment.user.name} />
+                                            <CardText className="cardTextStyle">
+                                                {comment.comment}
+                                            </CardText>
+                                            {
+                                                this.props.isAuthenticated &&
+                                                <CardActions>
+                                                    <ConfirmBox
+                                                        showCancelButton={true}
+                                                        onConfirm={() => this.onDeleteConfirm(comment.id)} body="Silmek istediğinize emin misiniz?"
+                                                        confirmText="Delete" cancelText="Cancel" identifier={comment.id}>
+                                                        <a title="Delete" className="btn btn-simple btn-default btn-icon table-action remove"><i className="icon-trash">Delete Comment</i></a>
+                                                    </ConfirmBox>
+                                                </CardActions>
+                                            }
+                                        </div>
+                                    ))
+                                }
+                            </Card>
+                        </MuiThemeProvider>
+                    }
+                </div>
             </div>
         );
     }
