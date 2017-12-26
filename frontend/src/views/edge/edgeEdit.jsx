@@ -115,9 +115,7 @@ class EdgeEdit extends Component {
             paginationSize: 3,  // the pagination bar size.
             onSizePerPageList: this.onSizePerPageList,
             hideSizePerPage: true, // > You can hide the dropdown for sizePerPage
-            noDataText: 'Veri Yok',
-            onPageChange: this.onPageChange,
-            onSortChange: this.onSortChange
+            noDataText: 'Veri Yok'
         };
         return (
             <MainContainer isTable={true}>
@@ -136,7 +134,6 @@ class EdgeEdit extends Component {
                             remote={true}
                             pagination={false}
                             striped
-                            hover={false}
                         >
                             <TableHeaderColumn width="30%" dataAlign="left" dataField="current_state_id"  type="text" dataFormat={this.stateDetailFormatter}>
                                 <span className="fontBold">Current Node</span>
