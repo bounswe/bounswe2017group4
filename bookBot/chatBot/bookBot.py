@@ -12,6 +12,8 @@ from . import models
 from emoji import emojize
 import os
 
+delBookList = True
+isFilteredResult = False
 selected_book = 1
 url = 'https://www.googleapis.com/books/v1/volumes?q='
 # wit.ai's token
@@ -23,7 +25,8 @@ if (os.environ.get('RUNMODE') == "test"):
     updater = Updater(token='468419437:AAGyilEfIMQehUMjsfGWE_7pmSpzGQN45qE')
 else:
     print("Running in prod mode")
-    updater = Updater(token='306155790:AAHshYWFsAmOKly8107HkSISlUziQz77DLs')
+    updater = Updater(token='468419437:AAGyilEfIMQehUMjsfGWE_7pmSpzGQN45qE')
+
 
 dispatcher = updater.dispatcher
 client = Wit(access_token=access_token)
@@ -132,9 +135,9 @@ def general(bot, update, job_queue):
         # TODO check if list is empty (not sure if it is important)
         try:
             entity = list(resp['entities'])[0]
-            print('my intent is: ' + entity)
+            print('INTENT: ' + entity)
             current_state, next_state, response = get_state_variables(current_state_id, entity)
-            print('my state is: ' + current_state.description)
+            print('STATE: ' + current_state.description)
             try:
                 text = eval(next_state.description + '(response.chatbot_response, update, entity)')
             except Exception as e:
@@ -237,10 +240,15 @@ def save_book_interests(response, update, entity):
 
 
 def list_search(response, update, entity):
+    global isFilteredResult
+    global delBookList
+    isFilteredResult = False
     resp = client.message(update.message.text)
     print('STARTED SEARCH')
     global bookList
-    del bookList[:]
+    if(delBookList):
+        del bookList[:]
+
     value = ''
     search_book_result = ''
     text = ''
@@ -311,7 +319,13 @@ def list_search(response, update, entity):
                     getFirst = False
             bookElem = bookObj(id, title, authors, publisher, description, pageCount,
                                categories, isbn_10)
-            bookList.append(bookElem)
+            if(delBookList):
+                bookList.append(bookElem)
+
+
+
+
+
         i = 1
         # List first results
         # search_book_result = ''
@@ -337,11 +351,16 @@ def list_search(response, update, entity):
             if (i == 5):
                 break
             i += 1
+    delBookList= True
     return search_book_result
 
 
 def filter_by_page_number(response, update, entity):
+    global isFilteredResult
+    isFilteredResult = True
     global bookList
+    global filtered_bookList
+    del filtered_bookList[:]
     resp = client.message(update.message.text)
     search_book_result = ''
     print('PAGE FILTER IS ENTERED')
@@ -349,7 +368,6 @@ def filter_by_page_number(response, update, entity):
     if 'is_more' in list(resp['entities']):
         filter_num_String = list(resp['entities']['page_filter'])[0]['value']
         filter_num = 0
-        print('cast value is ' + filter_num_String)
         try:
             filter_num = int(filter_num_String)
             is_more = list(resp['entities']['is_more'])[0]['value']
@@ -360,6 +378,7 @@ def filter_by_page_number(response, update, entity):
                 for bookElem in bookList:
                     i = 1
                     if int(bookElem.pageCount) > filter_num:
+
                         search_book_result += get_book_emoji() + ' ' + str(i) + '. ' + 'Name: ' + \
                                               bookElem.title + '\n'
                         search_book_result += 'Author(s): '
@@ -375,6 +394,7 @@ def filter_by_page_number(response, update, entity):
                         search_book_result += 'Page Count: ' + \
                                               bookElem.pageCount + '\n'
                         search_book_result += '---------------------------\n'
+                        filtered_bookList.append(bookElem)
                         if (i == 5):
                             break
                         i += 1
@@ -401,6 +421,7 @@ def filter_by_page_number(response, update, entity):
                         search_book_result += 'Page Count: ' + \
                                               bookElem.pageCount + '\n'
                         search_book_result += '---------------------------\n'
+                        filtered_bookList.append(bookElem)
                         if (i == 5):
                             break
                         i += 1
@@ -410,6 +431,8 @@ def filter_by_page_number(response, update, entity):
 
 
 def filter_by_category(response, update, entity):
+    global isFilteredResult
+    isFilteredResult = True
     global bookList
     resp = client.message(update.message.text)
     filter_category = list(resp['entities']['filter_category'])[0]['value']
@@ -421,6 +444,8 @@ def filter_by_category(response, update, entity):
 
 
 def filter_by_author(response, update, entity):
+    global isFilteredResult
+    isFilteredResult = True
     global bookList
     resp = client.message(update.message.text)
     filter_category = list(resp['entities']['author'])[0]['value']
@@ -433,10 +458,18 @@ def filter_by_author(response, update, entity):
 
 def book_detail(response, update, entity):
     global bookList
+    global filtered_bookList
     global bookitem
+    global delBookList
+    usedList = []
+    if (isFilteredResult):
+        usedList = filtered_bookList
+    else:
+        usedList = bookList
+    delBookList =  False
     resp = client.message(update.message.text)
     bookOrder = list(resp['entities']['ordinal'])[0]['value']
-    bookItem = bookList[bookOrder - 1]
+    bookItem = usedList[bookOrder - 1]
     bookitem = bookItem
     bookDetailMessage = 'Name: ' + bookItem.title + '\n'
     bookDetailMessage += 'Author(s): '
@@ -459,7 +492,7 @@ def save_rating(response, update, entity):
     global bookitem
     resp = client.message(update.message.text)
     try:
-        print (resp)
+        print ('resp in save_rating: '+resp)
         value = resp['_text']
         user = models.User.objects.get(telegram_id=update.message.chat_id)
         try:
@@ -529,8 +562,8 @@ def buy_book(isbn_13):
 
 
 def fill_the_list(bookList, filter_category, type):
-    print('fill the list is entered')
-    print('filter category is ' + filter_category)
+    global filtered_bookList
+    del filtered_bookList[:]
     search_book_result = ''
     for bookElem in bookList:
         i = 1
@@ -554,6 +587,7 @@ def fill_the_list(bookList, filter_category, type):
                         search_book_result += 'Page Count: ' + \
                                               bookElem.pageCount + '\n'
                         search_book_result += '---------------------------\n'
+                        filtered_bookList.append(bookElem)
                         if (i == 5):
                             break
                         i += 1
@@ -576,6 +610,7 @@ def fill_the_list(bookList, filter_category, type):
                         search_book_result += 'Page Count: ' + \
                                               bookElem.pageCount + '\n'
                         search_book_result += '---------------------------\n'
+                        filtered_bookList.append(bookElem)
                         if (i == 5):
                             break
                         i += 1
@@ -600,9 +635,8 @@ def fill_the_list(bookList, filter_category, type):
                 search_book_result += 'Page Count: ' + \
                                       bookElem.pageCount + '\n'
                 search_book_result += '---------------------------\n'
-
+                filtered_bookList.append(bookElem)
                 if (i == 5):
-                    print(search_book_result)
                     break
                 i += 1
     return search_book_result
