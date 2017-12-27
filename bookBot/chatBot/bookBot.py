@@ -27,6 +27,7 @@ else:
     print("Running in prod mode")
     updater = Updater(token='468419437:AAGyilEfIMQehUMjsfGWE_7pmSpzGQN45qE')
 
+
 dispatcher = updater.dispatcher
 client = Wit(access_token=access_token)
 logging.basicConfig(
@@ -495,12 +496,12 @@ def save_rating(response, update, entity):
         value = resp['_text']
         user = models.User.objects.get(telegram_id=update.message.chat_id)
         try:
-            user_rating = models.UserRating.objects.get(user=user, book_id=bookitem.isbn_13)
+            user_rating = models.UserRating.objects.get(user=user, book_id=bookitem.title)
             user_rating.rating = value
             user_rating.update()
         except Exception as e:
             print(e)
-            user_rating = models.UserRating.objects.create(user=user, book_id=bookitem.isbn_13, rating=value)
+            user_rating = models.UserRating.objects.create(user=user, book_id=bookitem.title, rating=value)
             user_rating.rating = value
             user_rating.save()
     except Exception as e:
@@ -517,18 +518,40 @@ def save_comment(response, update, entity):
         value = resp['_text']
         user = models.User.objects.get(telegram_id=update.message.chat_id)
         try:
-            user_comment = models.UserComment.objects.get(user=user, book_id=bookitem.isbn_13)
+            user_comment = models.UserComment.objects.get(user=user, book_id=bookitem.title)
             user_comment.comment = value
             user_comment.update()
         except Exception as e:
             print(e)
-            user_comment = models.UserComment.objects.create(user=user, book_id=bookitem.isbn_13, comment=value)
+            user_comment = models.UserComment.objects.create(user=user, book_id=bookitem.title, comment=value)
             user_comment.save()
     except Exception as e:
         print(e)
         value = ''
     return response.format(str(value))
 
+def view_comments_ratings(response,update,entity):
+	global bookitem
+	resp = client.message(update.message.text)
+	value=""
+	try:
+		user = models.User.objects.get(telegram_id=update.message.chat_id)
+		try:
+			user_comment = models.UserComment.objects.filter(book_id=bookitem.title)
+			user_rating= models.UserRating.objects.filter(book_id=bookitem.title)
+			value+=bookitem.title+"\nComments\n"
+			for j in range(len(user_comment)):
+				value+= str(j+1)+") "+user_comment[j].comment+"\n"
+			value+= "\nRatings\n"
+			for j in range(len(user_rating)):
+				value+= str(j+1)+") "+str(user_rating[j].rating)+"\n"
+
+		except Exception as e:
+			print(e)
+	except Exception as e:
+		print(e)
+		value=""		
+	return response.format(str(value))
 
 def buy_book(isbn_13):
     # generate amazon link
