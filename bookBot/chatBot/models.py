@@ -6,8 +6,6 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
 
-
-
 class User(models.Model):
     name = models.CharField(max_length=200)
     password = models.CharField(max_length=100, null=True, blank=True)
@@ -16,6 +14,7 @@ class User(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class UserInterest(models.Model):
     INTEREST_TYPE_CHOICES = (
@@ -30,12 +29,17 @@ class UserInterest(models.Model):
     )
     interest = models.CharField(max_length=200)
 
+    def __str__(self):
+        return str(self.user)
+
+
 class UserRating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.IntegerField(blank=True)
     book_id = models.CharField(max_length=100)
     def __str__(self):
         return self.book_id
+
 
 class UserComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -45,6 +49,7 @@ class UserComment(models.Model):
     def __str__(self):
         return self.book_id
 
+
 class State(models.Model):
     id=models.AutoField(primary_key=True)
     description=models.CharField(max_length=500)
@@ -52,15 +57,19 @@ class State(models.Model):
     def __str__(self):
         return self.description
 
+
 class Edge(models.Model):
 
     id = models.IntegerField(primary_key=True)
     current_state_id = models.ForeignKey(State, null=True, related_name='current', on_delete=models.CASCADE)
     user_response = models.CharField(max_length=200)
-    next_state_id = models.ForeignKey(State, null=True, related_name='next', on_delete=models.CASCADE)
+    next_state_id = models.ForeignKey(State, null=True, related_name='next')
+    recommended_response = models.CharField(max_length=200, blank=True)
+
 
     def __str__(self):
-        return str(self.id)
+        return str(self.current_state_id) + '->' + str(self.next_state_id)
+
 
 class Response(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -68,7 +77,8 @@ class Response(models.Model):
     chatbot_response = models.CharField(max_length=500)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.state) + '->' + self.chatbot_response
+
 
 class History(models.Model):
     id = models.AutoField(primary_key=True)

@@ -99,9 +99,8 @@ class NavBar extends Component {
                             <li className="dropdown chitchat-nav-usermenu">
                                 <div className="dropdown-toggle">
                                     <div className="chitchat-nav-usermenu-username">
-                                        John Due
-                                        &nbsp;|&nbsp;
-                                        <button onClick={this.onClick} className="btn btn-fill btn-primary" type="submit">LOGOUT</button>
+                                        <span className="mr10">John Due</span>
+                                        <button onClick={this.onClick} className="btn btn-fill btn-warning" type="submit">LOGOUT</button>
                                     </div>
                                 </div>
                             </li>
@@ -112,25 +111,27 @@ class NavBar extends Component {
                     <form className="form-horizontal" onSubmit={handleSubmit(this.handleSubmit)}>
                         <ModalHeader>
                             <ModalClose onClick={this.closeModal} />
-                            <ModalTitle>Login</ModalTitle>
+                            <ModalTitle><div className="text-center text-primary">Login</div></ModalTitle>
                         </ModalHeader>
                         <ModalBody>
                             <div className="form-group">
-                                <div className="col-md-12">
-                                    <Field className="col-md-12" name="username" component="input" type="text" placeholder="Username"/>
+                                <div className="col-md-6 col-md-offset-3">
+                                    <Field className="col-md-12 form-control text-primary" name="username" component="input" type="text" placeholder="Username"/>
                                 </div>
-                                <div className="col-md-12">
-                                    <Field className="col-md-12" name="password" component="input" type="password" placeholder="Password"/>
+                                <div className="col-md-6 col-md-offset-3 mt10">
+                                    <Field className="col-md-12 form-control text-primary" name="password" component="input" type="password" placeholder="Password"/>
                                 </div>
                             </div>
                         </ModalBody>
                         <ModalFooter>
-                            <button className="btn btn-fill btn-tertiary" type="reset" onClick={this.closeModal}>
-                                Kapat
-                            </button>
-                            <button disabled={submitting} className="btn btn-fill btn-primary" type="submit">
+                            <div className="text-center">
+                                <button className="btn btn-fill btn-tertiary" type="reset" onClick={this.closeModal}>
+                                    Kapat
+                                </button>
+                                <button disabled={submitting} className="btn btn-fill btn-primary" type="submit">
                                 Login
                             </button>
+                            </div>
                         </ModalFooter>
                     </form>
                 </Modal>

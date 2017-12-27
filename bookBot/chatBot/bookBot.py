@@ -12,16 +12,22 @@ from . import models
 from emoji import emojize
 import os
 
+delBookList = True
+isFilteredResult = False
+selected_book = 1
 url = 'https://www.googleapis.com/books/v1/volumes?q='
+# wit.ai's token
 access_token = "IQXRZALWN7LAYGHQZWSNKWU2GMGYPHMA"
 
 name = "Anonymous"
+
 if(os.environ.get('RUNMODE')=="test"):
 	print("Running in test mode")
 	updater = Updater(token='463468162:AAErlS600lDoJrAIhvqn9byvZsn7oYtT11Q')
 else :
 	print("Running in prod mode")
 	updater = Updater(token='306155790:AAHshYWFsAmOKly8107HkSISlUziQz77DLs')
+
 
 dispatcher = updater.dispatcher
 client = Wit(access_token=access_token)
@@ -30,7 +36,8 @@ logging.basicConfig(
 updater.start_polling()
 current_state_id = 1
 bookList = []
-
+filtered_bookList = []
+bookitem = ''
 blush = emojize(":blush:", use_aliases=True)
 blue_book = emojize(":blue_book:", use_aliases=True)
 green_book = emojize(":green_book:", use_aliases=True)
@@ -41,7 +48,7 @@ __user_id = -1;
 
 
 class bookObj:
-    def __init__(self, id, title, authors, publisher, description, pageCount, categories):
+    def __init__(self, id, title, authors, publisher, description, pageCount, categories, isbn_13):
         self.id = id
         self.title = title
         self.authors = authors
@@ -49,6 +56,7 @@ class bookObj:
         self.description = description
         self.pageCount = pageCount
         self.categories = categories
+        self.isbn_13 = isbn_13
 
 
 def get_book_emoji():
@@ -77,7 +85,7 @@ def callback_with_none(bot, job):
         current_state_id = next_state.id
         dispatcher.add_handler(general_handler)
     except:
-        bot.send_message(chat_id=job.context, text=not_understand())
+        bot.send_message(chat_id=job.context, text=not_understand(current_state))
 
 
 def has_none_entity(state_id):
@@ -89,7 +97,13 @@ def has_none_entity(state_id):
 
 
 def get_state_variables(state_id, entity):
-    edge = models.Edge.objects.get(current_state_id=state_id, user_response=entity)
+    try:
+        edge = models.Edge.objects.get(current_state_id=state_id, user_response=entity)
+    except Exception as e:
+        print(e)
+        edge = models.Edge.objects.get(current_state_id=state_id, user_response='*')
+        print (edge)
+
     current_state = edge.current_state_id
     next_state = edge.next_state_id
     response = random.choice(models.Response.objects.filter(state_id=next_state.id))
@@ -110,8 +124,11 @@ def start(bot, update):
     responses = response_formatter(response.chatbot_response)
     for r in responses:
         bot.send_message(chat_id=update.message.chat_id, text=r + blush, use_aliases=True)
-    # dispatcher.add_handler(start_message_handler)
     current_state_id = 1
+    user = models.User.objects.filter(telegram_id=update.message.chat_id)
+    if len(user) == 0:
+        new_user = models.User.objects.create(telegram_id=update.message.chat_id)
+        new_user.save()
 
 
 def general(bot, update, job_queue):
@@ -121,56 +138,69 @@ def general(bot, update, job_queue):
         # TODO check if list is empty (not sure if it is important)
         try:
             entity = list(resp['entities'])[0]
+            print('INTENT: ' + entity)
             current_state, next_state, response = get_state_variables(current_state_id, entity)
+            print('STATE: ' + current_state.description)
             try:
-                value = resp['entities'][entity][0]['value']
-            except:
-                value = ''
-            text = eval(next_state.description + '(response.chatbot_response, update, entity)')
+                text = eval(next_state.description + '(response.chatbot_response, update, entity)')
+            except Exception as e:
+                print(e)
+                text = general_state(response.chatbot_response, update, entity)
             bot.send_message(chat_id=update.message.chat_id, text=text)
-            value = ''
             handler_generator(update, job_queue, next_state)
-        except:
-            bot.send_message(chat_id=update.message.chat_id, text=not_understand())
+        except Exception as e:
+            print(e)
+            bot.send_message(chat_id=update.message.chat_id,
+                             text=not_understand(models.State.objects.get(id=current_state_id)))
     elif len(list(resp['entities'])) > 1:
         try:
             entity = list(resp['entities'])[1]
-            print (list(resp['entities']))
             current_state, next_state, response = get_state_variables(current_state_id, entity)
             try:
-                value = resp['entities'][entity][0]['value']
-            except:
-                value = ''
-            text = eval(next_state.description + '(response.chatbot_response, update, entity)')
+                text = eval(next_state.description + '(response.chatbot_response, update, entity)')
+            except Exception as e:
+                print(e)
+                text = general_state(response.chatbot_response, update, entity)
             bot.send_message(chat_id=update.message.chat_id, text=text)
             value = ''
             handler_generator(update, job_queue, next_state)
-        except:
-            bot.send_message(chat_id=update.message.chat_id, text=not_understand())
+        except Exception as e:
+            print(e)
+            bot.send_message(chat_id=update.message.chat_id, text=not_understand(models.State.objects.get(id=current_state_id)))
     else:
-        bot.send_message(chat_id=update.message.chat_id, text=not_understand())
+        try:
+            entity = ''
+            current_state, next_state, response = get_state_variables(current_state_id, entity)
+            try:
+                text = eval(next_state.description + '(response.chatbot_response, update, entity)')
+            except Exception as e:
+                print(e)
+                text = general_state(response.chatbot_response, update, entity)
+            bot.send_message(chat_id=update.message.chat_id, text=text)
+            value = ''
+            handler_generator(update, job_queue, next_state)
+        except Exception as e:
+            print(e)
+            bot.send_message(chat_id=update.message.chat_id, text=not_understand(models.State.objects.get(id=current_state_id)))
 
 
-def not_understand():
-    response = random.choice(models.Response.objects.filter(state_id=models.State.objects.get(description="does_not_understand")))
-    return response.chatbot_response
+def not_understand(current_state):
+    response = random.choice(
+        models.Response.objects.filter(state_id=models.State.objects.get(description="does_not_understand")))
+    resp = response.chatbot_response
+    try:
+        edge = random.choice(models.Edge.objects.filter(current_state_id=current_state_id))
+        if edge.recommended_response != '':
+            resp += '\nYou can enter something like this:\n\"' + edge.recommended_response + '\"'
+    except:
+        pass
+    return resp
 
 
-def start_message(response, update, entity):
+def general_state(response, update, entity):
     resp = client.message(update.message.text)
     print('Entered start message')
-    print('what I look for is '+update.message.text)
-    try:
-        value = resp['entities'][entity][0]['value']
-    except:
-        value = ''
-    return response.format(str(value))
-
-
-def ask_name(response, update, entity):
-    print('Entered ask name')
-    print(update.message.text)
-    resp = client.message(update.message.text)
+    print (str(models.Edge.objects.filter(current_state_id=current_state_id)))
     try:
         value = resp['entities'][entity][0]['value']
     except:
@@ -197,15 +227,6 @@ def meeting_user(response, update, entity):
     return response.format(str(value))
 
 
-def ask_book_interests(response, update, entity):
-    resp = client.message(update.message.text)
-    try:
-        value = resp['entities'][entity][0]['value']
-    except:
-        value = ''
-    return response.format(str(value))
-
-
 def save_book_interests(response, update, entity):
     resp = client.message(update.message.text)
     value = ''
@@ -217,23 +238,23 @@ def save_book_interests(response, update, entity):
             else:
                 value += str(resp['entities']
                              [entity][i]['value'])
-    return response.format(str(value))
-
-
-def book_search(response, update, entity):
-    resp = client.message(update.message.text)
-    try:
-        value = resp['entities'][entity][0]['value']
-    except:
-        value = ''
+    user = models.User.objects.get(telegram_id=update.message.chat_id)
+    user_interest = models.UserInterest.objects.create(user=user)
+    user_interest.interest = value
+    user_interest.save()
     return response.format(str(value))
 
 
 def list_search(response, update, entity):
+    global isFilteredResult
+    global delBookList
+    isFilteredResult = False
     resp = client.message(update.message.text)
     print('STARTED SEARCH')
     global bookList
-    del bookList[:]
+    if(delBookList):
+        del bookList[:]
+
     value = ''
     search_book_result = ''
     text = ''
@@ -250,6 +271,10 @@ def list_search(response, update, entity):
         search_book_result += response + '\n'
     else:
         value = resp['entities'][entity][0]['value']
+        user = models.User.objects.get(telegram_id=update.message.chat_id)
+        history = models.History.objects.create(user=user)
+        history.query = value
+        history.save()
         search_book_result += response + '\n'
         search_text = str(value)
         search_text = search_text.replace(' ', '+')
@@ -273,6 +298,7 @@ def list_search(response, update, entity):
             description = ''
             pageCount = ''
             categories = []
+            isbn_10 = ''
             if 'id' in item:
                 id = item['id']
             if 'title' in volumeInfo:
@@ -291,9 +317,21 @@ def list_search(response, update, entity):
                 description = item['volumeInfo']['description']
             if 'publisher' in volumeInfo:
                 publisher = item['volumeInfo']['publisher']
+            if 'industryIdentifiers' in volumeInfo:
+                getFirst = True
+                for identifier in item['volumeInfo']['industryIdentifiers']:
+                    if getFirst:
+                        isbn_10 = identifier['identifier']
+                    getFirst = False
             bookElem = bookObj(id, title, authors, publisher, description, pageCount,
-                               categories)
-            bookList.append(bookElem)
+                               categories, isbn_10)
+            if(delBookList):
+                bookList.append(bookElem)
+
+
+
+
+
         i = 1
         # List first results
         # search_book_result = ''
@@ -319,18 +357,22 @@ def list_search(response, update, entity):
             if (i == 5):
                 break
             i += 1
+    delBookList= True
     return search_book_result
 
 def filter_by_page_number(response, update, entity):
+    global isFilteredResult
+    isFilteredResult = True
     global bookList
+    global filtered_bookList
+    del filtered_bookList[:]
     resp = client.message(update.message.text)
     search_book_result = ''
     print('PAGE FILTER IS ENTERED')
+    print (list(resp['entities']))
     if 'is_more' in list(resp['entities']):
-
         filter_num_String = list(resp['entities']['page_filter'])[0]['value']
         filter_num = 0
-        print('cast value is ' + filter_num_String)
         try:
             filter_num = int(filter_num_String)
             is_more = list(resp['entities']['is_more'])[0]['value']
@@ -341,6 +383,7 @@ def filter_by_page_number(response, update, entity):
                 for bookElem in bookList:
                     i = 1
                     if int(bookElem.pageCount) > filter_num:
+
                         search_book_result += get_book_emoji() + ' ' + str(i) + '. ' + 'Name: ' + \
                                               bookElem.title + '\n'
                         search_book_result += 'Author(s): '
@@ -356,6 +399,7 @@ def filter_by_page_number(response, update, entity):
                         search_book_result += 'Page Count: ' + \
                                               bookElem.pageCount + '\n'
                         search_book_result += '---------------------------\n'
+                        filtered_bookList.append(bookElem)
                         if (i == 5):
                             break
                         i += 1
@@ -382,47 +426,158 @@ def filter_by_page_number(response, update, entity):
                         search_book_result += 'Page Count: ' + \
                                               bookElem.pageCount + '\n'
                         search_book_result += '---------------------------\n'
+                        filtered_bookList.append(bookElem)
                         if (i == 5):
                             break
                         i += 1
         except:
-          print('some error that I don\'t know')
+            print('some error that I don\'t know')
     return search_book_result
 
 
 def filter_by_category(response, update, entity):
+    global isFilteredResult
+    isFilteredResult = True
     global bookList
     resp = client.message(update.message.text)
-    search_book_list=''
     filter_category = list(resp['entities']['filter_category'])[0]['value']
-    search_book_result = fill_the_list(bookList, filter_category, 'category')
+    value = resp['entities'][entity][0]['value']
+    search_book_result = (response + '\n').format(str(value))
+    search_book_result += fill_the_list(bookList, filter_category, 'category')
     return search_book_result
     # TODO this part should be handled by book api class
 
 
 def filter_by_author(response, update, entity):
+    global isFilteredResult
+    isFilteredResult = True
     global bookList
     resp = client.message(update.message.text)
-    search_book_result = ''
     filter_category = list(resp['entities']['author'])[0]['value']
-    search_book_result = fill_the_list(bookList, filter_category, 'author')
+    value = resp['entities'][entity][0]['value']
+    search_book_result = (response + '\n').format(str(value))
+    search_book_result += fill_the_list(bookList, filter_category, 'author')
     return search_book_result
     # TODO this part should be handled by book api class
 
 
+def book_detail(response, update, entity):
+    global bookList
+    global filtered_bookList
+    global bookitem
+    global delBookList
+    usedList = []
+    if (isFilteredResult):
+        usedList = filtered_bookList
+    else:
+        usedList = bookList
+    delBookList =  False
+    resp = client.message(update.message.text)
+    bookOrder = list(resp['entities']['ordinal'])[0]['value']
+    bookItem = usedList[bookOrder - 1]
+    bookitem = bookItem
+    bookDetailMessage = 'Name: ' + bookItem.title + '\n'
+    bookDetailMessage += 'Author(s): '
+    for j in range(len(bookItem.authors) - 1):
+        bookDetailMessage += bookItem.authors[j] + ',  '
+    bookDetailMessage += bookItem.authors[-1] + '\n'
+    bookDetailMessage += 'Category(s): '
+    for j in range(len(bookItem.categories) - 1):
+        bookDetailMessage += bookItem.categories[j] + ',  '
+    bookDetailMessage += bookItem.categories[-1] + '\n'
+    bookDetailMessage += 'Page number: ' + bookItem.pageCount + '\n'
+    bookDetailMessage += 'Description: ' + bookItem.description + '\n'
+    bookDetailMessage += 'Publisher: ' + bookItem.publisher + '\n'
+    bookDetailMessage += 'Buy from Amazon: ' + buy_book(bookItem.isbn_13)
+    bookDetailMessage += '\n'
+    return bookDetailMessage
+
+
+def save_rating(response, update, entity):
+    global bookitem
+    resp = client.message(update.message.text)
+    try:
+        print ('resp in save_rating: '+resp)
+        value = resp['_text']
+        user = models.User.objects.get(telegram_id=update.message.chat_id)
+        try:
+            user_rating = models.UserRating.objects.get(user=user, book_id=bookitem.title)
+            user_rating.rating = value
+            user_rating.update()
+        except Exception as e:
+            print(e)
+            user_rating = models.UserRating.objects.create(user=user, book_id=bookitem.title, rating=value)
+            user_rating.rating = value
+            user_rating.save()
+    except Exception as e:
+        print(e)
+        value = ''
+    print ('rating: ' + response)
+    return response.format(str(value))
+
+
+def save_comment(response, update, entity):
+    global bookitem
+    resp = client.message(update.message.text)
+    try:
+        value = resp['_text']
+        user = models.User.objects.get(telegram_id=update.message.chat_id)
+        try:
+            user_comment = models.UserComment.objects.get(user=user, book_id=bookitem.title)
+            user_comment.comment = value
+            user_comment.update()
+        except Exception as e:
+            print(e)
+            user_comment = models.UserComment.objects.create(user=user, book_id=bookitem.title, comment=value)
+            user_comment.save()
+    except Exception as e:
+        print(e)
+        value = ''
+    return response.format(str(value))
+
+def view_comments_ratings(response,update,entity):
+	global bookitem
+	resp = client.message(update.message.text)
+	value=""
+	try:
+		user = models.User.objects.get(telegram_id=update.message.chat_id)
+		try:
+			user_comment = models.UserComment.objects.filter(book_id=bookitem.title)
+			user_rating= models.UserRating.objects.filter(book_id=bookitem.title)
+			value+=bookitem.title+"\nComments\n"
+			for j in range(len(user_comment)):
+				value+= str(j+1)+") "+user_comment[j].comment+"\n"
+			value+= "\nRatings\n"
+			for j in range(len(user_rating)):
+				value+= str(j+1)+") "+str(user_rating[j].rating)+"\n"
+
+		except Exception as e:
+			print(e)
+	except Exception as e:
+		print(e)
+		value=""		
+	return response.format(str(value))
+
+def buy_book(isbn_13):
+    # generate amazon link
+    amazonUrl = "https://www.amazon.com/gp/search/ref=sr_adv_b/?search-alias=stripbooks&unfiltered=1&field-keywords=&field-author=&field-title=&field-isbn="
+    amazonUrl += isbn_13
+    amazonUrl += "&field-publisher=&node=&field-p_n_condition-type=&p_n_feature_browse-bin=&field-age_range=&field-language=&field-dateop=During&field-datemod=&field-dateyear=&sort=relevanceexprank&Adv-Srch-Books-Submit.x=39&Adv-Srch-Books-Submit.y=15"
+    return amazonUrl
+
 
 def fill_the_list(bookList, filter_category, type):
-    print('fill the list is entered')
-    print('filter category is '+filter_category)
+    global filtered_bookList
+    del filtered_bookList[:]
     search_book_result = ''
     for bookElem in bookList:
         i = 1
-        if(type=='more' or type=='less'):
-            if(type=='more'):
+        if (type == 'more' or type == 'less'):
+            if (type == 'more'):
                 for bookElem in bookList:
                     i = 1
                     if int(bookElem.pageCount) > filter_category:
-                        search_book_result += get_book_emoji()+'Name: ' + \
+                        search_book_result += get_book_emoji() + 'Name: ' + \
                                               bookElem.title + '\n'
                         search_book_result += 'Author(s): '
                         for j in range(len(bookElem.authors) - 1):
@@ -437,14 +592,15 @@ def fill_the_list(bookList, filter_category, type):
                         search_book_result += 'Page Count: ' + \
                                               bookElem.pageCount + '\n'
                         search_book_result += '---------------------------\n'
+                        filtered_bookList.append(bookElem)
                         if (i == 5):
                             break
                         i += 1
-            elif(type=='less'):
+            elif (type == 'less'):
                 for bookElem in bookList:
                     i = 1
                     if int(bookElem.pageCount) < filter_category:
-                        search_book_result += get_book_emoji()+'Name: ' + \
+                        search_book_result += get_book_emoji() + 'Name: ' + \
                                               bookElem.title + '\n'
                         search_book_result += 'Author(s): '
                         for j in range(len(bookElem.authors) - 1):
@@ -459,16 +615,17 @@ def fill_the_list(bookList, filter_category, type):
                         search_book_result += 'Page Count: ' + \
                                               bookElem.pageCount + '\n'
                         search_book_result += '---------------------------\n'
+                        filtered_bookList.append(bookElem)
                         if (i == 5):
                             break
                         i += 1
         else:
-            if(type=='category'):
+            if (type == 'category'):
                 searchIn = bookElem.categories
-            elif(type=='author'):
+            elif (type == 'author'):
                 searchIn = bookElem.authors
             if filter_category.lower() in (bookElemItem.lower() for bookElemItem in searchIn):
-                search_book_result += get_book_emoji()+'Name: ' + \
+                search_book_result += get_book_emoji() + 'Name: ' + \
                                       bookElem.title + '\n'
                 search_book_result += 'Author(s): '
                 for j in range(len(bookElem.authors) - 1):
@@ -483,13 +640,11 @@ def fill_the_list(bookList, filter_category, type):
                 search_book_result += 'Page Count: ' + \
                                       bookElem.pageCount + '\n'
                 search_book_result += '---------------------------\n'
-
+                filtered_bookList.append(bookElem)
                 if (i == 5):
-                    print(search_book_result)
                     break
                 i += 1
     return search_book_result
-
 
 def ask_recommendation(response, update, entity):
 	print("asking recommendation")
