@@ -20,12 +20,13 @@ url = 'https://www.googleapis.com/books/v1/volumes?q='
 access_token = "IQXRZALWN7LAYGHQZWSNKWU2GMGYPHMA"
 
 name = "Anonymous"
-if (os.environ.get('RUNMODE') == "test"):
-    print("Running in test mode")
-    updater = Updater(token='468419437:AAGyilEfIMQehUMjsfGWE_7pmSpzGQN45qE')
-else:
-    print("Running in prod mode")
-    updater = Updater(token='468419437:AAGyilEfIMQehUMjsfGWE_7pmSpzGQN45qE')
+
+if(os.environ.get('RUNMODE')=="test"):
+	print("Running in test mode")
+	updater = Updater(token='463468162:AAErlS600lDoJrAIhvqn9byvZsn7oYtT11Q')
+else :
+	print("Running in prod mode")
+	updater = Updater(token='306155790:AAHshYWFsAmOKly8107HkSISlUziQz77DLs')
 
 
 dispatcher = updater.dispatcher
@@ -42,6 +43,8 @@ blue_book = emojize(":blue_book:", use_aliases=True)
 green_book = emojize(":green_book:", use_aliases=True)
 orange_book = emojize(":orange_book:", use_aliases=True)
 closed_book = emojize(":closed_book:", use_aliases=True)
+
+__user_id = -1;
 
 
 class bookObj:
@@ -207,6 +210,7 @@ def general_state(response, update, entity):
 
 def meeting_user(response, update, entity):
     resp = client.message(update.message.text)
+    global __user_id
     try:
         value = resp['entities'][entity][0]['value']
     except:
@@ -218,6 +222,8 @@ def meeting_user(response, update, entity):
         new_user.save()
     else:
         user.update(name=value)
+    __user_id=models.User.objects.get(telegram_id=update.message.chat_id)
+    print(__user_id)
     return response.format(str(value))
 
 
@@ -353,7 +359,6 @@ def list_search(response, update, entity):
             i += 1
     delBookList= True
     return search_book_result
-
 
 def filter_by_page_number(response, update, entity):
     global isFilteredResult
@@ -641,8 +646,125 @@ def fill_the_list(bookList, filter_category, type):
                 i += 1
     return search_book_result
 
+def ask_recommendation(response, update, entity):
+	print("asking recommendation")
+	resp = client.message(update.message.text)
+	try:
+		value = resp['entities'][entity][0]['value']
+	except:
+		value = ''
+	return response.format(str(value))
+
+def save_recommendation_preference(response, update, entity):
+	print("recommendation preference saved")
+	resp = client.message(update.message.text)
+	print('Entered start message')
+	try:
+		value = resp['entities'][entity][0]['value']
+	except:
+		value = ''
+	return response.format(str(value))
+
+def get_recommendation(bot,update):
+	global current_state_id
+	print('in recommendation system')
+	resp = client.message(update.message.text)
+	global __user_id
+	if(__user_id==-1):
+		__user_id=models.User.objects.get(telegram_id=update.message.chat_id)
+	global bookList
+	del bookList[:]
+	print(__user_id)
+	value = len(models.UserInterest.objects.filter(user=__user_id))
+	if(value==0):
+		bot.send_message(chat_id=update.message.chat_id, text="Ooops! Please tell us what kind of books you read most and try again!", use_aliases=True)
+		current_state_id=4
+		return " "
+	value = random.choice(models.UserInterest.objects.filter(user=__user_id)).interest
+	print(value)
+	search_book_result = ''
+	text = ''
+	search_book_result += '\n'
+	search_text = str(value)
+	search_text = search_text.replace(' ', '+')
+	language = 'en'
+	maxResults = '40'
+	full_url = url + search_text + '&langRestrict=' + \
+			   language + '&maxResults=' + maxResults
+	print(full_url)
+	search_response = urllib.request.urlopen(
+		full_url).read()
+	json_obj = str(search_response, 'utf-8')
+	data = json.loads(json_obj)
+	# Fill the array of books by id, title, authors, publisher, description, page count and categories
+	for item in data['items']:
+		volumeInfo = item['volumeInfo']
+		id = ''
+		title = ''
+		authors = []
+		publisher = ''
+		description = ''
+		pageCount = ''
+		categories = []
+		if 'id' in item:
+			id = item['id']
+		if 'title' in volumeInfo:
+			title = item['volumeInfo']['title']
+		if 'authors' in volumeInfo:
+			for author in item['volumeInfo']['authors']:
+				if author != '':
+					authors.append(author)
+		if 'categories' in volumeInfo:
+			for category in item['volumeInfo']['categories']:
+				if category != '':
+					categories.append(category)
+		if 'pageCount' in volumeInfo:
+			pageCount = str(item['volumeInfo']['pageCount'])
+		if 'description' in volumeInfo:
+			description = item['volumeInfo']['description']
+		if 'publisher' in volumeInfo:
+			publisher = item['volumeInfo']['publisher']
+		bookElem = bookObj(id, title, authors, publisher, description, pageCount,
+						   categories)
+		bookList.append(bookElem)
+
+
+	i = 1
+	# List first results
+	# search_book_result = ''
+	j = 1
+	start = random.randint(1,len(bookList))
+	end = start+3
+	bookList = bookList[start:end]
+	for bookElem in bookList:
+		search_book_result += get_book_emoji() + ' ' + str(i) + '. ' + 'Name: ' + \
+							  bookElem.title + '\n'
+		search_book_result += 'Author(s): '
+		for j in range(len(bookElem.authors) - 1):
+			search_book_result += bookElem.authors[j] + ',  '
+		#search_book_result += bookElem.authors[-1]
+
+		search_book_result += '\n'
+
+		search_book_result += 'Category(s): '
+		for j in range(len(bookElem.categories) - 1):
+			search_book_result += bookElem.categories[j] + ', '
+		#search_book_result += bookElem.categories[-1]
+		search_book_result += '\n'
+		search_book_result += 'Page Count: ' + \
+							  bookElem.pageCount + '\n'
+		search_book_result += '---------------------------\n'
+		if (i == 5):
+			break
+		i += 1
+		#break;
+	print(search_book_result)
+	bot.send_message(chat_id=update.message.chat_id, text=search_book_result, use_aliases=True)
+
 
 start_handler = CommandHandler('start', start)
+recommended_handler = CommandHandler('recommend',get_recommendation);
 dispatcher.add_handler(start_handler)
+dispatcher.add_handler(recommended_handler)
 general_handler = MessageHandler(Filters.text, general, pass_job_queue=True)
 dispatcher.add_handler(general_handler)
