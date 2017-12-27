@@ -16,6 +16,7 @@ urlpatterns = [
     url('getResponses', views.getResponses),
     url('getHistories', views.getHistories),
     url('getInterests', views.getInterests),
+    url('getResponsesOfState', views.getResponsesOfState),
 
     # POST
     url('addState', views.addState),

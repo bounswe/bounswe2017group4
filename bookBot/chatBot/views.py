@@ -112,6 +112,21 @@ def getResponses(request):
 
     return JsonResponse(response, safe=False)
 
+def getResponsesOfState(request):
+    state_id = request.GET.get('state', '')
+    state=State()
+    state=State.objects.get(id=state_id)
+    responses = Response.objects.filter(state=state.description)
+
+    response = []
+    for res in responses:
+        responseSample = {}
+        responseSample['chatbot_response'] =res.chatbot_response
+        responseSample['state'] = model_to_dict(res.state)
+        response.append(responseSample)
+
+    return JsonResponse(response, safe=False)
+
 def getHistories(request):
     responses = History.objects.all()
     response = []
