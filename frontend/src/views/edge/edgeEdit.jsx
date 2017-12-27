@@ -55,10 +55,6 @@ class EdgeEdit extends Component {
         );
     }
 
-    onPageChange() {
-        
-    }
-
     openModal() {
         this.setState({
             isModalOpen: true,
@@ -87,22 +83,45 @@ class EdgeEdit extends Component {
                     toastr.success("New answer is added");
                 },
                 error => {
-                    toastr.success(error);
+                    toastr.error(error);
                 },
                 true
             );
         }
         else if (modalType == 1) {
-            // this.props.actions.put(
-
-            // );
+            let model = {
+                current_state_id: props.current_state_id,
+                user_response: props.user_response,
+                next_state_id: props.next_state,
+                recommended_response: props.recommended_response
+            };
+            this.props.actions.post(
+                "/editEdge",
+                model,
+                () => {
+                    toastr.success("Edge has been editted");
+                },
+                (error) => {
+                    toastr.error(error);
+                },
+                true
+            );
         }
         else if (modalType == 2) {
-            console.log(props);
-            // this.props.actions.delete(
-            //     "/deleteResponse",
-
-            // );
+            let query = {
+                response_id: props.answer
+            };
+            this.props.actions.get(
+                "/deleteResponse",
+                query,
+                () => {
+                    toastr.success("Answer is deleted");
+                },
+                (error) => {
+                    toastr.error(error);
+                },
+                true
+            );
         }
 
         this.getData();

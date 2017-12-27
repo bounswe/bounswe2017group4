@@ -5,6 +5,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ConfirmBox from '../../components/common/confirmBox';
+import { toastr } from 'react-redux-toastr';
 
 class BookComments extends Component {
     constructor (props) {
@@ -12,7 +13,8 @@ class BookComments extends Component {
         this.state = {
             searchText: "",
             bookName: "",
-            comments: []
+            comments: [],
+            rating: 0
         };
 
         this.onChange = this.onChange.bind(this);
@@ -42,14 +44,47 @@ class BookComments extends Component {
             null,
             true
         );
+
+        this.props.actions.get(
+            "/getRatings",
+            query,
+            response => {
+                console.log(response);
+                let avgRating = 0;
+                let count = response.count;
+                response.forEach(element => {
+                    avgRating += element.rating;
+                });
+
+                avgRating = avgRating/count;
+                this.setState({
+                    rating: avgRating
+                });
+            }
+        );
     }
     
-    onDeleteConfirm() {
+    onDeleteConfirm(id) {
+        let query = {
+            comment_id: id
+        };
+        this.props.actions.get(
+            "/deleteComment",
+            query,
+            () => {
+                toastr.succes("Comment is successfully deleted");
+            },
+            (error) => {
+                toastr.error(error);
+            },
+            true
+        );
 
+        this.onSearchClick();
     }
 
     render() {
-        let { searchText, comments, bookName } = this.state;
+        let { searchText, comments, bookName, rating } = this.state;
         return (
             <div className="col-md-6 col-md-offset-3 text-center mt20">
                 <div>
@@ -61,7 +96,7 @@ class BookComments extends Component {
                         searchText != "" && comments.length != 0 &&
                         <MuiThemeProvider>
                             <Card className="cardStyle">
-                                <CardHeader title={bookName} className="cardHeaderStyle" />
+                                <CardHeader title={bookName} subtitle={rating} className="cardHeaderStyle" />
                                 {
                                     comments.map((comment, index) => (
                                         <div key={index} className="cardGroupStyle">
@@ -74,7 +109,7 @@ class BookComments extends Component {
                                                 <CardActions>
                                                     <ConfirmBox
                                                         showCancelButton={true}
-                                                        onConfirm={() => this.onDeleteConfirm(comment.id)} body="Silmek istediğinize emin misiniz?"
+                                                        onConfirm={() => this.onDeleteConfirm(comment.id)} body="Are you sure?"
                                                         confirmText="Delete" cancelText="Cancel" identifier={comment.id}>
                                                         <a title="Delete" className="btn btn-simple btn-default btn-icon table-action remove"><i className="icon-trash">Delete Comment</i></a>
                                                     </ConfirmBox>
