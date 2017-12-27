@@ -63,7 +63,7 @@ class Edge(models.Model):
     id = models.IntegerField(primary_key=True)
     current_state_id = models.ForeignKey(State, null=True, related_name='current', on_delete=models.CASCADE)
     user_response = models.CharField(max_length=200)
-    next_state_id = models.ForeignKey(State, null=True, related_name='next')
+    next_state_id = models.ForeignKey(State, null=True, related_name='next',on_delete=models.CASCADE)
     recommended_response = models.CharField(max_length=200, blank=True)
 
 

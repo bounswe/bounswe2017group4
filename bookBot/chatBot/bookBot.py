@@ -698,35 +698,43 @@ def get_recommendation(bot,update):
 	data = json.loads(json_obj)
 	# Fill the array of books by id, title, authors, publisher, description, page count and categories
 	for item in data['items']:
-		volumeInfo = item['volumeInfo']
-		id = ''
-		title = ''
-		authors = []
-		publisher = ''
-		description = ''
-		pageCount = ''
-		categories = []
-		if 'id' in item:
-			id = item['id']
-		if 'title' in volumeInfo:
-			title = item['volumeInfo']['title']
-		if 'authors' in volumeInfo:
-			for author in item['volumeInfo']['authors']:
-				if author != '':
-					authors.append(author)
-		if 'categories' in volumeInfo:
-			for category in item['volumeInfo']['categories']:
-				if category != '':
-					categories.append(category)
-		if 'pageCount' in volumeInfo:
-			pageCount = str(item['volumeInfo']['pageCount'])
-		if 'description' in volumeInfo:
-			description = item['volumeInfo']['description']
-		if 'publisher' in volumeInfo:
-			publisher = item['volumeInfo']['publisher']
-		bookElem = bookObj(id, title, authors, publisher, description, pageCount,
-						   categories)
-		bookList.append(bookElem)
+            volumeInfo = item['volumeInfo']
+            id = ''
+            title = ''
+            authors = []
+            publisher = ''
+            description = ''
+            pageCount = ''
+            categories = []
+            isbn_10 = ''
+            if 'id' in item:
+                id = item['id']
+            if 'title' in volumeInfo:
+                title = item['volumeInfo']['title']
+            if 'authors' in volumeInfo:
+                for author in item['volumeInfo']['authors']:
+                    if author != '':
+                        authors.append(author)
+            if 'categories' in volumeInfo:
+                for category in item['volumeInfo']['categories']:
+                    if category != '':
+                        categories.append(category)
+            if 'pageCount' in volumeInfo:
+                pageCount = str(item['volumeInfo']['pageCount'])
+            if 'description' in volumeInfo:
+                description = item['volumeInfo']['description']
+            if 'publisher' in volumeInfo:
+                publisher = item['volumeInfo']['publisher']
+            if 'industryIdentifiers' in volumeInfo:
+                getFirst = True
+                for identifier in item['volumeInfo']['industryIdentifiers']:
+                    if getFirst:
+                        isbn_10 = identifier['identifier']
+                    getFirst = False
+            bookElem = bookObj(id, title, authors, publisher, description, pageCount,
+                               categories, isbn_10)
+            if(delBookList):
+                bookList.append(bookElem)
 
 
 	i = 1
