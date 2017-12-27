@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, change } from 'redux-form';
 import * as http from '../../actions/http';
 import { toastr } from 'react-redux-toastr';
 import { MainContainer } from '../../components';
 import { input, dropdown } from '../../components/common/inputComponents';
-import ConfirmBox from '../../components/common/confirmBox';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { Modal, ModalHeader, ModalTitle, ModalClose, ModalBody, ModalFooter } from 'react-modal-bootstrap';
 
@@ -23,21 +22,29 @@ class EdgeEdit extends Component {
             currentPage: 0,
             isModalOpen: false,
             modalTitle: "",
-            edgeList: []
+            edgeList: [],
+            modalType: 0,
+            answerList: []
         };
         
+        this.getData = this.getData.bind(this);
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
-        this.openModalWithRow = this.openModalWithRow.bind(this);
+        this.openModalAsEdit = this.openModalAsEdit.bind(this);
+        this.openModalAsDelete = this.openModalAsDelete.bind(this);
         this.detailFormatter = this.detailFormatter.bind(this);
         this.stateDetailFormatter = this.stateDetailFormatter.bind(this);
     }
 
     componentWillMount() {
+        this.getData();
+    }
+
+    getData() {
         this.props.actions.get(
-            "/getEdges", null,
+            "/getEdges",
+            null,
             response => {
                 this.setState({
                     edgeList: response
@@ -55,7 +62,8 @@ class EdgeEdit extends Component {
     openModal() {
         this.setState({
             isModalOpen: true,
-            modalTitle: "New Edge"
+            modalTitle: "New Edge",
+            modalType: 0
         });
     }
 
@@ -65,33 +73,83 @@ class EdgeEdit extends Component {
     }
 
     handleSubmit(props) {
-        //eğer doluysa update yoksa new
+        let { modalType } = this.state;
+        if (modalType == 0) {
+            console.log(props)
+            let model = {
+                state: props.state,
+                chatbot_response: props.response
+            };
+            return this.props.actions.post(
+                "/addResponse",
+                model,
+                () => {
+                    toastr.success("New answer is added");
+                },
+                error => {
+                    toastr.success(error);
+                },
+                true
+            );
+        }
+        else if (modalType == 1) {
+            // this.props.actions.put(
+
+            // );
+        }
+        else if (modalType == 2) {
+            console.log(props);
+            // this.props.actions.delete(
+            //     "/deleteResponse",
+
+            // );
+        }
+
+        this.getData();
     }
 
-    onDeleteConfirm(id) {
-        // this.props.actions.del(
-        // );
-    }
+    openModalAsEdit(row) {
+        let { dispatch } = this.props;
+        console.log(row);
 
-    openModalWithRow(row) {
-        console.log(row)
         this.props.initialize(row);
         this.setState({
             isModalOpen: true,
-            modalTitle: "Edit Edge"
+            modalTitle: "Edit Edge",
+            modalType: 1
+        });
+
+        dispatch(change("edgeForm", "current_state", row.current_state_id.description));
+        dispatch(change("edgeForm", "response", row.user_response));
+        dispatch(change("edgeForm", "next_state", row));
+    }
+
+    openModalAsDelete(row) {
+        this.props.actions.get(
+            "/getResponses",
+            null,
+            response => {
+                this.setState({
+                    answerList: response.filter(item => item.state.id == row.current_state_id.id)
+                });
+            },
+            null,
+            true
+        );
+        console.log(row);
+
+        this.setState({
+            isModalOpen: true,
+            modalTitle: "Delete answer",
+            modalType: 2
         });
     }
 
     detailFormatter(cell, row) {
         return (
             <div>
-                <a title="Düzenle" className="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)" onClick={() => this.openModalWithRow(row)}><i className="icon-pencil-square-o">Edit</i></a>
-                <ConfirmBox
-                    showCancelButton={true}
-                    onConfirm={() => this.onDeleteConfirm(row.id)} body="Silmek istediğinize emin misiniz?"
-                    confirmText="Delete" cancelText="Cancel" identifier={row.id}>
-                    <a title="Delete" className="btn btn-simple btn-danger btn-icon table-action remove colorDanger"><i className="icon-trash">Delete</i></a>
-                </ConfirmBox>
+                <a title="Edit" className="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)" onClick={() => this.openModalAsEdit(row)}><i className="icon-pencil-square-o">Edit</i></a>
+                <a title="Delete" className="btn btn-simple btn-warning btn-icon table-action remove colorDanger" href="javascript:void(0)" onClick={() => this.openModalAsDelete(row)}><i className="icon-pencil-square-o">Delete</i></a>
             </div>
         );
     }
@@ -106,7 +164,7 @@ class EdgeEdit extends Component {
 
     render() {
         let { handleSubmit, submitting } = this.props;
-        let { isModalOpen, edgeList, currentPage, modalTitle } = this.state;
+        let { isModalOpen, edgeList, currentPage, modalTitle, modalType, answerList } = this.state;
         this.tableOptions = {
             page: currentPage,  // which page you want to show as default
             sizePerPageList: [50, 100, 250], // you can change the dropdown list for size per page
@@ -136,13 +194,13 @@ class EdgeEdit extends Component {
                             striped
                         >
                             <TableHeaderColumn width="30%" dataAlign="left" dataField="current_state_id"  type="text" dataFormat={this.stateDetailFormatter}>
-                                <span className="fontBold">Current Node</span>
+                                <span className="fontBold">Current State</span>
                             </TableHeaderColumn>
                             <TableHeaderColumn width="25%" dataAlign="left" dataField="user_response" type="text">
                                 <span className="fontBold">Response</span>
                             </TableHeaderColumn>
                             <TableHeaderColumn width="30%" dataAlign="left" dataField="next_state_id" type="text" dataFormat={this.stateDetailFormatter}>
-                                <span className="fontBold">Next Node</span>
+                                <span className="fontBold">Next State</span>
                             </TableHeaderColumn>
                             <TableHeaderColumn dataAlign="right" dataField="id" type="text" columnClassName="td-actions text-right" dataFormat={this.detailFormatter} isKey={true} ></TableHeaderColumn>
                         </BootstrapTable>
@@ -152,26 +210,52 @@ class EdgeEdit extends Component {
                                     <ModalClose onClick={this.closeModal} />
                                     <ModalTitle>{modalTitle}</ModalTitle>
                                 </ModalHeader>
-                                <ModalBody>
-                                    <div className="form-group">
-                                        <div className="col-md-12">
-                                            <Field name="state" type="text" placeholder="Select State" component={dropdown} label="Current State" data={edgeList} valueField="id" textField={item => item.user_response + " -> " + item.current_state_id.description} filter="contains" />
+                                {
+                                    modalType == 0 &&
+                                    <ModalBody>
+                                        <div className="form-group">
+                                            <div className="col-md-12">
+                                                <Field name="state" type="text" placeholder="Select State" component={dropdown} label="Current State" data={edgeList} valueField="id" textField={item => item.current_state_id.description + " - " + item.user_response + " - " + item.next_state_id.description} filter="contains" />
+                                            </div>
+                                            <div className="col-md-12 mt20">
+                                                <Field name="response" type="text" component={input} label="Enter a new answer" />
+                                            </div>
                                         </div>
-                                        <div className="col-md-12 mt20">
-                                            <Field name="response" type="text" component={input} label="Cevabı yazınız" />
+                                    </ModalBody>
+                                }
+                                {
+                                    modalType == 1 &&
+                                    <ModalBody>
+                                        <div className="form-group">
+                                            <div className="col-md-12">
+                                            <Field disabled={true} name="current_state" type="text" component={input} label="Current State" />
+                                            </div>
+                                            <div className="col-md-12 mt20">
+                                                <Field disabled={true} name="response" type="text" component={input} label="Response" />
+                                            </div>
+                                            <div className="col-md-12">
+                                                <Field name="next_state" type="text" placeholder="Select State" component={dropdown} label="Next State" data={edgeList} valueField="id" textField={item => item.next_state_id.description} filter="contains" />
+                                            </div>
                                         </div>
-                                        <div className="col-md-12 mt20">
-                                            <Field name="next_state" type="text" placeholder="Select State" component={dropdown} label="Next State" data={edgeList} valueField="id" textField={item => item.user_response + " -> " + item.next_state_id.description} filter="contains" />
+                                    </ModalBody>
+                                }
+                                {
+                                    modalType == 2 &&
+                                    <ModalBody>
+                                        <div className="form-group">
+                                            <div className="col-md-12">
+                                                <Field name="answer" type="text" placeholder="Select an answer to delete" component={dropdown} label="Answer List" data={answerList} valueField="id" textField={item => item.chatbot_response} filter="contains" />
+                                            </div>
                                         </div>
-                                    </div>
-                                </ModalBody>
+                                    </ModalBody>
+                                }
                                 <ModalFooter>
                                     <div className="text-center">
                                         <button className="btn btn-fill btn-tertiary" type="reset" onClick={this.closeModal}>
-                                            Kapat
+                                            Close
                                         </button>
                                         <button disabled={submitting} className="btn btn-fill btn-primary" type="submit">
-                                            Kaydet
+                                            Submit
                                         </button>
                                     </div>
                                 </ModalFooter>
