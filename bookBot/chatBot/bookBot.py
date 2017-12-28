@@ -497,7 +497,7 @@ def save_rating(response, update, entity):
     global bookitem
     resp = client.message(update.message.text)
     try:
-        print ('resp in save_rating: '+resp)
+        print (resp)
         value = resp['_text']
         user = models.User.objects.get(telegram_id=update.message.chat_id)
         try:
@@ -741,7 +741,7 @@ def get_recommendation(bot,update):
 	# List first results
 	# search_book_result = ''
 	j = 1
-	start = random.randint(1,len(bookList))
+	start = random.randint(0,len(bookList))
 	end = start+3
 	bookList = bookList[start:end]
 	for bookElem in bookList:
