@@ -29,21 +29,21 @@ export const get = (url, params, onSuccess, onError, showError, baseUrl, removeT
                 // browserHistory.push('/auth/logout');
             }
             if (response.status == 404) {
-                toastr.error(response.message);
+                // toastr.error(response.message);
             }
             else if (response.status == 500 || response.status == undefined) {
-                toastr.error('Sunucuyla iletişim kurulurken bir hata oluştu.');
+                // toastr.error('Sunucuyla iletişim kurulurken bir hata oluştu.');
             }
             else if (showError) {
                 if (response.response && response.response.text) {
-                    toastr.error(response.response.text);
+                    // toastr.error(response.response.text);
                 }
                 else if (response.message) {
-                    toastr.error(response.message);
+                    // toastr.error(response.message);
                 }
             }
             else {
-                toastr.error(response.message);
+                // toastr.error(response.message);
             }
             onError(response);
         });
@@ -73,14 +73,14 @@ export const post = (url, data, onSuccess, onError, showError, baseUrl, removeTo
                 browserHistory.push('/auth/logout');
             }
             else if (response.status == 500 || response.status == undefined) {
-                toastr.error('Sunucuyla iletişim kurulurken bir hata oluştu.');
+                // toastr.error('Sunucuyla iletişim kurulurken bir hata oluştu.');
             }
             else if (showError) {
                 if (response.response && response.response.text) {
-                    toastr.error('', response.response.text);
+                    // toastr.error('', response.response.text);
                 }
                 else if (response.message) {
-                    toastr.error(response.message);
+                    // toastr.error(response.message);
                 }
             }
             onError(response);
@@ -111,14 +111,14 @@ export const put = (url, data, onSuccess, onError, showError, baseUrl, removeTok
                 browserHistory.push('/auth/logout');
             }
             else if (response.status == 500 || response.status == undefined) {
-                toastr.error('Sunucuyla iletişim kurulurken bir hata oluştu.');
+                // toastr.error('Sunucuyla iletişim kurulurken bir hata oluştu.');
             }
             else if (showError) {
                 if (response.response && response.response.text) {
-                    toastr.error(response.response.text);
+                    // toastr.error(response.response.text);
                 }
                 else if (response.message) {
-                    toastr.error(response.message);
+                    // toastr.error(response.message);
                 }
             }
             onError(response);
@@ -150,14 +150,14 @@ export const del = (url, data, onSuccess, onError, showError, baseUrl, removeTok
                 browserHistory.push('/auth/logout');
             }
             else if (response.status == 500 || response.status == undefined) {
-                toastr.error('Sunucuyla iletişim kurulurken bir hata oluştu.');
+                // toastr.error('Sunucuyla iletişim kurulurken bir hata oluştu.');
             }
             else if (showError) {
                 if (response.response && response.response.text) {
-                    toastr.error(response.response.text);
+                    // toastr.error(response.response.text);
                 }
                 else if (response.message) {
-                    toastr.error(response.message);
+                    // toastr.error(response.message);
                 }
             }
             onError(response);

@@ -49,16 +49,8 @@ class BookComments extends Component {
             "/getRatings",
             query,
             response => {
-                console.log(response);
-                let avgRating = 0;
-                let count = response.count;
-                response.forEach(element => {
-                    avgRating += element.rating;
-                });
-
-                avgRating = avgRating/count;
                 this.setState({
-                    rating: avgRating
+                    rating: response.rating
                 });
             }
         );
@@ -72,10 +64,10 @@ class BookComments extends Component {
             "/deleteComment",
             query,
             () => {
-                toastr.succes("Comment is successfully deleted");
+                // toastr.succes("Comment is successfully deleted");
             },
             (error) => {
-                toastr.error(error);
+                // toastr.error(error);
             },
             true
         );
@@ -96,7 +88,7 @@ class BookComments extends Component {
                         searchText != "" && comments.length != 0 &&
                         <MuiThemeProvider>
                             <Card className="cardStyle">
-                                <CardHeader title={bookName} subtitle={rating} className="cardHeaderStyle" />
+                                <CardHeader title={bookName} className="cardHeaderStyle" />
                                 {
                                     comments.map((comment, index) => (
                                         <div key={index} className="cardGroupStyle">
