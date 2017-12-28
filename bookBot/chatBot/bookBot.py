@@ -754,14 +754,14 @@ def get_recommendation(bot,update):
 		search_book_result += 'Author(s): '
 		for j in range(len(bookElem.authors) - 1):
 			search_book_result += bookElem.authors[j] + ',  '
-		search_book_result += bookElem.authors[-1]
+		#search_book_result += bookElem.authors[-1]
 
 		search_book_result += '\n'
 
 		search_book_result += 'Category(s): '
 		for j in range(len(bookElem.categories) - 1):
 			search_book_result += bookElem.categories[j] + ', '
-		search_book_result += bookElem.categories[-1]
+		#search_book_result += bookElem.categories[-1]
 		search_book_result += '\n'
 		search_book_result += 'Page Count: ' + \
 							  bookElem.pageCount + '\n'
