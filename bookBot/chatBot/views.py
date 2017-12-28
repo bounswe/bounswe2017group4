@@ -186,7 +186,7 @@ def addResponse(request):
     chatbot_response = request.POST.get('chatbot_response', '')
 
     response = Response()
-    response.state_id = State.objects.get(id=state_id)
+    response.state = State.objects.get(id=state_id)
     response.chatbot_response = chatbot_response
     response.save()
 
