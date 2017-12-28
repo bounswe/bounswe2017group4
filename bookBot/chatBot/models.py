@@ -42,7 +42,7 @@ class UserRating(models.Model):
 
 
 class UserComment(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.CharField(max_length=500, blank=True)
     book_id = models.CharField(max_length=100)
@@ -52,7 +52,7 @@ class UserComment(models.Model):
 
 
 class State(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     description=models.CharField(max_length=500)
 
     def __str__(self):
