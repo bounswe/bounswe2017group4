@@ -17,7 +17,7 @@ export const history = syncHistoryWithStore(browserHistory, store);
 render(
     <Provider store={store}>
         <main>
-            <ReduxToastr timeOut={4000} newestOnTop={Boolean(true)} position="top-right" />
+            {/* <ReduxToastr timeOut={4000} newestOnTop={Boolean(true)} position="top-right" /> */}
             <Router history={history} routes={routes} />
         </main>
     </Provider>

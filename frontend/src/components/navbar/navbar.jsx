@@ -55,11 +55,11 @@ class NavBar extends Component {
                 if (response) {
                     this.props.auth.authenticate();
                     browserHistory.push("/edgeedit");
-                    toastr.success("Login successful");
+                    // toastr.success("Login successful");
                     this.closeModal();
                 }
                 else {
-                    toastr.error("Login failed");
+                    // toastr.error("Login failed");
                 }
             },
             null,
