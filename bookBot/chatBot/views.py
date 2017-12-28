@@ -94,6 +94,7 @@ def getEdges(request):
         responseSample['current_state_id'] = model_to_dict(edge.current_state_id)
         responseSample['user_response'] = edge.user_response
         responseSample['next_state_id'] = model_to_dict(edge.next_state_id)
+        responseSample['recommended_response'] = edge.recommended_response
         response.append(responseSample)
 
     return JsonResponse(response, safe=False)
@@ -107,6 +108,21 @@ def getResponses(request):
         responseSample['id'] = res.id
         responseSample['state'] = model_to_dict(res.state)
         responseSample['chatbot_response'] = res.chatbot_response
+        response.append(responseSample)
+
+    return JsonResponse(response, safe=False)
+
+def getResponsesOfState(request):
+    state_id = request.GET.get('state', '')
+    state=State()
+    state=State.objects.get(id=state_id)
+    responses = Response.objects.filter(state=state.description)
+
+    response = []
+    for res in responses:
+        responseSample = {}
+        responseSample['chatbot_response'] =res.chatbot_response
+        responseSample['state'] = model_to_dict(res.state)
         response.append(responseSample)
 
     return JsonResponse(response, safe=False)
@@ -152,10 +168,13 @@ def addEdge(request):
     current_state_id = request.POST.get('current_state_id','')
     user_response = request.POST.get('user_response', '')
     next_state_id = request.POST.get('next_state_id', '')
+    recommended_response = request.POST.get('recommended_response', '')
+
     edge= Edge()
-    edge.current_state_id = current_state_id
+    edge.current_state_id = State.objects.get(id=current_state_id)
     edge.user_response = user_response
-    edge.next_state_id = next_state_id
+    edge.next_state_id = State.objects.get(id=next_state_id)
+    edge.recommended_response = recommended_response
     edge.save()
 
     return JsonResponse("OK", safe=False)
@@ -163,10 +182,11 @@ def addEdge(request):
 
 @csrf_exempt
 def addResponse(request):
-    edge_id = request.POST.get('edge_id','')
+    state_id = request.POST.get('state_id','')
     chatbot_response = request.POST.get('chatbot_response', '')
+
     response = Response()
-    response.edge_id = edge_id
+    response.state = State.objects.get(id=state_id)
     response.chatbot_response = chatbot_response
     response.save()
 
@@ -174,8 +194,10 @@ def addResponse(request):
 
 @csrf_exempt
 def addRating(request):
+    user_id = request.POST.get('user_id','')
+
     rating = UserRating()
-    rating.user = request.POST.get('user','')
+    rating.user = User.objects.get(id=user_id)
     rating.rating = request.POST.get('rating','')
     rating.book_id = request.POST.get('book_id','')
     rating.save()
@@ -184,8 +206,10 @@ def addRating(request):
 
 @csrf_exempt
 def addComment(request):
+    user_id = request.POST.get('user_id','')
+
     comment = UserComment()
-    comment.user = request.POST.get('user','')
+    comment.user = User.objects.get(id=user_id)
     comment.comment = request.POST.get('comment','')
     comment.book_id = request.POST.get('book_id','')
     comment.save()
@@ -203,397 +227,109 @@ def addUser(request):
 
     return JsonResponse("OK", safe=False)
 
-
-
 #add user interest
 @csrf_exempt
 def addUserInterest(request):
+    user_id = request.POST.get('user_id','')
+
     userinterest=UserInterest()
-    userinterest.user= request.POST.get('user','')
+    userinterest.user= User.objects.get(id=user_id)
     userinterest.interest_type= request.POST.get('interest_type','')
     userinterest.interest= request.POST.get('interest','')
     userinterest.save()
 
     return JsonResponse("OK", safe=False)
 
+# EDIT APIS
+@csrf_exempt
+def editState(request):
+    state_id = request.POST.get('state_id', '')
+    stateObject = State.objects.get(id=state_id)
 
+    description = request.POST.get('next_state_id', '')
 
+    if description != '':
+        stateObject.description = description
 
+    stateObject.save()
 
+    return JsonResponse("OK", safe=False)
 
+@csrf_exempt
+def editEdge(request):
+    edge_id = request.POST.get('edge_id', '')
+    edgeObject = Edge.objects.get(id=edge_id)
 
+    current_state_id = request.POST.get('current_state_id', '')
+    user_response = request.POST.get('user_response', '')
+    next_state_id = request.POST.get('next_state_id', '')
+    recommended_response = request.POST.get('recommended_response', '')
 
+    if current_state_id != '':
+        edgeObject.current_state_id = State.objects.get(id=current_state_id)
+    if user_response != '':
+        edgeObject.user_response = user_response
+    if next_state_id != '':
+        edgeObject.next_state_id = State.objects.get(id=next_state_id)
+    if recommended_response != '':
+        edgeObject.recommended_response = recommended_response
 
+    edgeObject.save()
 
+    return JsonResponse("OK", safe=False)
 
 
+def editResponse(request):
+    response_id = request.POST.get('response_id','')
+    responseObject = Response.objects.get(id=response_id)
 
+    state=request.POST.get('state', '')
+    chatbot_response = request.POST.get('chatbot_response', '')
 
+    if state != '':
+        responseObject.state = State.objects.get(id=state)
+    if chatbot_response != '':
+        responseObject.chatbot_response = chatbot_response
 
+    responseObject.save()
 
+    return JsonResponse("OK", safe=False)
 
 
+# DELETE APIS
 
+@csrf_exempt
+def deleteState(request):
+    state_id = request.POST.get('state_id', '')
+    stateObject = State.objects.get(id=state_id)
 
+    stateObject.delete()
 
+    return JsonResponse("OK", safe=False)
 
+@csrf_exempt
+def deleteEdge(request):
+    edge_id = request.POST.get('edge_id', '')
+    edgeObject = Edge.objects.get(id=edge_id)
 
+    edgeObject.delete()
 
+    return JsonResponse("OK", safe=False)
 
+@csrf_exempt
+def deleteComment(request):
+    comment_id = request.POST.get('comment_id', '')
+    commentObject = Edge.objects.get(id=comment_id)
 
+    commentObject.delete()
 
+    return JsonResponse("OK", safe=False)
 
+@csrf_exempt
+def deleteResponse(request):
+    response_id=request.POST.get('response_id', '')
+    responseObject = Response.objects.get(id=response_id)
 
+    responseObject.delete()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#User
-class UserList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class UserDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-#UserInterest
-class UserInterestList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = UserInterest.objects.all()
-    serializer_class = UserInterestSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class UserInterestDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = UserInterest.objects.all()
-    serializer_class = UserInterestSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-#UserRating
-class UserRatingList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = UserRating.objects.all()
-    serializer_class = UserRatingSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class UserRatingDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = UserRating.objects.all()
-    serializer_class = UserRatingSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-#UserComment
-class UserCommentList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = UserComment.objects.all()
-    serializer_class = UserCommentSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class UserCommentDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = UserComment.objects.all()
-    serializer_class = UserCommentSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-#State
-class StateList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class StateDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-#Edge
-class EdgeList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = Edge.objects.all()
-    serializer_class = EdgeSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class EdgeDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = Edge.objects.all()
-    serializer_class = EdgeSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-#Response
-class ResponseList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = Response.objects.all()
-    serializer_class = ResponseSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class ResponseDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = Response.objects.all()
-    serializer_class = ResponseSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-#History
-class HistoryList(mixins.ListModelMixin, mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
-    queryset = History.objects.all()
-    serializer_class = HistorySerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class HistoryDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = History.objects.all()
-    serializer_class = HistorySerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+    return JsonResponse("OK", safe=False)
