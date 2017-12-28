@@ -216,7 +216,7 @@ class EdgeEdit extends Component {
                 <ConfirmBox
                     showCancelButton={true}
                     onConfirm={() => this.onDeleteConfirm(row)} body="Are you sure?"
-                    confirmText="Delete" cancelText="Cancel" identifier={row.id}>
+                    confirmText="Delete" identifier={row.id}>
                     <a title="Delete Edge" className="btn btn-simple btn-default btn-icon table-action remove colorDanger"><i className="icon-trash">Delete Edge</i></a>
                 </ConfirmBox>
                 <a title="Delete Response" className="btn btn-simple btn-warning btn-icon table-action remove colorDanger" href="javascript:void(0)" onClick={() => this.openModalAsDeleteResponse(row)}><i className="icon-pencil-square-o">Delete Response</i></a>
