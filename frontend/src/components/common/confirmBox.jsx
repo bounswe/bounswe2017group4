@@ -32,8 +32,6 @@ class ConfirmBox extends React.Component {
     }
 
     render() {
-        let cancelButton = this.props.showCancelButton ?
-            (<div className={this.props.cancelBSStyle} onClick={this.onConfirmClose}><i className="icon-times"></i> {this.props.cancelText}</div>) : null;
         let modal = (
             <Modal className="confirm-box" isOpen={this.state.isConfirmBoxOpen} onRequestHide={this.onConfirmClose}>
                 <ModalHeader>
@@ -44,7 +42,6 @@ class ConfirmBox extends React.Component {
                     {this.props.body}
                 </ModalBody>
                 <ModalFooter>
-                    {cancelButton}
                     <button disabled={this.state.disableButton} className={this.props.confirmBSStyle} onClick={this.onConfirm}> <i className="icon-check"></i> {this.props.confirmText}</button>
                 </ModalFooter>
             </Modal>
