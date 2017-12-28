@@ -26,7 +26,7 @@ if(os.environ.get('RUNMODE')=="test"):
 	updater = Updater(token='463468162:AAErlS600lDoJrAIhvqn9byvZsn7oYtT11Q')
 else :
 	print("Running in prod mode")
-	updater = Updater(token='306155790:AAHshYWFsAmOKly8107HkSISlUziQz77DLs')
+	updater = Updater(token='468419437:AAGyilEfIMQehUMjsfGWE_7pmSpzGQN45qE')
 
 
 dispatcher = updater.dispatcher
@@ -754,14 +754,14 @@ def get_recommendation(bot,update):
 		search_book_result += 'Author(s): '
 		for j in range(len(bookElem.authors) - 1):
 			search_book_result += bookElem.authors[j] + ',  '
-		#search_book_result += bookElem.authors[-1]
+		search_book_result += bookElem.authors[-1]
 
 		search_book_result += '\n'
 
 		search_book_result += 'Category(s): '
 		for j in range(len(bookElem.categories) - 1):
 			search_book_result += bookElem.categories[j] + ', '
-		#search_book_result += bookElem.categories[-1]
+		search_book_result += bookElem.categories[-1]
 		search_book_result += '\n'
 		search_book_result += 'Page Count: ' + \
 							  bookElem.pageCount + '\n'
