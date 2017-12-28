@@ -539,6 +539,8 @@ def view_comments_ratings(response,update,entity):
 	global bookitem
 	resp = client.message(update.message.text)
 	value=""
+	overall=0
+	overallRate=0
 	try:
 		user = models.User.objects.get(telegram_id=update.message.chat_id)
 		try:
@@ -550,7 +552,9 @@ def view_comments_ratings(response,update,entity):
 			value+= "\nRatings\n"
 			for j in range(len(user_rating)):
 				value+= str(j+1)+") "+str(user_rating[j].rating)+"\n"
-
+				overall+=user_rating[j].rating
+			overallRate=overall/len(user_rating)
+			value+="\nOverall:"+str(round(overallRate,2))
 		except Exception as e:
 			print(e)
 	except Exception as e:
