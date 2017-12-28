@@ -60,7 +60,7 @@ class BookComments extends Component {
         let query = {
             comment_id: id
         };
-        this.props.actions.get(
+        this.props.actions.post(
             "/deleteComment",
             query,
             () => {
