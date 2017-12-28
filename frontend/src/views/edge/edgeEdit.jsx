@@ -34,6 +34,7 @@ class EdgeEdit extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.openModalAsEditEdge = this.openModalAsEditEdge.bind(this);
         this.openModalAsDeleteResponse = this.openModalAsDeleteResponse.bind(this);
+        this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
         this.detailFormatter = this.detailFormatter.bind(this);
         this.stateDetailFormatter = this.stateDetailFormatter.bind(this);
     }
@@ -75,16 +76,34 @@ class EdgeEdit extends Component {
         this.props.initialize(null);
     }
 
+    onDeleteConfirm(id) {
+        let model = {
+            edge_id: id
+        };
+        this.props.actions.post(
+            "/deleteEdge",
+            model,
+            () => {
+                this.closeModal();
+                // toastr.success("Edge has been editted");
+            },
+            (error) => {
+                // toastr.error(error);
+            },
+            true
+        );
+    }
+
     handleSubmit(props) {
         let { modalTitle } = this.state;
         if (modalTitle == "New Edge") {
             let model = {
-                current_state_id: props.current_state,
-                user_response: props.intent,
-                next_state_id: props.next_state,
+                current_state_id: props.current_state_id,
+                user_response: props.user_response,
+                next_state_id: props.next_state_id,
                 recommended_response: props.recommended_response
             };
-            return this.props.actions.post(
+            this.props.actions.post(
                 "/addEdge",
                 model,
                 () => {
@@ -100,14 +119,16 @@ class EdgeEdit extends Component {
             let model = {
                 edge_id: props.id,
                 current_state_id: props.current_state_id.current_state_id.id,
-                user_response: props.intent,
+                user_response: props.user_response,
                 next_state_id: props.next_state_id.next_state_id.id,
                 recommended_response: props.recommended_response
             };
+            
             this.props.actions.post(
                 "/editEdge",
                 model,
                 () => {
+                    this.closeModal();
                     // toastr.success("Edge has been editted");
                 },
                 (error) => {
@@ -116,35 +137,33 @@ class EdgeEdit extends Component {
                 true
             );
         }
-        else if (modalTitle == "Delete Edge") {
-            let model = {
-                edge_id: props.id,
-                current_state_id: props.current_state_id.id,
-                user_response: props.intent,
-                next_state_id: props.next_state,
-                recommended_response: props.recommended_response
-            };
-            this.props.actions.post(
-                "/editEdge",
-                model,
-                () => {
-                    // toastr.success("Edge has been editted");
-                },
-                (error) => {
-                    // toastr.error(error);
-                },
-                true
-            );
-        }
+        // else if (modalTitle == "Delete Edge") {
+        //     let model = {
+        //         edge_id: props.id
+        //     };
+        //     this.props.actions.post(
+        //         "/deleteEdge",
+        //         model,
+        //         () => {
+        //             this.closeModal();
+        //             // toastr.success("Edge has been editted");
+        //         },
+        //         (error) => {
+        //             // toastr.error(error);
+        //         },
+        //         true
+        //     );
+        // }
         else if (modalTitle == "New Response") {
             let query = {
                 state_id: props.current_state_id,
                 chatbot_response: props.chatbot_response
             };
-            this.props.actions.get(
+            this.props.actions.post(
                 "/addResponse",
                 query,
                 () => {
+                    this.closeModal();
                     // toastr.success("New chatbot response is added");
                 },
                 (error) => {
@@ -157,10 +176,11 @@ class EdgeEdit extends Component {
             let query = {
                 response_id: props.response_id
             };
-            this.props.actions.get(
+            this.props.actions.post(
                 "/deleteResponse",
                 query,
                 () => {
+                    this.closeModal();                    
                     // toastr.success("Answer is deleted");
                 },
                 (error) => {
@@ -215,7 +235,7 @@ class EdgeEdit extends Component {
                 <a title="Edit Edge" className="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)" onClick={() => this.openModalAsEditEdge(row)}><i className="icon-pencil-square-o">Edit Edge</i></a>
                 <ConfirmBox
                     showCancelButton={true}
-                    onConfirm={() => this.onDeleteConfirm(row)} body="Are you sure?"
+                    onConfirm={() => this.onDeleteConfirm(row.id)} body="Are you sure?"
                     confirmText="Delete" identifier={row.id}>
                     <a title="Delete Edge" className="btn btn-simple btn-default btn-icon table-action remove colorDanger"><i className="icon-trash">Delete Edge</i></a>
                 </ConfirmBox>
@@ -234,7 +254,7 @@ class EdgeEdit extends Component {
 
     render() {
         let { handleSubmit, submitting } = this.props;
-        let { isModalOpen, edgeList, currentPage, modalTitle, modalType, answerList } = this.state;
+        let { isModalOpen, edgeList, currentPage, modalTitle, answerList } = this.state;
         this.tableOptions = {
             page: currentPage,  // which page you want to show as default
             sizePerPageList: [50, 100, 250], // you can change the dropdown list for size per page
@@ -293,7 +313,7 @@ class EdgeEdit extends Component {
                                                 <Field name="current_state_id" type="text" placeholder="Select State" component={dropdown} label="Current State" data={edgeList} valueField="id" textField={item => item.current_state_id.description} filter="contains" />
                                             </div>
                                             <div className="col-md-12 mt20">
-                                                <Field name="user;_response" type="text" component={input} label="Enter a new intent" />
+                                                <Field name="user_response" type="text" component={input} label="Enter a new intent" />
                                             </div>
                                             <div className="col-md-12">
                                                 <Field name="next_state_id" type="text" placeholder="Select State" component={dropdown} label="Next State" data={edgeList} valueField="id" textField={item => item.next_state_id.description} filter="contains" />
@@ -328,7 +348,7 @@ class EdgeEdit extends Component {
                                     <ModalBody>
                                         <div className="form-group">
                                             <div className="col-md-12">
-                                                <Field name="curret_state_id" type="text" placeholder="Select State" component={dropdown} label="Current State" data={edgeList} valueField="id" textField={item => item.current_state_id.description} filter="contains" />
+                                                <Field name="current_state_id" type="text" placeholder="Select State" component={dropdown} label="Current State" data={edgeList} valueField="id" textField={item => item.current_state_id.description} filter="contains" />
                                             </div>
                                             <div className="col-md-12 mt20">
                                                 <Field name="chatbot_response" type="text" component={input} label="Enter a new answer" />

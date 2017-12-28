@@ -45,15 +45,15 @@ class BookComments extends Component {
             true
         );
 
-        this.props.actions.get(
-            "/getRatings",
-            query,
-            response => {
-                this.setState({
-                    rating: response.rating
-                });
-            }
-        );
+        // this.props.actions.get(
+        //     "/getRatings",
+        //     query,
+        //     response => {
+        //         this.setState({
+        //             rating: response.rating
+        //         });
+        //     }
+        // );
     }
     
     onDeleteConfirm(id) {
@@ -76,7 +76,7 @@ class BookComments extends Component {
     }
 
     render() {
-        let { searchText, comments, bookName, rating } = this.state;
+        let { searchText, comments, bookName } = this.state;
         return (
             <div className="col-md-6 col-md-offset-3 text-center mt20">
                 <div>

@@ -52,7 +52,7 @@ export const get = (url, params, onSuccess, onError, showError, baseUrl, removeT
 /**
 * http post request
 */
-export const post = (url, data, onSuccess, onError, showError, baseUrl, removeToken, isUrlEncoded = false) => {
+export const post = (url, data, onSuccess, onError, showError, baseUrl, removeToken, isUrlEncoded = true) => {
     let requestUrl = constants.BUSINESS_SERVICE + url;
     let bearerToken = null;
     if (baseUrl) {
@@ -62,7 +62,7 @@ export const post = (url, data, onSuccess, onError, showError, baseUrl, removeTo
         bearerToken = 'Bearer ' + localStorage.getItem('token');
     }
     return Request.post(requestUrl)
-        .type(isUrlEncoded ? 'application/x-www-form-urlencoded' : 'application/json')
+        .type(isUrlEncoded ? 'form' : 'application/json')
         .set('Authorization', bearerToken)
         .send(isUrlEncoded ? data : data)
         .then(response => {
