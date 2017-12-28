@@ -26,7 +26,7 @@ if(os.environ.get('RUNMODE')=="test"):
 	updater = Updater(token='463468162:AAErlS600lDoJrAIhvqn9byvZsn7oYtT11Q')
 else :
 	print("Running in prod mode")
-	updater = Updater(token='468419437:AAGyilEfIMQehUMjsfGWE_7pmSpzGQN45qE')
+	updater = Updater(token='306155790:AAHshYWFsAmOKly8107HkSISlUziQz77DLs')
 
 
 dispatcher = updater.dispatcher
