@@ -6,20 +6,6 @@ from rest_framework.response import Response
 
 urlpatterns = [
     url(r'^$', views.index),
-    url(r'^users/$', views.UserList.as_view()),
-    #url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
-    url(r'^userinterests/$', views.UserInterestList.as_view()),
-    url(r'^userinterests/(?P<pk>[0-9]+)/$', views.UserInterestDetail.as_view()),
-    url(r'^userratings/$', views.UserRatingList.as_view()),
-    url(r'^userratings/(?P<pk>[0-9]+)/$', views.UserRatingDetail.as_view()),
-    url(r'^usercomments/$', views.UserCommentList.as_view()),
-    url(r'^usercomments/(?P<pk>[0-9]+)/$', views.UserCommentDetail.as_view()),
-    url(r'^states/$', views.StateList.as_view()),
-    url(r'^states/(?P<pk>[0-9]+)/$', views.StateDetail.as_view()),
-    url(r'^edges/$', views.EdgeList.as_view()),
-    url(r'^edges/(?P<pk>[0-9]+)/$', views.EdgeDetail.as_view()),
-    url(r'^histories/$', views.HistoryList.as_view()),
-    url(r'^histories/(?P<pk>[0-9]+)/$', views.HistoryDetail.as_view()),
 
     # GET 
     url('isAdmin', views.isAdmin),
@@ -30,6 +16,7 @@ urlpatterns = [
     url('getResponses', views.getResponses),
     url('getHistories', views.getHistories),
     url('getInterests', views.getInterests),
+    url('getResponsesOfState', views.getResponsesOfState),
 
     # POST
     url('addState', views.addState),
@@ -39,6 +26,17 @@ urlpatterns = [
     url('addComment', views.addComment),
     url('addUser', views.addUser),
     url('addUserInterest', views.addUserInterest),
+
+    # UPDATE
+    url('editState', views.editState),
+    url('editEdge', views.editEdge),
+    url('editResponse', views.editResponse),
+
+    # DELETE
+    url('deleteState', views.deleteState),
+    url('deleteEdge', views.deleteEdge),
+    url('deleteComment', views.deleteComment),
+    url('deleteResponse', views.deleteResponse),
 ]
 
 
