@@ -1,7 +1,6 @@
 # Build
 build/app.js
 build/style.css
-dist
 
 # Logs
 logs
