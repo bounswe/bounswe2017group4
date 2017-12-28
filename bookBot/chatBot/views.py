@@ -65,6 +65,7 @@ def getComments(request):
     response=[]
     for userComment in userComments:
         responseSample={}
+        responseSample['id'] = userComment.id
         responseSample['comment'] = userComment.comment
         responseSample['user'] = model_to_dict(userComment.user)
         response.append(responseSample)
@@ -319,7 +320,7 @@ def deleteEdge(request):
 @csrf_exempt
 def deleteComment(request):
     comment_id = request.POST.get('comment_id', '')
-    commentObject = Edge.objects.get(id=comment_id)
+    commentObject = UserComment.objects.get(id=comment_id)
 
     commentObject.delete()
 
