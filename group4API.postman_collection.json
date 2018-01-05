@@ -1,0 +1,496 @@
+{
+	"info": {
+		"name": "group4API",
+		"_postman_id": "6178f0b6-57f9-ffba-492e-4be344c7ac02",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://18.194.230.124:8000/getResponses",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"disabled": true
+					},
+					{
+						"key": "state",
+						"value": "3"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "current_state_id",
+							"value": "10",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "user_response",
+							"value": "Deneme22345234",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "next_state_id",
+							"value": "11",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "recommended_response",
+							"value": "Test25463463",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "edge_id",
+							"value": "26",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "state_id",
+							"value": "10",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://18.194.230.124:8000/getResponses",
+					"protocol": "http",
+					"host": [
+						"18",
+						"194",
+						"230",
+						"124"
+					],
+					"port": "8000",
+					"path": [
+						"getResponses"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://18.194.230.124:8000/getComments?book_id=Dune",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "book_id",
+						"value": "Kol",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"disabled": true
+					},
+					{
+						"key": "state",
+						"value": "3",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "current_state_id",
+							"value": "10",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "user_response",
+							"value": "Deneme22345234",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "next_state_id",
+							"value": "11",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "recommended_response",
+							"value": "Test25463463",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "edge_id",
+							"value": "26",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "state_id",
+							"value": "10",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://18.194.230.124:8000/getComments?book_id=Dune",
+					"protocol": "http",
+					"host": [
+						"18",
+						"194",
+						"230",
+						"124"
+					],
+					"port": "8000",
+					"path": [
+						"getComments"
+					],
+					"query": [
+						{
+							"key": "book_id",
+							"value": "Dune",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://18.194.230.124:8000/deleteEdge",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "current_state_id",
+							"value": "10",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "user_response",
+							"value": "Deneme22345234",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "next_state_id",
+							"value": "11",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "recommended_response",
+							"value": "Test25463463",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "edge_id",
+							"value": "26",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://18.194.230.124:8000/deleteEdge",
+					"protocol": "http",
+					"host": [
+						"18",
+						"194",
+						"230",
+						"124"
+					],
+					"port": "8000",
+					"path": [
+						"deleteEdge"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://18.194.230.124:8000/addEdge",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "current_state_id",
+							"value": "10",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "user_response",
+							"value": "Deneme22345234",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "next_state_id",
+							"value": "11",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "recommended_response",
+							"value": "Test25463463",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "edge_id",
+							"value": "25",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://18.194.230.124:8000/addEdge",
+					"protocol": "http",
+					"host": [
+						"18",
+						"194",
+						"230",
+						"124"
+					],
+					"port": "8000",
+					"path": [
+						"addEdge"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://18.194.230.124:8000/editEdge",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "current_state_id",
+							"value": "10",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "user_response",
+							"value": "Deneme2",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "next_state_id",
+							"value": "11",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "recommended_response",
+							"value": "Test2",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "edge_id",
+							"value": "25",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://18.194.230.124:8000/editEdge",
+					"protocol": "http",
+					"host": [
+						"18",
+						"194",
+						"230",
+						"124"
+					],
+					"port": "8000",
+					"path": [
+						"editEdge"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://18.194.230.124:8000/getStates/",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "state_id",
+							"value": "10",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "chatbot_response",
+							"value": "Hello",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"description": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://18.194.230.124:8000/addResponse/",
+					"protocol": "http",
+					"host": [
+						"18",
+						"194",
+						"230",
+						"124"
+					],
+					"port": "8000",
+					"path": [
+						"addResponse",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
